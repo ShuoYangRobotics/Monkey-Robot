@@ -41,8 +41,11 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "can.h"
+#include "spi.h"
 #include "tim.h"
+#include "usart.h"
 #include "gpio.h"
+
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -51,11 +54,15 @@
 #include "bsp_can.h"
 #include "bsp_pwm.h"
 #include "pid.h"
+#include "bsp_imu.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-
+//extern UART_HandleTypeDef huart2;
+extern imu_t              imu;
+char buf[300];
+int count;
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -75,13 +82,16 @@ extern moto_info_t motor_info[MOTOR_MAX_NUM];
 int16_t led_cnt;
 pid_struct_t motor_pid[7];
 float target_speed;
-uint16_t pwm_pulse = 1080;  // default pwm pulse width:1080~1920
+uint16_t pwm_pulse_left = 1500;  // default pwm pulse width:1080~1920
+uint16_t pwm_pulse_right = 1500;  // default pwm pulse width:1080~1920
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
-
+//bluetooth message buffer
+uint8_t aTxStartMessages[] = "\r\n******UART commucition using IT******\r\nThis is a demo!\r\n";
+uint8_t aRxBuffer[] = "    is signal received\n";
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -116,13 +126,25 @@ int main(void)
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
-  MX_GPIO_Init();
+  
+	MX_GPIO_Init();
+  MX_SPI5_Init();
   MX_CAN1_Init();
   MX_TIM1_Init();
+  MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
+	
+	mpu_device_init();
+	init_quaternion();	
+	//Bluetooth setup
+	HAL_UART_Transmit(&huart2 ,(uint8_t*)aTxStartMessages,sizeof(aTxStartMessages),55); 
+	HAL_UART_Receive_IT(&huart2,(uint8_t*)aRxBuffer,3); //will receive exactly 3 characters until the receive is done, then trigger the callback function
+	//either listen to imu or can for imu/can readings
+	
+	//motor setup
   HAL_GPIO_WritePin(GPIOH, POWER1_CTRL_Pin|POWER2_CTRL_Pin|POWER3_CTRL_Pin|POWER4_CTRL_Pin, GPIO_PIN_SET); // switch on 24v power
   pwm_init();                              // start pwm output
-  can_user_init(&hcan1);                   // config can filter, start can
+  can_user_init(&hcan1);                  // config can filter, start can
   for (uint8_t i = 0; i < 7; i++)
   {
     pid_init(&motor_pid[i], 40, 3, 0, 30000, 30000); //init pid parameter, kp=40, ki=3, kd=0, output limit = 30000
@@ -133,23 +155,38 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+		 mpu_get_data();
+		imu_ahrs_update();
+		imu_attitude_update(); 
+		
     /* led blink */
+		
     led_cnt ++;
-    if (led_cnt == 250)
-    {
+    if (led_cnt == 50)
+    {	  
+			HAL_Delay(5);		
+			sprintf(buf, "ax: %d|ay: %d|az: %d|p1:%d|p2:%d\n", imu.ax, imu.ay, imu.az, motor_info[0].rotor_angle, motor_info[1].rotor_angle);
+			HAL_UART_Transmit(&huart2, (uint8_t *)buf, (COUNTOF(buf)-1), 100);
+			HAL_Delay(5);
       led_cnt = 0;
-      LED_RED_TOGGLE(); //blink cycle 500ms
+      //LED_RED_TOGGLE(); //blink cycle 500ms
     }
     
     /* scan is key be pressd down to change target speed and pwm pulse */
     if (key_scan())
     {
-      target_speed += 60.0f;  // target speed increase 60rpm
-      pwm_pulse    += 210;    // pulse  width increase 210us = (1920-1080)/4
-      if (target_speed > 180) // if current speed = 180, press key to stop motor
+			if (target_speed < 50.0f)
+			{
+				
+				target_speed += 60.0f;  // target speed increase 60rpm
+				pwm_pulse_left    += 50;    // pulse  width increase 210us = (1920-1080)/4
+				pwm_pulse_right    -= 50;    // pulse  width increase 210us = (1920-1080)/4
+			}
+      else // if current speed = 180, press key to stop motor
       {
-        target_speed = 0;
-        pwm_pulse = 1080;
+        target_speed = 0.0f;
+        pwm_pulse_left -= 50;
+				pwm_pulse_right += 50;
       }
     }
     
@@ -159,23 +196,23 @@ int main(void)
       motor_info[i].set_voltage = pid_calc(&motor_pid[i], target_speed, motor_info[i].rotor_speed);
     }
     /* send motor control message through can bus*/
-    set_motor_voltage(0, 
-                      motor_info[0].set_voltage, 
-                      motor_info[1].set_voltage, 
-                      motor_info[2].set_voltage, 
-                      motor_info[3].set_voltage);
-    
-    set_motor_voltage(1, 
-                      motor_info[4].set_voltage, 
-                      motor_info[5].set_voltage, 
-                      motor_info[6].set_voltage, 
-                      0);
+//    set_motor_voltage(0, 
+//                      motor_info[0].set_voltage, 
+//                      motor_info[1].set_voltage, 
+//                      motor_info[2].set_voltage, 
+//                      motor_info[3].set_voltage);
+//    
+//    set_motor_voltage(1, 
+//                      motor_info[4].set_voltage, 
+//                      motor_info[5].set_voltage, 
+//                      motor_info[6].set_voltage, 
+//                      0);
     
     /* set pwm pulse width */
-    __HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_1, pwm_pulse);
-    __HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_2, pwm_pulse);
-    __HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_3, pwm_pulse);
-    __HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_4, pwm_pulse);
+    __HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_1, pwm_pulse_left);
+    __HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_2, pwm_pulse_right);
+    __HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_3, pwm_pulse_left);
+    __HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_4, pwm_pulse_right);
     
     /* system delay 1ms */
     HAL_Delay(0);
@@ -184,6 +221,7 @@ int main(void)
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
+	
 }
 
 /**
@@ -229,7 +267,58 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
+void Start_Moving(void){
+	//toggle some flag so that in main loop it starts moving
+}
 
+void IMU_read(void) //send imu data back through UART connection
+{
+
+	HAL_Delay(5);		
+	sprintf(buf, " Roll: %8.3lf    Pitch: %8.3lf    Yaw: %8.3lf\n", imu.rol, imu.pit, imu.yaw);
+	HAL_UART_Transmit(&huart2, (uint8_t *)buf, (sizeof(buf) / sizeof(*(buf)))-1, 55); //transmit data
+	HAL_Delay(5);	
+}
+
+void CAN_read(void)
+{
+	 for (uint8_t i = 0; i < 2; i++)
+    {
+			HAL_Delay(5);
+			sprintf(buf, " CAN ID: %d  Rotor Angle: %d  Rotor Speed: %d  Torque Current: %d\n", motor_info[i].can_id, motor_info[i].rotor_angle, motor_info[i].rotor_speed, motor_info[i].torque_current);
+			HAL_UART_Transmit(&huart2, (uint8_t *)buf, sizeof(buf), 55);
+			HAL_Delay(5);
+    }
+		/*
+		inside motor info
+	  uint16_t can_id;
+    int16_t  set_voltage;
+    uint16_t rotor_angle;
+    int16_t  rotor_speed;
+    int16_t  torque_current;
+    uint8_t  temp;
+		*/
+}
+
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+	UNUSED(huart);
+	
+	if (strncmp((char*)aRxBuffer, "imu",3) == 0){ //need for imu reading
+		HAL_UART_Transmit(&huart2,(uint8_t*)aRxBuffer,1,55);
+		IMU_read();
+		HAL_UART_Transmit(&huart2,(uint8_t*)aRxBuffer,3,55);
+	} else if (aRxBuffer[0]=='c') {//need for can reading
+		HAL_UART_Transmit(&huart2,(uint8_t*)aRxBuffer,1,55);
+		CAN_read();
+	} else if (aRxBuffer[0]=='s') {//START TO MOVE!!!!!!!!!!!!!!!!!!!!!!!!!
+		HAL_UART_Transmit(&huart2,(uint8_t*)aRxBuffer,1,55);
+		Start_Moving();
+	}
+	//HAL_UART_Transmit(&huart2,(uint8_t*)aRxBuffer,1,55);//(uint8_t*)aRxBuffer??????,10??????,0xFFFF?????
+	//HAL_GPIO_TogglePin(LED1_GPIO_Port,LED1_Pin);
+	HAL_UART_Receive_IT(&huart2,(uint8_t*)aRxBuffer,3);
+}
 /* USER CODE END 4 */
 
 /**
@@ -240,7 +329,9 @@ void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
   /* User can add his own implementation to report the HAL error return state */
-
+	while(1)
+	{
+	}
   /* USER CODE END Error_Handler_Debug */
 }
 
