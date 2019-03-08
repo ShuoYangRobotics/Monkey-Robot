@@ -893,11 +893,11 @@ ARM Macro Assembler    Page 14
               00000000 
 Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M4.fp --apcs=int
 erwork --depend=gm6020_demo\startup_stm32f427xx.d -ogm6020_demo\startup_stm32f4
-27xx.o -IC:\Users\pauly\Dropbox\CMU_study\24-775\monkey\GM6020_demo\MDK-ARM\RTE
- -ID:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.13.0 -ID:\Keil_v5\ARM\CMSIS\Include
- --predefine="__EVAL SETA 1" --predefine="__MICROLIB SETA 1" --predefine="__UVI
-SION_VERSION SETA 514" --predefine="STM32F427xx SETA 1" --list=startup_stm32f42
-7xx.lst startup_stm32f427xx.s
+27xx.o -IC:\Users\gzy\Desktop\Monkey-Robot-dev\GM6020_demo\MDK-ARM\RTE -IC:\Kei
+l_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.13.0\Drivers\CMSIS\Device\ST\STM32F4xx\Inclu
+de -IC:\Keil_v5\ARM\CMSIS\Include --predefine="__MICROLIB SETA 1" --predefine="
+__UVISION_VERSION SETA 518" --predefine="STM32F427xx SETA 1" --list=startup_stm
+32f427xx.lst startup_stm32f427xx.s
 
 
 
@@ -2051,4 +2051,4 @@ Symbol: __main
       At line 196 in file startup_stm32f427xx.s
 Comment: __main used once
 2 symbols
-452 symbols in table
+451 symbols in table

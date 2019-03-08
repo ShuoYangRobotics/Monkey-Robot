@@ -87,6 +87,8 @@ void Error_Handler(void);
 #define POWER3_CTRL_GPIO_Port GPIOH
 #define POWER4_CTRL_Pin GPIO_PIN_5
 #define POWER4_CTRL_GPIO_Port GPIOH
+//#define PF6_Pin GPIO_PIN_6
+//#define PF6_GPIO_Port GPIOF
 #define KEY_Pin GPIO_PIN_2
 #define KEY_GPIO_Port GPIOB
 #define LED_RED_Pin GPIO_PIN_11
@@ -94,7 +96,7 @@ void Error_Handler(void);
 #define LED_GREEN_Pin GPIO_PIN_14
 #define LED_GREEN_GPIO_Port GPIOF
 /* USER CODE BEGIN Private defines */
-
+#define COUNTOF(__BUFFER__)   (sizeof(__BUFFER__) / sizeof(*(__BUFFER__)))
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus
