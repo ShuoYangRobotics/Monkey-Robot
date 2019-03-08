@@ -53,4 +53,5 @@ dkms.conf
 
 
 # added by zhaoyuan
-GM6020_demo/MDK-ARM/GM6020_emo
+GM6020_demo/MDK-ARM/GM6020_demo
+GM6020_demo/MDK-ARM/GM6020_demo*
