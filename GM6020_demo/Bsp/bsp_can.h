@@ -36,5 +36,5 @@ typedef struct
 }moto_info_t;
 
 void can_user_init(CAN_HandleTypeDef* hcan);
-void set_motor_voltage(uint8_t id_range, int16_t v1, int16_t v2, int16_t v3, int16_t v4);
+void set_motor_voltage(uint8_t id_range, int16_t v1, int16_t v2);
 #endif

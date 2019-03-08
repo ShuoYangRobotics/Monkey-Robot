@@ -84,7 +84,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
   * @param  motor voltage 1,2,3,4 or 5,6,7
   * @retval None
   */
-void set_motor_voltage(uint8_t id_range, int16_t v1, int16_t v2, int16_t v3, int16_t v4)
+void set_motor_voltage(uint8_t id_range, int16_t v1, int16_t v2)
 {
   CAN_TxHeaderTypeDef tx_header;
   uint8_t             tx_data[8];
@@ -98,9 +98,5 @@ void set_motor_voltage(uint8_t id_range, int16_t v1, int16_t v2, int16_t v3, int
   tx_data[1] =    (v1)&0xff;
   tx_data[2] = (v2>>8)&0xff;
   tx_data[3] =    (v2)&0xff;
-  tx_data[4] = (v3>>8)&0xff;
-  tx_data[5] =    (v3)&0xff;
-  tx_data[6] = (v4>>8)&0xff;
-  tx_data[7] =    (v4)&0xff;
   HAL_CAN_AddTxMessage(&hcan1, &tx_header, tx_data,(uint32_t*)CAN_TX_MAILBOX0); 
 }
