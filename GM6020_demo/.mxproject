@@ -1,7 +1,7 @@
 [PreviousGenFiles]
-HeaderPath=C:/Users/gzy/Desktop/Monkey-Robot-master/GM6020_demo/Inc
+HeaderPath=C:/Users/gzy/Desktop/Monkey-Robot-dev/GM6020_demo/Inc
 HeaderFiles=gpio.h;can.h;tim.h;stm32f4xx_it.h;stm32f4xx_hal_conf.h;main.h;spi.h;usart.h;
-SourcePath=C:/Users/gzy/Desktop/Monkey-Robot-master/GM6020_demo/Src
+SourcePath=C:/Users/gzy/Desktop/Monkey-Robot-dev/GM6020_demo/Src
 SourceFiles=gpio.c;can.c;tim.c;stm32f4xx_it.c;stm32f4xx_hal_msp.c;main.c;spi.c;usart.c;
 
 [PreviousLibFiles]

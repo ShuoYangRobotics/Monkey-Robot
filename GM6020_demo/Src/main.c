@@ -46,7 +46,6 @@
 #include "usart.h"
 #include "gpio.h"
 
-
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "bsp_key.h"
@@ -126,25 +125,25 @@ int main(void)
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
-  
-	MX_GPIO_Init();
-  MX_SPI5_Init();
+  MX_GPIO_Init();
   MX_CAN1_Init();
   MX_TIM1_Init();
+  MX_SPI5_Init();
   MX_USART2_UART_Init();
+  MX_USART6_UART_Init();
   /* USER CODE BEGIN 2 */
 	
 	mpu_device_init();
 	init_quaternion();	
 	//Bluetooth setup
 	HAL_UART_Transmit(&huart2 ,(uint8_t*)aTxStartMessages,sizeof(aTxStartMessages),55); 
-	HAL_UART_Receive_IT(&huart2,(uint8_t*)aRxBuffer,3); //will receive exactly 3 characters until the receive is done, then trigger the callback function
+	HAL_UART_Receive_IT(&huart2,(uint8_t*)aRxBuffer,3); //will receive exactly 3 characters. until the receive is done, then trigger the callback function
 	//either listen to imu or can for imu/can readings
 	
 	//motor setup
   HAL_GPIO_WritePin(GPIOH, POWER1_CTRL_Pin|POWER2_CTRL_Pin|POWER3_CTRL_Pin|POWER4_CTRL_Pin, GPIO_PIN_SET); // switch on 24v power
   pwm_init();                              // start pwm output
-  can_user_init(&hcan1);                  // config can filter, start can
+  can_user_init(&hcan1);                   // config can filter, start can
   for (uint8_t i = 0; i < 7; i++)
   {
     pid_init(&motor_pid[i], 40, 3, 0, 30000, 30000); //init pid parameter, kp=40, ki=3, kd=0, output limit = 30000
@@ -221,7 +220,6 @@ int main(void)
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
-	
 }
 
 /**

@@ -81,10 +81,9 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef* spiHandle)
     /* SPI5 clock enable */
     __HAL_RCC_SPI5_CLK_ENABLE();
   
-    //__HAL_RCC_GPIOF_CLK_ENABLE();
+    __HAL_RCC_GPIOF_CLK_ENABLE();
     /**SPI5 GPIO Configuration    
     PF7     ------> SPI5_SCK
-    PF6     ------> SPI5_NSS
     PF9     ------> SPI5_MOSI
     PF8     ------> SPI5_MISO 
     */
@@ -94,13 +93,6 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef* spiHandle)
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
     GPIO_InitStruct.Alternate = GPIO_AF5_SPI5;
     HAL_GPIO_Init(GPIOF, &GPIO_InitStruct);
-
-//    GPIO_InitStruct.Pin = PF6_Pin;
-//    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-//    GPIO_InitStruct.Pull = GPIO_NOPULL;
-//    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-//    GPIO_InitStruct.Alternate = GPIO_AF5_SPI5;
-//    HAL_GPIO_Init(PF6_GPIO_Port, &GPIO_InitStruct);
 
   /* USER CODE BEGIN SPI5_MspInit 1 */
 
@@ -121,7 +113,6 @@ void HAL_SPI_MspDeInit(SPI_HandleTypeDef* spiHandle)
   
     /**SPI5 GPIO Configuration    
     PF7     ------> SPI5_SCK
-    PF6     ------> SPI5_NSS
     PF9     ------> SPI5_MOSI
     PF8     ------> SPI5_MISO 
     */
