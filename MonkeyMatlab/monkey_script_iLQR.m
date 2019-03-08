@@ -1,12 +1,27 @@
 % this script accompanies monkey_use_out_u, it use iLQR method to
 % calculate a trajectory out_u. and then monkey_use_out_u will use this
 % trajectory to control it
-% 2019-03-06 ideally, this method should generate a trajectory that is
+% 2019-03-05 ideally, this method should generate a trajectory that is
 % identical to the direct collocation method
-% 2019-03-07 it does not give very good control strategy...
-% the reason may be 
+% 2019-03-06 it does not give very good control strategy...
+% the reason may be line search and regularization
+% 2019-03-07 refactor code, implement regularization
+% good performance!
+
+
+%%%%%%%%%%%%%%%%%%%%%%% set up control goal
+init_angle_left_hand = -45/180*pi;
+init_angle_left_shoulder = 0/180*pi;
+init_angle_right_shoulder = 90/180*pi;
+
+end_angle_left_hand = 60/180*pi;
+end_angle_left_shoulder = 0/180*pi;
+end_angle_right_shoulder = (90+90+120)/180*pi;
+%%%%%%%%%%%%%%%%%%%%%%%
+
 
 monkey_script_basic;
+
 global g  Ftip  Mlist  Glist  Slist
 % calculate dynamic model
 N=3;
@@ -61,96 +76,98 @@ Slist = [[w1;-cross(w1,pq1)] [w2;-cross(w2,pq2)] [w3;-cross(w3,pq3)]];
 % c = VelQuadraticForces(thetalist, dthetalist, Mlist, Glist, Slist);
 
 
+% put all parameters here
 % total time should be 1.2, then 1.2/200=0.006
 step = 300;
 T= 1.2;
 dt = T/step;
 
-init_angle_left_hand = -45/180*pi;
-init_angle_left_shoulder = 45/180*pi;
-init_angle_right_shoulder = 45/180*pi;
+Q = 0*eye(6);
+R = 0.4*eye(2);
+Qf = 2000*eye(6);
+Qf(4,4) = 0;
+% Qf(5,5) = 0;
+% Qf(6,6) = 0;
 
-end_angle_left_hand = 45/180*pi;
-end_angle_left_shoulder = -45/180*pi;
-end_angle_right_shoulder = (45+270)/180*pi;
+
 
 thetastart = [init_angle_left_hand; init_angle_left_shoulder; init_angle_right_shoulder];
 thetaend = [end_angle_left_hand; end_angle_left_shoulder; end_angle_right_shoulder];
-x = [thetastart;[0;0;0]];
-xT = [thetaend;[0;0;0]];
+x0 = [thetastart;[0;0;0]];
+xT = [thetaend;[0;0.0;0.0]];
 
-u = zeros (1 , step*2 );
+% pfl joint trajectory
+pfl_n = 3;
+Tf = 1.2;
+pfl_N= 2000;
+method = 3 ;
+traj = JointTrajectory(thetastart, thetaend, Tf, pfl_N, method);
+thetamat = traj;
+dthetamat = zeros(pfl_N, pfl_n);
+ddthetamat = zeros(pfl_N, pfl_n);
+pfl_dt = Tf / (pfl_N - 1);
+for i = 1: pfl_N - 1
+  dthetamat(i + 1, :) = (thetamat(i + 1, :) - thetamat(i, :)) / pfl_dt;
+  ddthetamat(i + 1, :) = (dthetamat(i + 1, :) - dthetamat(i, :)) / pfl_dt;
+end
+sim('monkey_pfl');
 
 % load init control from pfl
-load('out_u_pfl_0225.mat');
-t = 0:dt:1.2-dt;
+t = 0:dt:T;
+% size(out_u_pfl.Data) 1201 2 , not very good. unify directions of arrays
+% to be 2xN
 init_u = interp1(out_u_pfl.Time, out_u_pfl.Data,t);
-for i=1:step
-    u(2*(i-1)+1) = init_u(i,1);
-    u(2*(i-1)+2) = init_u(i,2);
-end
-t = [t T];
+init_u = init_u';
+
 figure(1)
-init_x_list = monkey_state_run(u,dt);
-%plot(init_x_list(1,:),init_x_list(3,:))
-plot(t, [init_u(:,1)' 0],t, [init_u(:,2)' 0])
+plot(t, init_u(1,:),t, init_u(2,:))
 title('PFL Torque');
 
-% load direct collocation control to compare
-load('0226_direct_collocation');
-t = 0:dt:T-dt;
-final_u = [interp1(out_u_time, out_u_data(1,:),t);interp1(out_u_time, out_u_data(2,:),t);];
-for i=1:step
-    u(2*(i-1)+1) = final_u(1,i);
-    u(2*(i-1)+2) = final_u(2,i);
-end
+[pfl_x_list, J] = monkey_complete_run(x0, xT, init_u, dt, step, Q, R, Qf);
+dd = sprintf('Cost for PFL strategy %6.5f\n',J);
+disp(dd);
 
-t = [t T];
-figure(2)
-final_x_list = monkey_state_run(u,dt);
-%plot(final_x_list(1,:),final_x_list(3,:))
-plot(t, [final_u(1,:) 0],t, [final_u(2,:) 0])
-title('Direct Collocation Torque');
-
-% forward pass with new_u
-% calculate cost for reference
-Q = 0*eye(6);
-R = 1*eye(2);
-Qf = 8270*eye(6);
-J = 0;
-new_x_list = zeros(6,step+1);
-new_x_list(:,1) = final_x_list(:,1);
-for i = 1:step
-    tmp_state = new_x_list(:,i);
-    x_dot = monkey_dyn_func(tmp_state, [0;final_u(:,i)]);
-    new_x_list(:,i+1) = new_x_list(:,i) + dt*x_dot;
-
-    J = J + new_x_list(:,i)'*Q*new_x_list(:,i) + final_u(:,i)'*R*final_u(:,i);
-end
-
-J = J + (new_x_list(:,end) - xT)'*Qf*(new_x_list(:,end) - xT);
-J
+out_u_time = t;
+out_u_data = [init_u ];
+sim('monkey_use_out_u');
 
 % iLQR step
-% new_u_list = final_u;
-% new_x_list = final_x_list;
-new_u_list = init_u';
-new_x_list = init_x_list;
-total_iter = 650;
+new_u_list = init_u;
+new_x_list = pfl_x_list;
+% TODO add random noise for initial u
+x0 = x0 + 1e-5*randn(size(x0));
+
+total_iter = 100;
+lamb = 6.0; % regularization parameter
+sim_new_trajectory  = 1;
 
 for i = 1:total_iter
-    [new_x_list,new_u_list] = monkey_iLQR_iteration(new_x_list, xT, new_u_list, step, dt);    
-    
-%     out_u_time = t;
-%     out_u_data = [new_u_list [0;0]];
-%     sim('monkey_use_out_u');
-
+%     try
+        [new_x_list,new_u_list, J, lamb, sim_new_trajectory, converge] = ...
+            monkey_iLQR_iteration(x0, xT, new_u_list, new_x_list, dt, step, Q, R, Qf, lamb, sim_new_trajectory); 
+        dd = sprintf('Iteration %d, cost %6.5f\n', i, J);
+        disp(dd);
+        
+%         out_u_time = t;
+%         out_u_data = new_u_list;
+%         sim('monkey_use_out_u');
+        if (converge == 1)
+            break;
+        end
+%     catch ME
+%         disp(ME.identifier);
+%         disp('exit iteration')
+%         break;
+%     end
 end
 
-plot(t, [new_u_list(1,:) 0],t, [new_u_list(2,:) 0])
+figure(3)
+plot(t, new_u_list(1,:) ,t, new_u_list(2,:) )
 title('iLQR Torque');
 
-
+out_u_time = t;
+out_u_data = new_u_list;
+sim('monkey_use_out_u');
 
 
 
