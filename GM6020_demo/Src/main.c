@@ -59,6 +59,7 @@
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
+#define M_PI 3.14159265358979323846
 //extern UART_HandleTypeDef huart2;
 extern imu_t              imu;
 char buf[300];
@@ -78,10 +79,20 @@ int count;
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-extern moto_info_t motor_info[MOTOR_MAX_NUM];
 int16_t led_cnt;
-pid_struct_t motor_pid[7];
-float target_speed;
+
+extern moto_info_t motor_info[2];
+pid_struct_t motor_position_pid[2];
+pid_struct_t motor_velocity_pid[2];
+
+float motor_position_rad[2];
+float motor_velocity_rads[2];
+
+float target_position_rad[2];
+float target_velocity_rads[2];
+
+int debug_print = 0; // if debug print = 1, print imu, if debug print = 2 print motor
+
 uint16_t pwm_pulse_left = 1500;  // default pwm pulse width:1080~1920
 uint16_t pwm_pulse_right = 1500;  // default pwm pulse width:1080~1920
 /* Private variables ---------------------------------------------------------*/
@@ -153,10 +164,12 @@ int main(void)
   HAL_GPIO_WritePin(GPIOH, POWER1_CTRL_Pin|POWER2_CTRL_Pin|POWER3_CTRL_Pin|POWER4_CTRL_Pin, GPIO_PIN_SET); // switch on 24v power
   pwm_init();                              // start pwm output
   can_user_init(&hcan1);                   // config can filter, start can
-  for (uint8_t i = 0; i < 7; i++)
-  {
-    pid_init(&motor_pid[i], 40, 3, 0, 30000, 30000); //init pid parameter, kp=40, ki=3, kd=0, output limit = 30000
-  }
+
+  pid_init(&motor_position_pid[0], 38, 0.001, 0.5, 4, 25);       //init pid parameter, kp=38, ki=0.001, kd=0.5, output limit = 25
+  pid_init(&motor_position_pid[1], 38, 0.001, 0.5, 4, 25);       //init pid parameter, kp=38, ki=0.001, kd=0.5, output limit = 25
+  pid_init(&motor_velocity_pid[0], 1000, 3, 0.06, 20000, 30000); //init pid parameter, kp=1000, ki=3, kd=0.06, output limit = 30000
+  pid_init(&motor_velocity_pid[1], 1000, 3, 0.06, 20000, 30000); //init pid parameter, kp=1000, ki=3, kd=0.06, output limit = 30000
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -166,25 +179,62 @@ int main(void)
 		mpu_get_data();
 		imu_ahrs_update();
 		imu_attitude_update(); 
+		target_position_rad[0] = M_PI;
+		target_position_rad[1] = M_PI;
+		// get control loop
+		motor_position_rad[0] = motor_info[0].rotor_angle/8192.0f*2*M_PI;
+		motor_position_rad[1] = motor_info[1].rotor_angle/8192.0f*2*M_PI;
+		motor_velocity_rads[0] = motor_info[0].rotor_speed*M_PI/30.0f;
+		motor_velocity_rads[1] = motor_info[1].rotor_speed*M_PI/30.0f;
 		
-    /* led blink */
-		
-//    led_cnt ++;
-//    if (led_cnt == 50)
-//    {	  
-//			HAL_Delay(5);		
-//			sprintf(buf, "ax: %d|ay: %d|az: %d|p1:%d|p2:%d\n", imu.ax, imu.ay, imu.az, motor_info[0].rotor_angle, motor_info[1].rotor_angle);
-//			HAL_UART_Transmit(&huart2, (uint8_t *)buf, (COUNTOF(buf)-1), 100);
-//			HAL_Delay(5);
-//      led_cnt = 0;
-//      //LED_RED_TOGGLE(); //blink cycle 500ms
-//    }
-		if (key_scan())
-    {
-			HAL_UART_Transmit_DMA(&huart2,aTxBuffer,sizeof(aTxBuffer));
-      
-    }
+//    /* motor speed pid calc ID1 ID1 ID1 ID1 ID1 ID1 ID1 ID1*/
+//		target_velocity_rads[0] = pid_calc(&motor_position_pid[0], target_position_rad[0], motor_position_rad[0]);
+//		motor_info[0].set_voltage = pid_calc(&motor_velocity_pid[0], target_velocity_rads[0], motor_velocity_rads[0]);
+//    /* motor speed pid calc ID2 ID2 ID2 ID2 ID2 ID2 ID2 ID2*/
+//		target_velocity_rads[1] = pid_calc(&motor_position_pid[1], target_position_rad[1], motor_position_rad[1]);
+//		motor_info[1].set_voltage = pid_calc(&motor_velocity_pid[1], target_velocity_rads[1], motor_velocity_rads[1]);
 
+    /* send motor control message through can bus*/
+//		set_motor_voltage(0, 
+//                      motor_info[0].set_voltage, 
+//                      motor_info[1].set_voltage);
+
+		/* led blink and debug */
+    led_cnt ++;
+    if (led_cnt == 500)
+    {	  
+			if (debug_print == 1)
+			{
+				HAL_Delay(5);		
+				sprintf(buf, "\t ax: %d \t ay: %d \t az: %d\n", imu.ax, imu.ay, imu.az);
+				HAL_UART_Transmit(&huart2, (uint8_t *)buf, (COUNTOF(buf)-1), 100); // this is blocking transmitt, not recommended, use DMA instead! TODO: change to DMA
+				HAL_Delay(5);	
+				memset(buf, 0, sizeof(buf));				
+			}
+			else if (debug_print == 2)
+			{
+				HAL_Delay(5);		
+				sprintf(buf, "angle1:%4.3f \t angle2:%4.3f \t vel1:%4.3f \t vel2:%4.3f\n", motor_position_rad[0], motor_position_rad[1], motor_velocity_rads[0], motor_velocity_rads[1]);
+				HAL_UART_Transmit(&huart2, (uint8_t *)buf, (COUNTOF(buf)-1), 100);
+				HAL_Delay(5);		
+				memset(buf, 0, sizeof(buf));	
+			}
+			else if (debug_print == 3)
+			{
+				HAL_Delay(5);		
+				sprintf(buf, "tgt_angle1:%4.3f \t tgt_angle2:%4.3f \t tgt_vel1:%4.3f \t tgt_vel2:%4.3f \t set_voltage1:%d \t set_voltage2:%d \n", 
+					target_position_rad[0], target_position_rad[1], target_velocity_rads[0], target_velocity_rads[1], motor_info[0].set_voltage, motor_info[1].set_voltage);
+				HAL_UART_Transmit(&huart2, (uint8_t *)buf, (COUNTOF(buf)-1), 100);
+				HAL_Delay(5);		
+				memset(buf, 0, sizeof(buf));	
+			}
+
+      led_cnt = 0;
+      LED_RED_TOGGLE(); //blink cycle 500ms
+    }
+		
+    /* system delay 1ms */
+    HAL_Delay(0);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -272,19 +322,28 @@ void CAN_read(void)
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
 	UNUSED(huart);
-	HAL_UART_Transmit_DMA(&huart2,aRxBuffer1,1);
-	HAL_UART_Receive_DMA(&huart2,aRxBuffer1,1);
-//	if (strncmp((char*)aRxBuffer, "imu",3) == 0){ //need for imu reading
+	HAL_UART_Transmit_DMA(&huart2,aRxBuffer1,3);
+	HAL_UART_Receive_DMA(&huart2,aRxBuffer1,3);
+	
+	if (strncmp((char*)aRxBuffer, "imu",3) == 0){ //need for imu reading
 //		HAL_UART_Transmit(&huart2,(uint8_t*)aRxBuffer,1,55);
 //		IMU_read();
 //		HAL_UART_Transmit(&huart2,(uint8_t*)aRxBuffer,3,55);
-//	} else if (aRxBuffer[0]=='c') {//need for can reading
+		debug_print = 1;
+	} else if (strncmp((char*)aRxBuffer, "mtr",3) == 0) {//need for can reading
 //		HAL_UART_Transmit(&huart2,(uint8_t*)aRxBuffer,1,55);
-//		CAN_read();
-//	} else if (aRxBuffer[0]=='s') {//START TO MOVE!!!!!!!!!!!!!!!!!!!!!!!!!
+//		CAN_read()
+		debug_print = 2;
+	} else if (strncmp((char*)aRxBuffer, "mov",3) == 0) {//START TO MOVE!!!!!!!!!!!!!!!!!!!!!!!!!
 //		HAL_UART_Transmit(&huart2,(uint8_t*)aRxBuffer,1,55);
 //		Start_Moving();
-//	}
+	} else if (strncmp((char*)aRxBuffer, "ctl",3) == 0) {//need for can reading
+
+		debug_print = 3;
+	}else if (strncmp((char*)aRxBuffer, "stp",3) == 0) {
+		
+		debug_print = 0;
+	}
 	//HAL_UART_Transmit(&huart2,(uint8_t*)aRxBuffer,1,55);//(uint8_t*)aRxBuffer??????,10??????,0xFFFF?????
 	//HAL_GPIO_TogglePin(LED1_GPIO_Port,LED1_Pin);
 	//HAL_UART_Receive_IT(&huart2,(uint8_t*)aRxBuffer,3);
