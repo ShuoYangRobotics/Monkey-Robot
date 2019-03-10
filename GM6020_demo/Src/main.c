@@ -46,6 +46,7 @@
 #include "tim.h"
 #include "usart.h"
 #include "gpio.h"
+#include "arm_math.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -59,7 +60,6 @@
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-#define M_PI 3.14159265358979323846
 //extern UART_HandleTypeDef huart2;
 extern imu_t              imu;
 char buf[300];
@@ -81,22 +81,78 @@ int count;
 /* USER CODE BEGIN PV */
 int16_t led_cnt;
 
+// feedback information of motors and system
 extern moto_info_t motor_info[2];
-pid_struct_t motor_position_pid[2];
-pid_struct_t motor_velocity_pid[2];
-
-float motor_position_rad[2];
+float motor_angle_rad[2];
 float motor_velocity_rads[2];
 
-float target_position_rad[2];
+// target control actions, be very careful about the rotation direction of the motors
+float target_angle_rad[2];
 float target_velocity_rads[2];
+int16_t target_voltage[2];
 
-int debug_print = 0; // if debug print = 1, print imu, if debug print = 2 print motor
+// motor control PIDs
+pid_struct_t motor_angle_pid[2];
+pid_struct_t motor_velocity_pid[2];
+
+// TODO: put these in a separate file 
+// simple position trajectory, this is used in ctrl_mode 3
+// in these trajectories, state is [q, qdot] (angle and angular velocity)
+// for this simpel trajectory, it is initialized in the traj.h
+float Tf = 4.0f; // use 4 seconds to finish this trajectory
+const int step = 200;  // how many points in the trajectory
+float left_start_state[2];   // 
+float left_end_state[2];     // 
+float left_state_angle[step+1];
+float left_state_velocity[step+1];
+
+float right_start_state[2];   // 
+float right_end_state[2];     // 
+float right_state_angle[step+1];
+float right_state_velocity[step+1];
+
+void init_simple_trajectory(int motor_idx, float Tf, const int step, float tgt_state[], float state_angle[], float state_velocity[])
+{
+	float curr_angle, curr_velocity;
+	float dt = Tf/step;
+	if (motor_idx == 0) // left
+	{
+		curr_angle = motor_angle_rad[0];
+		curr_velocity = motor_velocity_rads[0];
+	}
+	else // right
+	{
+		curr_angle = motor_angle_rad[1];
+		curr_velocity = motor_velocity_rads[1];
+	}
+	state_angle[0] = curr_angle;
+	state_velocity[0] = curr_velocity;
+	for (int i = 1; i < step; i++)
+	{
+		state_angle[i] = state_angle[0] + (float)i/step*(tgt_state[0] - state_angle[0]);
+		
+		state_velocity[i] = 0.6f*(state_angle[i] - state_angle[i-1])/dt + 0.4f*state_velocity[i-1];
+	}
+	state_angle[step] = tgt_state[0];
+	state_velocity[step] = tgt_state[1];
+}	
+
+
+/// mode selection flags
+/// mode selection flags
+/// mode selection flags
+/// mode selection flags
+int debug_print = 0; // if debug print = 1, print imu info to UART, if debug print = 2 print motor info to UART, if debug print = 3 print control loop info to UART
+int ctrl_mode = 0 ;  // if ctrl_mode = 0, use target position for control    // if ctrl_mode = 1 use target velocity // if ctrl_mode = 2 direct control voltage
+int output_enable = 0; // if output_enable == 0, do not output control voltage to motors
+/// mode selection flags
+/// mode selection flags
+/// mode selection flags
+/// mode selection flags
 
 uint16_t pwm_pulse_left = 1500;  // default pwm pulse width:1080~1920
 uint16_t pwm_pulse_right = 1500;  // default pwm pulse width:1080~1920
 /* Private variables ---------------------------------------------------------*/
-uint8_t aRxBuffer1[1];
 uint8_t aTxBuffer[] = "*********SENDING DATA USING USART1 with DMA***********\r\n";
 
 /* USER CODE END PV */
@@ -155,7 +211,7 @@ int main(void)
 	//Bluetooth setup
 //	HAL_UART_Transmit(&huart2 ,(uint8_t*)aTxStartMessages,sizeof(aTxStartMessages),55); 
 //	HAL_UART_Receive_IT(&huart2,(uint8_t*)aRxBuffer,3); //will receive exactly 3 characters. until the receive is done, then trigger the callback function
-	HAL_UART_Receive_DMA(&huart2,aRxBuffer1,1);
+	HAL_UART_Receive_DMA(&huart2,aRxBuffer,3);
   HAL_UART_Transmit_DMA(&huart2,aTxBuffer,sizeof(aTxBuffer));
 	
 	//either listen to imu or can for imu/can readings
@@ -165,11 +221,25 @@ int main(void)
   pwm_init();                              // start pwm output
   can_user_init(&hcan1);                   // config can filter, start can
 
-  pid_init(&motor_position_pid[0], 38, 0.001, 0.5, 4, 25);       //init pid parameter, kp=38, ki=0.001, kd=0.5, output limit = 25
-  pid_init(&motor_position_pid[1], 38, 0.001, 0.5, 4, 25);       //init pid parameter, kp=38, ki=0.001, kd=0.5, output limit = 25
-  pid_init(&motor_velocity_pid[0], 1000, 3, 0.06, 20000, 30000); //init pid parameter, kp=1000, ki=3, kd=0.06, output limit = 30000
-  pid_init(&motor_velocity_pid[1], 1000, 3, 0.06, 20000, 30000); //init pid parameter, kp=1000, ki=3, kd=0.06, output limit = 30000
+	// PID set up
+  pid_init(&motor_angle_pid[0], 38, 0.001, 0.5, 4, 25);       //init pid parameter, kp=38, ki=0.001, kd=0.5, output limit = 25
+  pid_init(&motor_angle_pid[1], 38, 0.001, 0.5, 4, 25);       //init pid parameter, kp=38, ki=0.001, kd=0.5, output limit = 25
+  pid_init(&motor_velocity_pid[0], 1000, 3, 0.06, 10000, 30000); //init pid parameter, kp=1000, ki=3, kd=0.06, output limit = 30000
+  pid_init(&motor_velocity_pid[1], 1000, 3, 0.06, 10000, 30000); //init pid parameter, kp=1000, ki=3, kd=0.06, output limit = 30000
 
+	target_angle_rad[0] = PI;
+	target_angle_rad[1] = PI;
+	target_velocity_rads[0] = 0;
+	target_velocity_rads[1] = 0;
+	
+	// init simple trajectory
+	float tgt_state[2] = {PI,0};
+	float tgt_velocity[2];
+	float dt = 0.001f; // the time between each loop run
+	float traj_timer = 0.0f;
+	bool traj_start = 0;
+	int traj_count = 0;
+		
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -179,54 +249,143 @@ int main(void)
 		mpu_get_data();
 		imu_ahrs_update();
 		imu_attitude_update(); 
-		target_position_rad[0] = M_PI;
-		target_position_rad[1] = M_PI;
-		// get control loop
-		motor_position_rad[0] = motor_info[0].rotor_angle/8192.0f*2*M_PI;
-		motor_position_rad[1] = motor_info[1].rotor_angle/8192.0f*2*M_PI;
-		motor_velocity_rads[0] = motor_info[0].rotor_speed*M_PI/30.0f;
-		motor_velocity_rads[1] = motor_info[1].rotor_speed*M_PI/30.0f;
+		// start control loop
+		motor_angle_rad[0] = motor_info[0].rotor_angle/8192.0f*2*PI;
+		motor_angle_rad[1] = motor_info[1].rotor_angle/8192.0f*2*PI;
+		motor_velocity_rads[0] = motor_info[0].rotor_speed*PI/30.0f;
+		motor_velocity_rads[1] = motor_info[1].rotor_speed*PI/30.0f;
 		
-//    /* motor speed pid calc ID1 ID1 ID1 ID1 ID1 ID1 ID1 ID1*/
-//		target_velocity_rads[0] = pid_calc(&motor_position_pid[0], target_position_rad[0], motor_position_rad[0]);
-//		motor_info[0].set_voltage = pid_calc(&motor_velocity_pid[0], target_velocity_rads[0], motor_velocity_rads[0]);
-//    /* motor speed pid calc ID2 ID2 ID2 ID2 ID2 ID2 ID2 ID2*/
-//		target_velocity_rads[1] = pid_calc(&motor_position_pid[1], target_position_rad[1], motor_position_rad[1]);
-//		motor_info[1].set_voltage = pid_calc(&motor_velocity_pid[1], target_velocity_rads[1], motor_velocity_rads[1]);
+		
+		if (ctrl_mode == 0)
+		{
+			/* motor speed pid calc ID1 ID1 ID1 ID1 ID1 ID1 ID1 ID1*/
+			target_velocity_rads[0] = pid_calc(&motor_angle_pid[0], target_angle_rad[0], motor_angle_rad[0]);
+			motor_info[0].set_voltage = pid_calc(&motor_velocity_pid[0], target_velocity_rads[0], motor_velocity_rads[0]);
+			/* motor speed pid calc ID2 ID2 ID2 ID2 ID2 ID2 ID2 ID2*/
+			target_velocity_rads[1] = pid_calc(&motor_angle_pid[1], target_angle_rad[1], motor_angle_rad[1]);
+			motor_info[1].set_voltage = pid_calc(&motor_velocity_pid[1], target_velocity_rads[1], motor_velocity_rads[1]);
 
-    /* send motor control message through can bus*/
-//		set_motor_voltage(0, 
-//                      motor_info[0].set_voltage, 
-//                      motor_info[1].set_voltage);
+			/* send motor control message through can bus*/
+			if (output_enable == 1)
+			{		
+				set_motor_voltage(0, 
+					motor_info[0].set_voltage, 
+					motor_info[1].set_voltage);
+			}
+			traj_start = 0;
+		}
+		else if (ctrl_mode == 1)
+		{
+			/* motor speed pid calc ID1 ID1 ID1 ID1 ID1 ID1 ID1 ID1*/
+			motor_info[0].set_voltage = pid_calc(&motor_velocity_pid[0], target_velocity_rads[0], motor_velocity_rads[0]);
+			/* motor speed pid calc ID2 ID2 ID2 ID2 ID2 ID2 ID2 ID2*/
+			motor_info[1].set_voltage = pid_calc(&motor_velocity_pid[1], target_velocity_rads[1], motor_velocity_rads[1]);
+
+			/* send motor control message through can bus*/
+			if (output_enable == 1)
+			{		
+				set_motor_voltage(0, 
+					motor_info[0].set_voltage, 
+					motor_info[1].set_voltage);
+			}
+		}
+		else if (ctrl_mode == 2)
+		{
+			motor_info[0].set_voltage = target_voltage[0];
+			motor_info[1].set_voltage = target_voltage[1];
+			
+			/* send motor control message through can bus*/
+			if (output_enable == 1)
+			{		
+				set_motor_voltage(0, 
+					motor_info[0].set_voltage, 
+					motor_info[1].set_voltage);
+			}
+		}
+		else if (ctrl_mode == 3)
+		{
+			// first enter, should have traj_start = 0
+			if (traj_start == 1)
+			{
+				// take waypoint from trajectory
+				if (traj_timer > traj_count*Tf/step)
+				{
+					if (traj_count < step)
+					{
+						traj_count++;
+					}
+					else
+					{
+						traj_timer = Tf;
+					}
+				}
+				
+				target_angle_rad[0] = left_state_angle[traj_count];
+				target_velocity_rads[0] = left_state_velocity[traj_count];
+				target_angle_rad[1] = right_state_angle[traj_count];
+				target_velocity_rads[1] = right_state_velocity[traj_count];
+				
+				/* motor speed pid calc ID1 ID1 ID1 ID1 ID1 ID1 ID1 ID1*/
+				tgt_velocity[0] = pid_calc(&motor_angle_pid[0], target_angle_rad[0], motor_angle_rad[0]);
+				motor_info[0].set_voltage = pid_calc(&motor_velocity_pid[0], tgt_velocity[0], motor_velocity_rads[0]);
+				
+				
+				/* motor speed pid calc ID2 ID2 ID2 ID2 ID2 ID2 ID2 ID2*/
+				tgt_velocity[1] = pid_calc(&motor_angle_pid[1], target_angle_rad[1], motor_angle_rad[1]);
+				motor_info[1].set_voltage = pid_calc(&motor_velocity_pid[1], tgt_velocity[1], motor_velocity_rads[1]);
+
+				/* send motor control message through can bus*/
+				if (output_enable == 1)
+				{		
+					set_motor_voltage(0, 
+						motor_info[0].set_voltage, 
+						motor_info[1].set_voltage);
+				}
+				
+				traj_timer += dt;
+			}
+			else
+			{
+				traj_start = 1;
+				traj_timer = 0.0f;
+				traj_count = 0;
+				init_simple_trajectory(0, Tf, step, tgt_state, left_state_angle, left_state_velocity);
+				init_simple_trajectory(1, Tf, step, tgt_state, right_state_angle, right_state_velocity);
+			}
+				
+		}
+		// end control loop
 
 		/* led blink and debug */
     led_cnt ++;
     if (led_cnt == 500)
     {	  
-			if (debug_print == 1)
-			{
-				HAL_Delay(5);		
-				sprintf(buf, "\t ax: %d \t ay: %d \t az: %d\n", imu.ax, imu.ay, imu.az);
-				HAL_UART_Transmit(&huart2, (uint8_t *)buf, (COUNTOF(buf)-1), 100); // this is blocking transmitt, not recommended, use DMA instead! TODO: change to DMA
-				HAL_Delay(5);	
-				memset(buf, 0, sizeof(buf));				
+			if (debug_print == 1) {
+//				HAL_Delay(5);		
+				sprintf(buf, "ctrl_mode %d \t ax: %d \t ay: %d \t az: %d\n", ctrl_mode, imu.ax, imu.ay, imu.az);
+				HAL_UART_Transmit_DMA(&huart2, (uint8_t *)buf, (COUNTOF(buf)-1)); 
+//				HAL_Delay(5);	
+//				memset(buf, 0, sizeof(buf));				
 			}
-			else if (debug_print == 2)
-			{
-				HAL_Delay(5);		
-				sprintf(buf, "angle1:%4.3f \t angle2:%4.3f \t vel1:%4.3f \t vel2:%4.3f\n", motor_position_rad[0], motor_position_rad[1], motor_velocity_rads[0], motor_velocity_rads[1]);
-				HAL_UART_Transmit(&huart2, (uint8_t *)buf, (COUNTOF(buf)-1), 100);
-				HAL_Delay(5);		
-				memset(buf, 0, sizeof(buf));	
+			else if (debug_print == 2) {
+//				HAL_Delay(5);		
+				sprintf(buf, "ctrl_mode %d \t angle1:%4.3f \t angle2:%4.3f \t vel1:%4.3f \t vel2:%4.3f\n", ctrl_mode, motor_angle_rad[0], motor_angle_rad[1], motor_velocity_rads[0], motor_velocity_rads[1]);
+				HAL_UART_Transmit_DMA(&huart2, (uint8_t *)buf, (COUNTOF(buf)-1));
+//				HAL_Delay(5);		
+//				memset(buf, 0, sizeof(buf));	
 			}
-			else if (debug_print == 3)
-			{
-				HAL_Delay(5);		
-				sprintf(buf, "tgt_angle1:%4.3f \t tgt_angle2:%4.3f \t tgt_vel1:%4.3f \t tgt_vel2:%4.3f \t set_voltage1:%d \t set_voltage2:%d \n", 
-					target_position_rad[0], target_position_rad[1], target_velocity_rads[0], target_velocity_rads[1], motor_info[0].set_voltage, motor_info[1].set_voltage);
-				HAL_UART_Transmit(&huart2, (uint8_t *)buf, (COUNTOF(buf)-1), 100);
-				HAL_Delay(5);		
-				memset(buf, 0, sizeof(buf));	
+			else if (debug_print == 3) {
+//				HAL_Delay(5);		
+				sprintf(buf, "ctrl_mode %d \t tgt_angle1:%4.3f \t tgt_angle2:%4.3f \t tgt_vel1:%4.3f \t tgt_vel2:%4.3f \t set_voltage1:%d \t set_voltage2:%d \n", 
+					ctrl_mode, target_angle_rad[0], target_angle_rad[1], target_velocity_rads[0], target_velocity_rads[1], motor_info[0].set_voltage, motor_info[1].set_voltage);
+				HAL_UART_Transmit_DMA(&huart2, (uint8_t *)buf, (COUNTOF(buf)-1));
+//				HAL_Delay(5);		
+//				memset(buf, 0, sizeof(buf));	
+			}
+			else if (debug_print == 4) {
+				sprintf(buf, "ctrl_mode %d \t trajcount %d \t angle1:%4.3f \t angle2:%4.3f mvolt1:%d \t mvolt2:%d\n", ctrl_mode, traj_count, 
+					left_state_angle[traj_count], right_state_angle[traj_count], motor_info[0].set_voltage, motor_info[1].set_voltage);
+				HAL_UART_Transmit_DMA(&huart2, (uint8_t *)buf, (COUNTOF(buf)-1));
 			}
 
       led_cnt = 0;
@@ -322,26 +481,36 @@ void CAN_read(void)
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
 	UNUSED(huart);
-	HAL_UART_Transmit_DMA(&huart2,aRxBuffer1,3);
-	HAL_UART_Receive_DMA(&huart2,aRxBuffer1,3);
+	HAL_UART_Transmit_DMA(&huart2,aRxBuffer,3);
+	HAL_UART_Receive_DMA(&huart2,aRxBuffer,3);
 	
-	if (strncmp((char*)aRxBuffer, "imu",3) == 0){ //need for imu reading
-//		HAL_UART_Transmit(&huart2,(uint8_t*)aRxBuffer,1,55);
-//		IMU_read();
-//		HAL_UART_Transmit(&huart2,(uint8_t*)aRxBuffer,3,55);
+	if (strncmp((char*)aRxBuffer, "imu",3) == 0)
+	{ 
+		// read imu info
 		debug_print = 1;
-	} else if (strncmp((char*)aRxBuffer, "mtr",3) == 0) {//need for can reading
-//		HAL_UART_Transmit(&huart2,(uint8_t*)aRxBuffer,1,55);
-//		CAN_read()
+	} 
+	else if (strncmp((char*)aRxBuffer, "mtr",3) == 0) 
+	{ 
+		// read motor info
 		debug_print = 2;
-	} else if (strncmp((char*)aRxBuffer, "mov",3) == 0) {//START TO MOVE!!!!!!!!!!!!!!!!!!!!!!!!!
-//		HAL_UART_Transmit(&huart2,(uint8_t*)aRxBuffer,1,55);
-//		Start_Moving();
-	} else if (strncmp((char*)aRxBuffer, "ctl",3) == 0) {//need for can reading
-
+	} 
+	else if (strncmp((char*)aRxBuffer, "mov",3) == 0) 
+	{
+		//START TO MOVE!!!!!!!!!!!!!!!!!!!!!!!!!
+		ctrl_mode = 3;
+		output_enable = 1;
+		debug_print = 4;
+	} 
+	else if (strncmp((char*)aRxBuffer, "ctl",3) == 0) 
+	{
+		// read control loop debug info
 		debug_print = 3;
-	}else if (strncmp((char*)aRxBuffer, "stp",3) == 0) {
+	}
+	else if (strncmp((char*)aRxBuffer, "stp",3) == 0) 
+	{
 		
+		ctrl_mode = 0;
+		output_enable = 0;
 		debug_print = 0;
 	}
 	//HAL_UART_Transmit(&huart2,(uint8_t*)aRxBuffer,1,55);//(uint8_t*)aRxBuffer??????,10??????,0xFFFF?????
