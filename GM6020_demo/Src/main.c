@@ -89,11 +89,13 @@ float motor_velocity_rads[2];
 // target control actions, be very careful about the rotation direction of the motors
 float target_angle_rad[2];
 float target_velocity_rads[2];
+float target_current[2];
 int16_t target_voltage[2];
 
 // motor control PIDs
 pid_struct_t motor_angle_pid[2];
 pid_struct_t motor_velocity_pid[2];
+pid_struct_t motor_current_pid[2];
 
 // TODO: put these in a separate file 
 // simple position trajectory, this is used in ctrl_mode 3
@@ -224,13 +226,18 @@ int main(void)
 	// PID set up
   pid_init(&motor_angle_pid[0], 38, 0.001, 0.5, 4, 25);       //init pid parameter, kp=38, ki=0.001, kd=0.5, output limit = 25
   pid_init(&motor_angle_pid[1], 38, 0.001, 0.5, 4, 25);       //init pid parameter, kp=38, ki=0.001, kd=0.5, output limit = 25
-  pid_init(&motor_velocity_pid[0], 1000, 3, 0.06, 10000, 30000); //init pid parameter, kp=1000, ki=3, kd=0.06, output limit = 30000
-  pid_init(&motor_velocity_pid[1], 1000, 3, 0.06, 10000, 30000); //init pid parameter, kp=1000, ki=3, kd=0.06, output limit = 30000
+  pid_init(&motor_velocity_pid[0], 5, 0.1, 0, 1, 15); //init pid parameter, kp=1000, ki=3, kd=0.06, output limit = 30000
+  pid_init(&motor_velocity_pid[1], 5, 0.1, 0, 1, 15); //init pid parameter, kp=1000, ki=3, kd=0.06, output limit = 30000
+  pid_init(&motor_current_pid[0], 300, 0.3, 0.06, 10000, 30000); //init pid parameter, kp=1000, ki=3, kd=0.06, output limit = 30000
+  pid_init(&motor_current_pid[1], 300, 0.3, 0.06, 10000, 30000); //init pid parameter, kp=1000, ki=3, kd=0.06, output limit = 30000
+	
 
 	target_angle_rad[0] = PI;
 	target_angle_rad[1] = PI;
 	target_velocity_rads[0] = 0;
 	target_velocity_rads[1] = 0;
+	target_current[0] = 0;
+	target_current[1] = 0;
 	
 	// init simple trajectory
 	float tgt_state[2] = {PI,0};
@@ -327,12 +334,14 @@ int main(void)
 				
 				/* motor speed pid calc ID1 ID1 ID1 ID1 ID1 ID1 ID1 ID1*/
 				tgt_velocity[0] = pid_calc(&motor_angle_pid[0], target_angle_rad[0], motor_angle_rad[0]);
-				motor_info[0].set_voltage = pid_calc(&motor_velocity_pid[0], tgt_velocity[0], motor_velocity_rads[0]);
+				target_current[0] = pid_calc(&motor_velocity_pid[0], tgt_velocity[0], motor_velocity_rads[0]);
+				motor_info[0].set_voltage = pid_calc(&motor_current_pid[0], target_current[0], -motor_info[0].torque_current/1000.0f);
 				
 				
 				/* motor speed pid calc ID2 ID2 ID2 ID2 ID2 ID2 ID2 ID2*/
 				tgt_velocity[1] = pid_calc(&motor_angle_pid[1], target_angle_rad[1], motor_angle_rad[1]);
-				motor_info[1].set_voltage = pid_calc(&motor_velocity_pid[1], tgt_velocity[1], motor_velocity_rads[1]);
+				target_current[1] = pid_calc(&motor_velocity_pid[1], tgt_velocity[1], motor_velocity_rads[1]);
+				motor_info[1].set_voltage = pid_calc(&motor_current_pid[1], target_current[1], -motor_info[1].torque_current/1000.0f);
 
 				/* send motor control message through can bus*/
 				if (output_enable == 1)
@@ -358,7 +367,7 @@ int main(void)
 
 		/* led blink and debug */
     led_cnt ++;
-    if (led_cnt == 500)
+    if (led_cnt == 150)
     {	  
 			if (debug_print == 1) {
 //				HAL_Delay(5);		
@@ -369,7 +378,8 @@ int main(void)
 			}
 			else if (debug_print == 2) {
 //				HAL_Delay(5);		
-				sprintf(buf, "ctrl_mode %d \t angle1:%4.3f \t angle2:%4.3f \t vel1:%4.3f \t vel2:%4.3f\n", ctrl_mode, motor_angle_rad[0], motor_angle_rad[1], motor_velocity_rads[0], motor_velocity_rads[1]);
+				sprintf(buf, "ctrl_mode %d \t angle1:%4.3f \t angle2:%4.3f \t vel1:%4.3f \t vel2:%4.3f crt1:%d \t crt2:%d \n", 
+					ctrl_mode, motor_angle_rad[0], motor_angle_rad[1], motor_velocity_rads[0], motor_velocity_rads[1], motor_info[0].torque_current,motor_info[1].torque_current);
 				HAL_UART_Transmit_DMA(&huart2, (uint8_t *)buf, (COUNTOF(buf)-1));
 //				HAL_Delay(5);		
 //				memset(buf, 0, sizeof(buf));	
