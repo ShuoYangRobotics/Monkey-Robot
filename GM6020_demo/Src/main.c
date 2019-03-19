@@ -101,7 +101,7 @@ pid_struct_t motor_current_pid[2];
 // simple position trajectory, this is used in ctrl_mode 3
 // in these trajectories, state is [q, qdot] (angle and angular velocity)
 // for this simpel trajectory, it is initialized in the traj.h
-float Tf = 4.0f; // use 4 seconds to finish this trajectory
+float Tf = 2.0f; // use 2 seconds to finish this trajectory
 const int step = 200;  // how many points in the trajectory
 float left_start_state[2];   // 
 float left_end_state[2];     // 
@@ -156,6 +156,19 @@ uint16_t pwm_pulse_left = 1500;  // default pwm pulse width:1080~1920
 uint16_t pwm_pulse_right = 1500;  // default pwm pulse width:1080~1920
 /* Private variables ---------------------------------------------------------*/
 uint8_t aTxBuffer[] = "*********SENDING DATA USING USART1 with DMA***********\r\n";
+
+// serial communication protocol
+struct serial_struct {
+  uint8_t flag;            // AA    0b10101010
+	uint8_t type;            // 2 bytes
+	uint16_t value;          // 4 bytes
+	float position;          // 8 bytes
+	float velocity;          // 8 bytes
+  uint16_t crc;						 // 4 bytes
+	  
+} __attribute__((packed));  
+// sizeof(serial_struct)  // 28 bytes
+
 
 /* USER CODE END PV */
 
@@ -224,12 +237,12 @@ int main(void)
   can_user_init(&hcan1);                   // config can filter, start can
 
 	// PID set up
-  pid_init(&motor_angle_pid[0], 38, 0.001, 0.5, 4, 25);       //init pid parameter, kp=38, ki=0.001, kd=0.5, output limit = 25
-  pid_init(&motor_angle_pid[1], 38, 0.001, 0.5, 4, 25);       //init pid parameter, kp=38, ki=0.001, kd=0.5, output limit = 25
-  pid_init(&motor_velocity_pid[0], 5, 0.1, 0, 1, 15); //init pid parameter, kp=1000, ki=3, kd=0.06, output limit = 30000
-  pid_init(&motor_velocity_pid[1], 5, 0.1, 0, 1, 15); //init pid parameter, kp=1000, ki=3, kd=0.06, output limit = 30000
-  pid_init(&motor_current_pid[0], 300, 0.3, 0.06, 10000, 30000); //init pid parameter, kp=1000, ki=3, kd=0.06, output limit = 30000
-  pid_init(&motor_current_pid[1], 300, 0.3, 0.06, 10000, 30000); //init pid parameter, kp=1000, ki=3, kd=0.06, output limit = 30000
+  pid_init(&motor_angle_pid[0], 268, 0.00001, 0.0001, 200, 700);       //init pid parameter, kp=38, ki=0.001, kd=0.5, output limit = 200rads
+  pid_init(&motor_angle_pid[1], 268, 0.00001, 0.0001, 200, 700);       //init pid parameter, kp=38, ki=0.001, kd=0.5, output limit = 200rads
+  pid_init(&motor_velocity_pid[0], 6, 0.00001, 0.06, 125, 400); //init pid parameter, kp=7, ki=3, kd=0.06, output limit = 30000
+  pid_init(&motor_velocity_pid[1], 6, 0.00001, 0.06, 125, 400); //init pid parameter, kp=7, ki=3, kd=0.06, output limit = 30000
+  pid_init(&motor_current_pid[0], 160, 0.001, 0.06, 20000, 30000); //init pid parameter, kp=1000, ki=3, kd=0.06, output limit = 30000
+  pid_init(&motor_current_pid[1], 160, 0.001, 0.06, 20000, 30000); //init pid parameter, kp=1000, ki=3, kd=0.06, output limit = 30000
 	
 
 	target_angle_rad[0] = PI;
@@ -335,13 +348,13 @@ int main(void)
 				/* motor speed pid calc ID1 ID1 ID1 ID1 ID1 ID1 ID1 ID1*/
 				tgt_velocity[0] = pid_calc(&motor_angle_pid[0], target_angle_rad[0], motor_angle_rad[0]);
 				target_current[0] = pid_calc(&motor_velocity_pid[0], tgt_velocity[0], motor_velocity_rads[0]);
-				motor_info[0].set_voltage = pid_calc(&motor_current_pid[0], target_current[0], -motor_info[0].torque_current/1000.0f);
+				motor_info[0].set_voltage = pid_calc(&motor_current_pid[0], target_current[0], motor_info[0].torque_current/5700.0f);
 				
 				
 				/* motor speed pid calc ID2 ID2 ID2 ID2 ID2 ID2 ID2 ID2*/
 				tgt_velocity[1] = pid_calc(&motor_angle_pid[1], target_angle_rad[1], motor_angle_rad[1]);
 				target_current[1] = pid_calc(&motor_velocity_pid[1], tgt_velocity[1], motor_velocity_rads[1]);
-				motor_info[1].set_voltage = pid_calc(&motor_current_pid[1], target_current[1], -motor_info[1].torque_current/1000.0f);
+				motor_info[1].set_voltage = pid_calc(&motor_current_pid[1], target_current[1], motor_info[1].torque_current/5700.0f);
 
 				/* send motor control message through can bus*/
 				if (output_enable == 1)
@@ -393,8 +406,8 @@ int main(void)
 //				memset(buf, 0, sizeof(buf));	
 			}
 			else if (debug_print == 4) {
-				sprintf(buf, "ctrl_mode %d \t trajcount %d \t angle1:%4.3f \t angle2:%4.3f mvolt1:%d \t mvolt2:%d\n", ctrl_mode, traj_count, 
-					left_state_angle[traj_count], right_state_angle[traj_count], motor_info[0].set_voltage, motor_info[1].set_voltage);
+				sprintf(buf, "ctrl_mode %d \t trajcount %d \t angle1:%4.3f \t angle2:%4.3f mvolt1:%d \t mvolt2:%d crt1:%4.3f \t crt2:%4.3f \n", ctrl_mode, traj_count, 
+					left_state_angle[traj_count], right_state_angle[traj_count], motor_info[0].set_voltage, motor_info[1].set_voltage, motor_info[0].torque_current/5700.0f,motor_info[1].torque_current/5700.0f);
 				HAL_UART_Transmit_DMA(&huart2, (uint8_t *)buf, (COUNTOF(buf)-1));
 			}
 
