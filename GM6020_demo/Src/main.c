@@ -61,15 +61,15 @@
 /* USER CODE BEGIN PTD */
 
 // serial communication protocol
-struct serial_struct {
+typedef struct{
   uint8_t flag;            // 1 bytes 0xAA 0x10101010
-	uint8_t type;            // 2 bytes
-	uint16_t value;          // 4 bytes
-	float position;          // 8 bytes
-	float velocity;          // 8 bytes
-  uint16_t crc;						 // 4 bytes
-} __attribute__((packed));
-// sizeof(serial_struct)  // 28 bytes
+	uint8_t type;            // 1 bytes
+	uint16_t value;          // 2 bytes
+	float position;          // 4 bytes
+	float velocity;          // 4 bytes
+  uint16_t crc;						 // 2 bytes
+} __attribute__((packed)) Serial_struct;
+// sizeof(serial_struct)  // 14 bytes
 
 /* USER CODE END PTD */
 
@@ -88,7 +88,7 @@ struct serial_struct {
 /* USER CODE BEGIN PV */
 
 //extern UART_HandleTypeDef huart2;
-extern imu_t              imu;
+extern imu_t imu;
 char buf[300];
 int count;
 
@@ -238,7 +238,7 @@ int main(void)
 	
 	// end of setup, set uart to send start message and start listen
 	HAL_UART_Receive_DMA(&huart2,aRxBuffer,3);
-  HAL_UART_Transmit_DMA(&huart2,aTxStartMessage,sizeof(aTxStartMessage));
+  //HAL_UART_Transmit_DMA(&huart2,aTxStartMessage,sizeof(aTxStartMessage));
 
 	target_angle_rad[0] = PI;
 	target_angle_rad[1] = PI;
@@ -374,34 +374,72 @@ int main(void)
 		/* led blink and debug */
     led_cnt ++;
     if (led_cnt == 150)
-    {	  
-			if (debug_print == 1) {
-//				HAL_Delay(5);		
-				sprintf(buf, "ctrl_mode %d \t ax: %d \t ay: %d \t az: %d\n", ctrl_mode, imu.ax, imu.ay, imu.az);
-				HAL_UART_Transmit_DMA(&huart2, (uint8_t *)buf, (COUNTOF(buf)-1)); 
-//				HAL_Delay(5);	
-//				memset(buf, 0, sizeof(buf));				
-			}
-			else if (debug_print == 2) {
-//				HAL_Delay(5);		
-				sprintf(buf, "ctrl_mode %d \t angle1:%4.3f \t angle2:%4.3f \t vel1:%4.3f \t vel2:%4.3f crt1:%d \t crt2:%d \n", 
-					ctrl_mode, motor_angle_rad[0], motor_angle_rad[1], motor_velocity_rads[0], motor_velocity_rads[1], motor_info[0].torque_current,motor_info[1].torque_current);
-				HAL_UART_Transmit_DMA(&huart2, (uint8_t *)buf, (COUNTOF(buf)-1));
-//				HAL_Delay(5);		
-//				memset(buf, 0, sizeof(buf));	
-			}
-			else if (debug_print == 3) {
-//				HAL_Delay(5);		
+    {
+			switch (debug_print) {
+				case 1:
+					//				HAL_Delay(5);		
+					sprintf(buf, "ctrl_mode %d \t ax: %d \t ay: %d \t az: %d\n", ctrl_mode, imu.ax, imu.ay, imu.az);
+					HAL_UART_Transmit_DMA(&huart2, (uint8_t *)buf, (COUNTOF(buf)-1)); 
+	//				HAL_Delay(5);	
+	//				memset(buf, 0, sizeof(buf));
+					break;
+				
+				case 2:
+					//				HAL_Delay(5);		
+					sprintf(buf, "ctrl_mode %d \t angle1:%4.3f \t angle2:%4.3f \t vel1:%4.3f \t vel2:%4.3f crt1:%d \t crt2:%d \n", 
+						ctrl_mode, motor_angle_rad[0], motor_angle_rad[1], motor_velocity_rads[0], motor_velocity_rads[1], motor_info[0].torque_current,motor_info[1].torque_current);
+					HAL_UART_Transmit_DMA(&huart2, (uint8_t *)buf, (COUNTOF(buf)-1));
+	//				HAL_Delay(5);		
+	//				memset(buf, 0, sizeof(buf));
+					break;
+				
+				case 3:
+					//				HAL_Delay(5);		
 				sprintf(buf, "ctrl_mode %d \t tgt_angle1:%4.3f \t tgt_angle2:%4.3f \t tgt_vel1:%4.3f \t tgt_vel2:%4.3f \t set_voltage1:%d \t set_voltage2:%d \n", 
 					ctrl_mode, target_angle_rad[0], target_angle_rad[1], target_velocity_rads[0], target_velocity_rads[1], motor_info[0].set_voltage, motor_info[1].set_voltage);
 				HAL_UART_Transmit_DMA(&huart2, (uint8_t *)buf, (COUNTOF(buf)-1));
 //				HAL_Delay(5);		
 //				memset(buf, 0, sizeof(buf));	
-			}
-			else if (debug_print == 4) {
-				sprintf(buf, "ctrl_mode %d \t trajcount %d \t angle1:%4.3f \t angle2:%4.3f mvolt1:%d \t mvolt2:%d crt1:%4.3f \t crt2:%4.3f \n", ctrl_mode, traj_count, 
-					left_state_angle[traj_count], right_state_angle[traj_count], motor_info[0].set_voltage, motor_info[1].set_voltage, motor_info[0].torque_current/5700.0f,motor_info[1].torque_current/5700.0f);
-				HAL_UART_Transmit_DMA(&huart2, (uint8_t *)buf, (COUNTOF(buf)-1));
+					break;
+				
+				case 4:
+					sprintf(buf, "ctrl_mode %d \t trajcount %d \t angle1:%4.3f \t angle2:%4.3f mvolt1:%d \t mvolt2:%d crt1:%4.3f \t crt2:%4.3f \n", 
+												ctrl_mode, traj_count, 
+												left_state_angle[traj_count], 
+												right_state_angle[traj_count], 
+												motor_info[0].set_voltage, 
+												motor_info[1].set_voltage, 
+												motor_info[0].torque_current/5700.0f,
+												motor_info[1].torque_current/5700.0f);
+				
+					HAL_UART_Transmit_DMA(&huart2, (uint8_t *)buf, (COUNTOF(buf)-1));
+					break;
+				
+				default:
+					Serial_struct data;
+					data.flag = 0xAA;
+					data.type = 1;
+					data.value = 6377;
+					data.position = 1.0;
+					data.velocity = 1.0;
+				
+					// do crc
+					uint8_t prev_byte = 0;
+					uint16_t crc_ccitt_ffff_val = 0xffff;
+					uint8_t* ptr = (uint8_t *) &data;
+					int i;
+					for(i = 0; i<12; i++) {
+						crc_ccitt_ffff_val = update_crc_ccitt(crc_ccitt_ffff_val, *ptr);
+						prev_byte = *ptr;
+						ptr++;
+					}
+					
+					data.crc = crc_ccitt_ffff_val;
+					
+					HAL_UART_Transmit_DMA(&huart2, (uint8_t*)&data, sizeof(data));
+					
+					HAL_Delay(1000); //ms
+					break;
 			}
 
       led_cnt = 0;
