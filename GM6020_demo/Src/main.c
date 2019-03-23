@@ -60,16 +60,7 @@
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
 
-// serial communication protocol
-typedef struct{
-  uint8_t flag;            // 1 bytes 0xAA 0x10101010
-	uint8_t type;            // 1 bytes
-	uint16_t value;          // 2 bytes
-	float position;          // 4 bytes
-	float velocity;          // 4 bytes
-  uint16_t crc;						 // 2 bytes
-} __attribute__((packed)) Serial_struct;
-// sizeof(serial_struct)  // 14 bytes
+
 
 /* USER CODE END PTD */
 
@@ -419,29 +410,21 @@ int main(void)
 					break;
 				
 				default:
-					Serial_struct data = {0xAA, 1, 6377, 1.0, 1.0};
-//					data.flag = 0xAA;
-//					data.type = 1;
-//					data.value = 6377;
-//					data.position = 1.0;
-//					data.velocity = 1.0;
-				
+					HAL_Delay(1000); //ms
+					Serial_struct data = {0xAA, 1, 6377, 1, 1};
+
 					// do crc
-					//uint8_t prev_byte = 0;
 					uint16_t crc_ccitt_ffff_val = 0xffff;
 					uint8_t* ptr = (uint8_t *) &data;
 					int i;
 					for(i = 0; i<12; i++) { // do crc with the first 12 uint8
 						crc_ccitt_ffff_val = update_crc_ccitt(crc_ccitt_ffff_val, *ptr);
-						//prev_byte = *ptr;
 						ptr++;
 					}
 					
 					data.crc = crc_ccitt_ffff_val;
 					
 					//HAL_UART_Transmit_DMA(&huart2, (uint8_t*)&data, sizeof(data));
-					
-					HAL_Delay(1000); //ms
 					break;
 			}
 
@@ -550,14 +533,16 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 				int i;
 				for(i = 0; i<12; i++) { // do crc with the first 12 uint8
 					crc_ccitt_ffff_val = update_crc_ccitt(crc_ccitt_ffff_val, *ptr);
-					//prev_byte = *ptr;
 					ptr++;
 				}
+				
 				if(*(head+13) == ((crc_ccitt_ffff_val&0xFF00)>>8) && *(head+12) == (crc_ccitt_ffff_val&0xFF)) { // crc pass
 					// extract data out of buffer
-					HAL_UART_Transmit_DMA(&huart2,head,14);
+					//HAL_UART_Transmit(&huart2,head,14,100);
+					Serial_struct data = unpack(head);
+					HAL_UART_Transmit_DMA(&huart2, (uint8_t*)&data, sizeof(data));
 					head +=14;
-				} else {
+				} else { // crc fail, might loss of data or meet wrong head position
 					head++;
 					break;
 				}
@@ -578,10 +563,10 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 	tail -= head - aRxBuffer;
 	head = aRxBuffer;
 	
-//	if(tail-aRxBuffer >= 70) { // not much room left
-//		memset(aRxBuffer, 0, sizeof(aRxBuffer));
-//		tail = aRxBuffer;
-//	}
+	if(tail-aRxBuffer >= 70) { // not much room left
+		memset(aRxBuffer, 0, sizeof(aRxBuffer));
+		tail = aRxBuffer;
+	}
 	
 	HAL_UART_Receive_DMA(&huart2,tail,14);
 	LED_GREEN_TOGGLE();
