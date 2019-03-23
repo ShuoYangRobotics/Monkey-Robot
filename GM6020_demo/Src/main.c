@@ -419,10 +419,10 @@ int main(void)
 					traj_start = 1;
 					traj_timer = 0.0f;
 					traj_count = 0;
-//					init_simple_trajectory(0, Tf, step, tgt_state, left_state_angle, left_state_velocity);
-//					init_simple_trajectory(1, Tf, step, tgt_state, right_state_angle, right_state_velocity);
-					init_test_swing_trajectory(0, Tf, step, left_state_angle, left_state_velocity);
-					init_test_swing_trajectory(1, Tf, step, right_state_angle, right_state_velocity);
+					init_simple_trajectory(0, Tf, step, tgt_state, left_state_angle, left_state_velocity);
+					init_simple_trajectory(1, Tf, step, tgt_state, right_state_angle, right_state_velocity);
+//					init_test_swing_trajectory(0, Tf, step, left_state_angle, left_state_velocity);
+//					init_test_swing_trajectory(1, Tf, step, right_state_angle, right_state_velocity);
 				}
 				break;
 			default :
@@ -476,7 +476,7 @@ int main(void)
 				
 				default:
 					HAL_Delay(1000); //ms
-					Serial_struct data = {0xAA, 1, 6377, 1, 1};
+					Serial_struct data = {0xAA, 1, -6377, 1.0f, 1.0f};
 
 					// do crc
 					uint16_t crc_ccitt_ffff_val = 0xffff;
@@ -600,12 +600,13 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 					crc_ccitt_ffff_val = update_crc_ccitt(crc_ccitt_ffff_val, *ptr);
 					ptr++;
 				}
-				
+				//HAL_UART_Transmit(&huart2,head,14,100);
 				if(*(head+13) == ((crc_ccitt_ffff_val&0xFF00)>>8) && *(head+12) == (crc_ccitt_ffff_val&0xFF)) { // crc pass
 					// extract data out of buffer
 					//HAL_UART_Transmit(&huart2,head,14,100);
 					Serial_struct data = unpack(head);
-					HAL_UART_Transmit_DMA(&huart2, (uint8_t*)&data, sizeof(data));
+					
+					HAL_UART_Transmit(&huart2, (uint8_t*)&data, sizeof(data),100);
 					head +=14;
 				} else { // crc fail, might loss of data or meet wrong head position
 					head++;

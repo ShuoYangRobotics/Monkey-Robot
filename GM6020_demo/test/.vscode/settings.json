@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "checksum.h": "c",
+        "checksum.h\u0000checksum.h": "c",
+        "checksum.h\u0000cksum.h": "c",
+        "checksum.h\u0000ksum.h": "c"
+    }
+}

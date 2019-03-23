@@ -7,6 +7,12 @@ Serial_struct unpack(uint8_t* head) {
 	data.value = (*(head+3)<<8) + *(head+2);
 	data.position = (*(head+7)<<24) + (*(head+6)<<16) + (*(head+5)<<8) + *(head+4);
 	data.velocity = (*(head+11)<<24) + (*(head+10)<<16) + (*(head+9)<<8) + *(head+8);
+	
+	// test
+//	
+//		data.value = data.value+1;
+//		data.position = data.position+1;
+	
 	// do crc
 	uint16_t crc_ccitt_ffff_val = 0xffff;
 	uint8_t* ptr = (uint8_t *) &data;

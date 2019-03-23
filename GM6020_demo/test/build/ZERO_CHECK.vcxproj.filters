@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="E:\CMU_study\spring2019\24-775\MonkeyCode\GM6020_demo\test\build\CMakeFiles\e007ed175c1bb3a79b0af90638c272c0\generate.stamp.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{0CE66A04-7133-3648-96C7-F282D6FE861D}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
