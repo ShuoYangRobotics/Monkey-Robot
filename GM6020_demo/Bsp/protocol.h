@@ -16,4 +16,6 @@ __packed  typedef struct{
 
 Serial_struct unpack(uint8_t* head);
 
+void execute(Serial_struct data);
+
 #endif
