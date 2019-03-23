@@ -332,7 +332,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32F427xx, ARM_MATH_CM4</Define>
               <Undefine></Undefine>
-              <IncludePath>../Inc;        ../Drivers/STM32F4xx_HAL_Driver/Inc;        ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;        ../Drivers/CMSIS/Device/ST/STM32F4xx/Include;        ../Drivers/CMSIS/Include;        ../Bsp</IncludePath>
+              <IncludePath>../Inc;          ../Drivers/STM32F4xx_HAL_Driver/Inc;          ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;          ../Drivers/CMSIS/Device/ST/STM32F4xx/Include;          ../Drivers/CMSIS/Include;          ../Bsp</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -564,6 +564,16 @@
               <FileName>crcccitt.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Bsp\crcccitt.c</FilePath>
+            </File>
+            <File>
+              <FileName>protocol.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Bsp\protocol.c</FilePath>
+            </File>
+            <File>
+              <FileName>trajectory.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Bsp\trajectory.c</FilePath>
             </File>
           </Files>
         </Group>

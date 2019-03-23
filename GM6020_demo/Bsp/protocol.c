@@ -24,3 +24,34 @@ Serial_struct unpack(uint8_t* head) {
 	data.crc = crc_ccitt_ffff_val;
 	return data;
 }
+
+void execute(Serial_struct data) {
+	switch(data.type) {
+		case 0:
+			
+			break;
+		case 1:
+			switch(data.value) {
+				case 0:
+					break;
+				case 1:
+					
+					break;
+				case 2:
+			
+					break;
+				case 3:
+					
+					break;
+				case 4:
+					break;
+			}
+			break;
+		case 2:
+			
+			break;
+		default:
+			break;
+	}
+	
+}

@@ -56,6 +56,7 @@ extern "C" {
 #include "arm_math.h"
 #include "checksum.h"
 #include "protocol.h"
+#include "trajectory.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/

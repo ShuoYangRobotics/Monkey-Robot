@@ -124,6 +124,14 @@ float right_end_state[2];     //
 float right_state_angle[step+1];
 float right_state_velocity[step+1];
 
+// init simple trajectory
+	float tgt_state[2] = {PI,0};
+	float tgt_velocity[2];
+	float dt = 0.001f; // the time between each loop run
+	float traj_timer = 0.0f;
+	bool traj_start = 0;
+	int traj_count = 0;
+	
 /// mode selection flags
 /// mode selection flags
 /// mode selection flags
@@ -248,7 +256,11 @@ int main(void)
   MX_SPI5_Init();
   MX_USART2_UART_Init();
   MX_USART6_UART_Init();
+  MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
+	
+	// tim2 enable interupt
+	HAL_TIM_Base_Start_IT(&htim2);
 	
 	// imu setup
 	mpu_device_init();
@@ -282,14 +294,6 @@ int main(void)
 	target_velocity_rads[1] = 0;
 	target_current[0] = 0;
 	target_current[1] = 0;
-	
-	// init simple trajectory
-	float tgt_state[2] = {PI,0};
-	float tgt_velocity[2];
-	float dt = 0.001f; // the time between each loop run
-	float traj_timer = 0.0f;
-	bool traj_start = 0;
-	int traj_count = 0;
 	
   /* USER CODE END 2 */
 
@@ -429,6 +433,7 @@ int main(void)
 				break;
 		}
 		// end control loop
+<<<<<<< HEAD
 
 		/* led blink and debug */
     led_cnt ++;
@@ -496,9 +501,11 @@ int main(void)
       led_cnt = 0;
       //LED_RED_TOGGLE(); //blink cycle 500ms
     }
+=======
+>>>>>>> 03be85a83d606ba9d2c507504c5b533380c18735
 		
     /* system delay 1ms */
-    HAL_Delay(0);
+    HAL_Delay(1);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -605,8 +612,13 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 					// extract data out of buffer
 					//HAL_UART_Transmit(&huart2,head,14,100);
 					Serial_struct data = unpack(head);
+<<<<<<< HEAD
 					
 					HAL_UART_Transmit(&huart2, (uint8_t*)&data, sizeof(data),100);
+=======
+					execute(data);
+					HAL_UART_Transmit_DMA(&huart2, (uint8_t*)&data, sizeof(data));
+>>>>>>> 03be85a83d606ba9d2c507504c5b533380c18735
 					head +=14;
 				} else { // crc fail, might loss of data or meet wrong head position
 					head++;
@@ -678,8 +690,67 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 
 // callback after the data string sent complete
 void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart){
+	
 	//HAL_UART_Transmit_DMA(&huart2,aTxBuffer,sizeof(aTxBuffer));
-	LED_RED_TOGGLE();
+	
+}
+
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
+	if (htim->Instance == htim2.Instance) {
+		LED_RED_TOGGLE();
+		switch (debug_print) {
+			case 1:
+				sprintf(buf, "ctrl_mode %d \t ax: %d \t ay: %d \t az: %d\n", ctrl_mode, imu.ax, imu.ay, imu.az);
+				HAL_UART_Transmit_DMA(&huart2, (uint8_t *)buf, (COUNTOF(buf)-1)); 
+				//				memset(buf, 0, sizeof(buf));
+				break;
+			
+			case 2:
+				sprintf(buf, "ctrl_mode %d \t angle1:%4.3f \t angle2:%4.3f \t vel1:%4.3f \t vel2:%4.3f crt1:%d \t crt2:%d \n", 
+					ctrl_mode, motor_angle_rad[0], motor_angle_rad[1], motor_velocity_rads[0], motor_velocity_rads[1], motor_info[0].torque_current,motor_info[1].torque_current);
+				HAL_UART_Transmit_DMA(&huart2, (uint8_t *)buf, (COUNTOF(buf)-1));
+				//				memset(buf, 0, sizeof(buf));
+				break;
+			
+			case 3:
+				sprintf(buf, "ctrl_mode %d \t tgt_angle1:%4.3f \t tgt_angle2:%4.3f \t tgt_vel1:%4.3f \t tgt_vel2:%4.3f \t set_voltage1:%d \t set_voltage2:%d \n", 
+					ctrl_mode, target_angle_rad[0], target_angle_rad[1], target_velocity_rads[0], target_velocity_rads[1], motor_info[0].set_voltage, motor_info[1].set_voltage);
+				HAL_UART_Transmit_DMA(&huart2, (uint8_t *)buf, (COUNTOF(buf)-1));
+				//				memset(buf, 0, sizeof(buf));	
+				break;
+			
+			case 4:
+				sprintf(buf, "ctrl_mode %d \t trajcount %d \t angle1:%4.3f \t angle2:%4.3f mvolt1:%d \t mvolt2:%d crt1:%4.3f \t crt2:%4.3f \n", 
+											ctrl_mode, traj_count, 
+											left_state_angle[traj_count], 
+											right_state_angle[traj_count], 
+											motor_info[0].set_voltage, 
+											motor_info[1].set_voltage, 
+											motor_info[0].torque_current/5700.0f,
+											motor_info[1].torque_current/5700.0f);
+			
+				HAL_UART_Transmit_DMA(&huart2, (uint8_t *)buf, (COUNTOF(buf)-1));
+				break;
+			
+			default:
+				; // to remove warning
+				Serial_struct data = {0xAA, 1, 6377, 1, 1};
+
+				// do crc
+				uint16_t crc_ccitt_ffff_val = 0xffff;
+				uint8_t* ptr = (uint8_t *) &data;
+				int i;
+				for(i = 0; i<12; i++) { // do crc with the first 12 uint8
+					crc_ccitt_ffff_val = update_crc_ccitt(crc_ccitt_ffff_val, *ptr);
+					ptr++;
+				}
+				
+				data.crc = crc_ccitt_ffff_val;
+				
+				//HAL_UART_Transmit_DMA(&huart2, (uint8_t*)&data, sizeof(data));
+				break;
+		}
+	}
 }
 
 /* USER CODE END 4 */
