@@ -97,6 +97,13 @@ int16_t led_cnt;
 // feedback information of motors and system
 extern moto_info_t motor_info[2];
 float motor_angle_rad[2];
+float prev_motor_angle_rad[2];  // because motor_angle_rad is only in 0- 2PI, so in order to 
+																// use it to control the system properly,  have to detect change
+int   rotation_count[2] = {0,0};       // 0 :	0 - 2PI
+                                       // -1:  -2PI - 0
+																       //  1:  2PI - 4PI
+float modified_motor_angle_rad[2];  
+
 float motor_velocity_rads[2];
 
 // target control actions, be very careful about the rotation direction of the motors
@@ -114,8 +121,8 @@ pid_struct_t motor_current_pid[2];
 // simple position trajectory, this is used in ctrl_mode 3
 // in these trajectories, state is [q, qdot] (angle and angular velocity)
 // for this simpel trajectory, it is initialized in the traj.h
-float Tf = 2.0f; // use 2 seconds to finish this trajectory
-const int step = 200;  // how many points in the trajectory
+float Tf = 0.66f; // use 2 seconds to finish this trajectory
+const int step = 300;  // how many points in the trajectory
 float left_start_state[2];   // 
 float left_end_state[2];     // 
 float left_state_angle[step+1];
@@ -181,6 +188,36 @@ void init_simple_trajectory(int motor_idx, float Tf, const int step, float tgt_s
 	state_velocity[step] = tgt_state[1];
 }
 
+
+void init_test_swing_trajectory(int motor_idx, float Tf, const int step, float state_angle[], float state_velocity[])
+{
+	float curr_angle, curr_velocity, tgt_angle, tgt_velocity;
+	float dt = Tf/step;
+	if (motor_idx == 0) // left
+	{
+		curr_angle = motor_angle_rad[0];
+		tgt_angle = motor_angle_rad[0];
+		curr_velocity = 0.0f;
+		tgt_velocity = 0.0f;
+	}
+	else // right
+	{
+		curr_angle = PI-90.0f/180.0f*PI;
+		tgt_angle = PI-(90.0f+90.0f+90.0f)/180.0f*PI;
+		curr_velocity = 0.0f;
+		tgt_velocity = 0.0f;
+	}
+	state_angle[0] = curr_angle;
+	state_velocity[0] = curr_velocity;
+	for (int i = 1; i < step; i++)
+	{
+		state_angle[i] = state_angle[0] + (float)i/step*(tgt_angle - state_angle[0]);
+		
+		state_velocity[i] = 0.6f*(state_angle[i] - state_angle[i-1])/dt + 0.4f*state_velocity[i-1];
+	}
+	state_angle[step] = tgt_angle;
+	state_velocity[step] = tgt_velocity;
+}
 /* USER CODE END 0 */
 
 /**
@@ -229,8 +266,8 @@ int main(void)
   can_user_init(&hcan1);                   // config can filter, start can
 
 	// PID setup
-  pid_init(&motor_angle_pid[0], 268, 0.00001, 0.0001, 200, 700);       //init pid parameter, kp=38, ki=0.001, kd=0.5, output limit = 200rads
-  pid_init(&motor_angle_pid[1], 268, 0.00001, 0.0001, 200, 700);       //init pid parameter, kp=38, ki=0.001, kd=0.5, output limit = 200rads
+  pid_init(&motor_angle_pid[0], 68, 0.00001, 0.0001, 200, 700);       //init pid parameter, kp=38, ki=0.001, kd=0.5, output limit = 200rads
+  pid_init(&motor_angle_pid[1], 68, 0.00001, 0.0001, 200, 700);       //init pid parameter, kp=38, ki=0.001, kd=0.5, output limit = 200rads
   pid_init(&motor_velocity_pid[0], 6, 0.00001, 0.06, 125, 400); //init pid parameter, kp=7, ki=3, kd=0.06, output limit = 30000
   pid_init(&motor_velocity_pid[1], 6, 0.00001, 0.06, 125, 400); //init pid parameter, kp=7, ki=3, kd=0.06, output limit = 30000
   pid_init(&motor_current_pid[0], 160, 0.001, 0.06, 20000, 30000); //init pid parameter, kp=1000, ki=3, kd=0.06, output limit = 30000
@@ -240,6 +277,11 @@ int main(void)
 	HAL_UART_Receive_DMA(&huart2,aRxBuffer,3);
   //HAL_UART_Transmit_DMA(&huart2,aTxStartMessage,sizeof(aTxStartMessage));
 
+	motor_angle_rad[0] = 0.0;
+	motor_angle_rad[1] = 0.0;
+	prev_motor_angle_rad[0] = 0.0;
+	prev_motor_angle_rad[1] = 0.0;
+	
 	target_angle_rad[0] = PI;
 	target_angle_rad[1] = PI;
 	target_velocity_rads[0] = 0;
@@ -267,6 +309,26 @@ int main(void)
 		// start control loop
 		motor_angle_rad[0] = motor_info[0].rotor_angle/8192.0f*2*PI;
 		motor_angle_rad[1] = motor_info[1].rotor_angle/8192.0f*2*PI;
+		
+		if ((motor_angle_rad[0] - prev_motor_angle_rad[0])> 1.5*PI) //change from 0 to 2PI
+			rotation_count[0]--;
+		if ((motor_angle_rad[0] - prev_motor_angle_rad[0])< -1.5*PI) //change from 2PI to 0
+			rotation_count[0]++;
+		
+		if ((motor_angle_rad[1] - prev_motor_angle_rad[1])> 1.5*PI) //change from 0 to 2PI
+			rotation_count[1]--;
+		if ((motor_angle_rad[1] - prev_motor_angle_rad[1])< -1.5*PI) //change from 2PI to 0
+			rotation_count[1]++;
+		
+		modified_motor_angle_rad[0] = motor_angle_rad[0]+rotation_count[0]*2*PI;
+		modified_motor_angle_rad[1] = motor_angle_rad[1]+rotation_count[1]*2*PI;		
+		
+		
+		
+		
+		prev_motor_angle_rad[0] = motor_angle_rad[0];
+		prev_motor_angle_rad[1] = motor_angle_rad[1];
+		
 		motor_velocity_rads[0] = motor_info[0].rotor_speed*PI/30.0f;
 		motor_velocity_rads[1] = motor_info[1].rotor_speed*PI/30.0f;
 		
@@ -337,19 +399,20 @@ int main(void)
 					target_velocity_rads[1] = right_state_velocity[traj_count];
 					
 					/* motor speed pid calc ID1 ID1 ID1 ID1 ID1 ID1 ID1 ID1*/
-					tgt_velocity[0] = pid_calc(&motor_angle_pid[0], target_angle_rad[0], motor_angle_rad[0]);
+					tgt_velocity[0] = pid_calc(&motor_angle_pid[0], target_angle_rad[0], modified_motor_angle_rad[0]);
 					target_current[0] = pid_calc(&motor_velocity_pid[0], tgt_velocity[0], motor_velocity_rads[0]);
 					motor_info[0].set_voltage = pid_calc(&motor_current_pid[0], target_current[0], motor_info[0].torque_current/5700.0f);
 					
 					
 					/* motor speed pid calc ID2 ID2 ID2 ID2 ID2 ID2 ID2 ID2*/
-					tgt_velocity[1] = pid_calc(&motor_angle_pid[1], target_angle_rad[1], motor_angle_rad[1]);
+					tgt_velocity[1] = pid_calc(&motor_angle_pid[1], target_angle_rad[1], modified_motor_angle_rad[1]);
 					target_current[1] = pid_calc(&motor_velocity_pid[1], tgt_velocity[1], motor_velocity_rads[1]);
 					motor_info[1].set_voltage = pid_calc(&motor_current_pid[1], target_current[1], motor_info[1].torque_current/5700.0f);
 
 					/* send motor control message through can bus*/
 					if (output_enable == 1)
-					{		
+					{	
+						motor_info[0].set_voltage = 0;			 		
 						set_motor_voltage(0, 
 							motor_info[0].set_voltage, 
 							motor_info[1].set_voltage);
@@ -362,8 +425,10 @@ int main(void)
 					traj_start = 1;
 					traj_timer = 0.0f;
 					traj_count = 0;
-					init_simple_trajectory(0, Tf, step, tgt_state, left_state_angle, left_state_velocity);
-					init_simple_trajectory(1, Tf, step, tgt_state, right_state_angle, right_state_velocity);
+//					init_simple_trajectory(0, Tf, step, tgt_state, left_state_angle, left_state_velocity);
+//					init_simple_trajectory(1, Tf, step, tgt_state, right_state_angle, right_state_velocity);
+					init_test_swing_trajectory(0, Tf, step, left_state_angle, left_state_velocity);
+					init_test_swing_trajectory(1, Tf, step, right_state_angle, right_state_velocity);
 				}
 				break;
 			default :
@@ -387,7 +452,7 @@ int main(void)
 				case 2:
 					//				HAL_Delay(5);		
 					sprintf(buf, "ctrl_mode %d \t angle1:%4.3f \t angle2:%4.3f \t vel1:%4.3f \t vel2:%4.3f crt1:%d \t crt2:%d \n", 
-						ctrl_mode, motor_angle_rad[0], motor_angle_rad[1], motor_velocity_rads[0], motor_velocity_rads[1], motor_info[0].torque_current,motor_info[1].torque_current);
+						ctrl_mode, modified_motor_angle_rad[0], modified_motor_angle_rad[1], motor_velocity_rads[0], motor_velocity_rads[1], motor_info[0].torque_current,motor_info[1].torque_current);
 					HAL_UART_Transmit_DMA(&huart2, (uint8_t *)buf, (COUNTOF(buf)-1));
 	//				HAL_Delay(5);		
 	//				memset(buf, 0, sizeof(buf));
