@@ -433,76 +433,6 @@ int main(void)
 				break;
 		}
 		// end control loop
-<<<<<<< HEAD
-
-		/* led blink and debug */
-    led_cnt ++;
-    if (led_cnt == 150)
-    {
-			switch (debug_print) {
-				case 1:
-					//				HAL_Delay(5);		
-					sprintf(buf, "ctrl_mode %d \t ax: %d \t ay: %d \t az: %d\n", ctrl_mode, imu.ax, imu.ay, imu.az);
-					HAL_UART_Transmit_DMA(&huart2, (uint8_t *)buf, (COUNTOF(buf)-1)); 
-	//				HAL_Delay(5);	
-	//				memset(buf, 0, sizeof(buf));
-					break;
-				
-				case 2:
-					//				HAL_Delay(5);		
-					sprintf(buf, "ctrl_mode %d \t angle1:%4.3f \t angle2:%4.3f \t vel1:%4.3f \t vel2:%4.3f crt1:%d \t crt2:%d \n", 
-						ctrl_mode, modified_motor_angle_rad[0], modified_motor_angle_rad[1], motor_velocity_rads[0], motor_velocity_rads[1], motor_info[0].torque_current,motor_info[1].torque_current);
-					HAL_UART_Transmit_DMA(&huart2, (uint8_t *)buf, (COUNTOF(buf)-1));
-	//				HAL_Delay(5);		
-	//				memset(buf, 0, sizeof(buf));
-					break;
-				
-				case 3:
-					//				HAL_Delay(5);		
-				sprintf(buf, "ctrl_mode %d \t tgt_angle1:%4.3f \t tgt_angle2:%4.3f \t tgt_vel1:%4.3f \t tgt_vel2:%4.3f \t set_voltage1:%d \t set_voltage2:%d \n", 
-					ctrl_mode, target_angle_rad[0], target_angle_rad[1], target_velocity_rads[0], target_velocity_rads[1], motor_info[0].set_voltage, motor_info[1].set_voltage);
-				HAL_UART_Transmit_DMA(&huart2, (uint8_t *)buf, (COUNTOF(buf)-1));
-//				HAL_Delay(5);		
-//				memset(buf, 0, sizeof(buf));	
-					break;
-				
-				case 4:
-					sprintf(buf, "ctrl_mode %d \t trajcount %d \t angle1:%4.3f \t angle2:%4.3f mvolt1:%d \t mvolt2:%d crt1:%4.3f \t crt2:%4.3f \n", 
-												ctrl_mode, traj_count, 
-												left_state_angle[traj_count], 
-												right_state_angle[traj_count], 
-												motor_info[0].set_voltage, 
-												motor_info[1].set_voltage, 
-												motor_info[0].torque_current/5700.0f,
-												motor_info[1].torque_current/5700.0f);
-				
-					HAL_UART_Transmit_DMA(&huart2, (uint8_t *)buf, (COUNTOF(buf)-1));
-					break;
-				
-				default:
-					HAL_Delay(1000); //ms
-					Serial_struct data = {0xAA, 1, -6377, 1.0f, 1.0f};
-
-					// do crc
-					uint16_t crc_ccitt_ffff_val = 0xffff;
-					uint8_t* ptr = (uint8_t *) &data;
-					int i;
-					for(i = 0; i<12; i++) { // do crc with the first 12 uint8
-						crc_ccitt_ffff_val = update_crc_ccitt(crc_ccitt_ffff_val, *ptr);
-						ptr++;
-					}
-					
-					data.crc = crc_ccitt_ffff_val;
-					
-					//HAL_UART_Transmit_DMA(&huart2, (uint8_t*)&data, sizeof(data));
-					break;
-			}
-
-      led_cnt = 0;
-      //LED_RED_TOGGLE(); //blink cycle 500ms
-    }
-=======
->>>>>>> 03be85a83d606ba9d2c507504c5b533380c18735
 		
     /* system delay 1ms */
     HAL_Delay(1);
@@ -612,13 +542,8 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 					// extract data out of buffer
 					//HAL_UART_Transmit(&huart2,head,14,100);
 					Serial_struct data = unpack(head);
-<<<<<<< HEAD
 					
 					HAL_UART_Transmit(&huart2, (uint8_t*)&data, sizeof(data),100);
-=======
-					execute(data);
-					HAL_UART_Transmit_DMA(&huart2, (uint8_t*)&data, sizeof(data));
->>>>>>> 03be85a83d606ba9d2c507504c5b533380c18735
 					head +=14;
 				} else { // crc fail, might loss of data or meet wrong head position
 					head++;
