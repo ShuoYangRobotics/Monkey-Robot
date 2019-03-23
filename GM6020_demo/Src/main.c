@@ -60,16 +60,7 @@
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
 
-// serial communication protocol
-typedef struct{
-  uint8_t flag;            // 1 bytes 0xAA 0x10101010
-	uint8_t type;            // 1 bytes
-	uint16_t value;          // 2 bytes
-	float position;          // 4 bytes
-	float velocity;          // 4 bytes
-  uint16_t crc;						 // 2 bytes
-} __attribute__((packed)) Serial_struct;
-// sizeof(serial_struct)  // 14 bytes
+
 
 /* USER CODE END PTD */
 
@@ -151,7 +142,10 @@ uint16_t pwm_pulse_right = 1500;  // default pwm pulse width:1080~1920
 //bluetooth message buffer
 uint8_t aTxStartMessage[] = "\r\n******Init Done. Program start to receive command.******\r\n";
 uint8_t aTxBuffer[] = "*********SENDING DATA USING USART1 with DMA***********\r\n";
-uint8_t aRxBuffer[100];
+const uint8_t RxBufferSize = 100;
+uint8_t aRxBuffer[RxBufferSize];
+uint8_t *head = aRxBuffer;
+uint8_t *tail = aRxBuffer;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -274,8 +268,8 @@ int main(void)
   pid_init(&motor_current_pid[1], 160, 0.001, 0.06, 20000, 30000); //init pid parameter, kp=1000, ki=3, kd=0.06, output limit = 30000
 	
 	// end of setup, set uart to send start message and start listen
-	HAL_UART_Receive_DMA(&huart2,aRxBuffer,3);
-  //HAL_UART_Transmit_DMA(&huart2,aTxStartMessage,sizeof(aTxStartMessage));
+	HAL_UART_Receive_DMA(&huart2,aRxBuffer,14);
+  HAL_UART_Transmit_DMA(&huart2,aTxStartMessage,sizeof(aTxStartMessage));
 
 	motor_angle_rad[0] = 0.0;
 	motor_angle_rad[1] = 0.0;
@@ -481,34 +475,26 @@ int main(void)
 					break;
 				
 				default:
-					Serial_struct data;
-					data.flag = 0xAA;
-					data.type = 1;
-					data.value = 6377;
-					data.position = 1.0;
-					data.velocity = 1.0;
-				
+					HAL_Delay(1000); //ms
+					Serial_struct data = {0xAA, 1, 6377, 1, 1};
+
 					// do crc
-					uint8_t prev_byte = 0;
 					uint16_t crc_ccitt_ffff_val = 0xffff;
 					uint8_t* ptr = (uint8_t *) &data;
 					int i;
-					for(i = 0; i<12; i++) {
+					for(i = 0; i<12; i++) { // do crc with the first 12 uint8
 						crc_ccitt_ffff_val = update_crc_ccitt(crc_ccitt_ffff_val, *ptr);
-						prev_byte = *ptr;
 						ptr++;
 					}
 					
 					data.crc = crc_ccitt_ffff_val;
 					
-					HAL_UART_Transmit_DMA(&huart2, (uint8_t*)&data, sizeof(data));
-					
-					HAL_Delay(1000); //ms
+					//HAL_UART_Transmit_DMA(&huart2, (uint8_t*)&data, sizeof(data));
 					break;
 			}
 
       led_cnt = 0;
-      LED_RED_TOGGLE(); //blink cycle 500ms
+      //LED_RED_TOGGLE(); //blink cycle 500ms
     }
 		
     /* system delay 1ms */
@@ -600,46 +586,99 @@ void CAN_read(void)
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
 	UNUSED(huart);
-	HAL_UART_Transmit_DMA(&huart2,aRxBuffer,3);
-	HAL_UART_Receive_DMA(&huart2,aRxBuffer,3);
 	
-	if (strncmp((char*)aRxBuffer, "imu",3) == 0)
-	{ 
-		// read imu info
-		debug_print = 1;
-	} 
-	else if (strncmp((char*)aRxBuffer, "mtr",3) == 0) 
-	{ 
-		// read motor info
-		debug_print = 2;
-	} 
-	else if (strncmp((char*)aRxBuffer, "mov",3) == 0) 
-	{
-		//START TO MOVE!!!!!!!!!!!!!!!!!!!!!!!!!
-		ctrl_mode = 3;
-		output_enable = 1;
-		debug_print = 4;
-	} 
-	else if (strncmp((char*)aRxBuffer, "ctl",3) == 0) 
-	{
-		// read control loop debug info
-		debug_print = 3;
+	tail += 14;
+	
+	while (head < tail) { // buf not empty
+		if(*head == 0xAA) { // package head detected
+			if(tail-head>=14) {
+				// crc
+				uint16_t crc_ccitt_ffff_val = 0xffff;
+				uint8_t* ptr = head;
+				int i;
+				for(i = 0; i<12; i++) { // do crc with the first 12 uint8
+					crc_ccitt_ffff_val = update_crc_ccitt(crc_ccitt_ffff_val, *ptr);
+					ptr++;
+				}
+				
+				if(*(head+13) == ((crc_ccitt_ffff_val&0xFF00)>>8) && *(head+12) == (crc_ccitt_ffff_val&0xFF)) { // crc pass
+					// extract data out of buffer
+					//HAL_UART_Transmit(&huart2,head,14,100);
+					Serial_struct data = unpack(head);
+					HAL_UART_Transmit_DMA(&huart2, (uint8_t*)&data, sizeof(data));
+					head +=14;
+				} else { // crc fail, might loss of data or meet wrong head position
+					head++;
+					break;
+				}
+			} else { // package not received in whole, move buf and keep receive
+				break;
+			}
+		} else {
+			head++;
+		}
+	} // emptied buf and no head found
+	
+	// move data forward
+	uint8_t *iterator = head;
+	uint8_t i = 0;
+	for(; iterator<tail; iterator++) {
+		aRxBuffer[i++] = *iterator;
 	}
-	else if (strncmp((char*)aRxBuffer, "stp",3) == 0) 
-	{
-		
-		ctrl_mode = 0;
-		output_enable = 0;
-		debug_print = 0;
+	tail -= head - aRxBuffer;
+	head = aRxBuffer;
+	
+	if(tail-aRxBuffer >= 70) { // not much room left
+		memset(aRxBuffer, 0, sizeof(aRxBuffer));
+		tail = aRxBuffer;
 	}
-	//HAL_UART_Transmit(&huart2,(uint8_t*)aRxBuffer,1,55);//(uint8_t*)aRxBuffer??????,10??????,0xFFFF?????
-	//HAL_GPIO_TogglePin(LED1_GPIO_Port,LED1_Pin);
-	//HAL_UART_Receive_IT(&huart2,(uint8_t*)aRxBuffer,3);
+	
+	HAL_UART_Receive_DMA(&huart2,tail,14);
+	LED_GREEN_TOGGLE();
+	
+	
+	{
+//	HAL_UART_Transmit_DMA(&huart2,aRxBuffer,3);
+//	HAL_UART_Receive_DMA(&huart2,aRxBuffer,3);
+//	
+//	if (strncmp((char*)aRxBuffer, "imu",3) == 0)
+//	{ 
+//		// read imu info
+//		debug_print = 1;
+//	} 
+//	else if (strncmp((char*)aRxBuffer, "mtr",3) == 0) 
+//	{ 
+//		// read motor info
+//		debug_print = 2;
+//	} 
+//	else if (strncmp((char*)aRxBuffer, "mov",3) == 0) 
+//	{
+//		//START TO MOVE!!!!!!!!!!!!!!!!!!!!!!!!!
+//		ctrl_mode = 3;
+//		output_enable = 1;
+//		debug_print = 4;
+//	} 
+//	else if (strncmp((char*)aRxBuffer, "ctl",3) == 0) 
+//	{
+//		// read control loop debug info
+//		debug_print = 3;
+//	}
+//	else if (strncmp((char*)aRxBuffer, "stp",3) == 0) 
+//	{
+//		
+//		ctrl_mode = 0;
+//		output_enable = 0;
+//		debug_print = 0;
+//	}
+	}
+	
+	
 }
 
 // callback after the data string sent complete
 void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart){
 	//HAL_UART_Transmit_DMA(&huart2,aTxBuffer,sizeof(aTxBuffer));
+	LED_RED_TOGGLE();
 }
 
 /* USER CODE END 4 */
