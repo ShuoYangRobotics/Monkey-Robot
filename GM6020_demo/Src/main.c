@@ -94,7 +94,8 @@ int   rotation_count[2] = {0,0};       // 0 :	0 - 2PI
                                        // -1:  -2PI - 0
 																       //  1:  2PI - 4PI
 float modified_motor_angle_rad[2];  
-
+uint8_t motor_rotation_count_inited = 0;  // this only use once  
+uint16_t counter = 0;
 float motor_velocity_rads[2];
 
 // target control actions, be very careful about the rotation direction of the motors
@@ -112,7 +113,7 @@ pid_struct_t motor_current_pid[2];
 // simple position trajectory, this is used in ctrl_mode 3
 // in these trajectories, state is [q, qdot] (angle and angular velocity)
 // for this simpel trajectory, it is initialized in the traj.h
-float Tf = 0.66f; // use 2 seconds to finish this trajectory
+float Tf = 2.0f; // use 2 seconds to finish this trajectory
 const int step = 300;  // how many points in the trajectory
 float left_start_state[2];   // 
 float left_end_state[2];     // 
@@ -125,7 +126,7 @@ float right_state_angle[step+1];
 float right_state_velocity[step+1];
 
 // init simple trajectory
-	float tgt_state[2] = {PI,0};
+	float tgt_state[2] = {0,0};
 	float tgt_velocity[2];
 	float dt = 0.001f; // the time between each loop run
 	float traj_timer = 0.0f;
@@ -170,12 +171,12 @@ void init_simple_trajectory(int motor_idx, float Tf, const int step, float tgt_s
 	float dt = Tf/step;
 	if (motor_idx == 0) // left
 	{
-		curr_angle = motor_angle_rad[0];
+		curr_angle = modified_motor_angle_rad[0];
 		curr_velocity = motor_velocity_rads[0];
 	}
 	else // right
 	{
-		curr_angle = motor_angle_rad[1];
+		curr_angle = modified_motor_angle_rad[1];
 		curr_velocity = motor_velocity_rads[1];
 	}
 	state_angle[0] = curr_angle;
@@ -197,15 +198,15 @@ void init_test_swing_trajectory(int motor_idx, float Tf, const int step, float s
 	float dt = Tf/step;
 	if (motor_idx == 0) // left
 	{
-		curr_angle = motor_angle_rad[0];
-		tgt_angle = motor_angle_rad[0];
+		curr_angle = modified_motor_angle_rad[0];
+		tgt_angle = modified_motor_angle_rad[0];
 		curr_velocity = 0.0f;
 		tgt_velocity = 0.0f;
 	}
 	else // right
 	{
-		curr_angle = PI-90.0f/180.0f*PI;
-		tgt_angle = PI-(90.0f+90.0f+90.0f)/180.0f*PI;
+		curr_angle = -90.0f/180.0f*PI;
+		tgt_angle = -(90.0f+90.0f+90.0f)/180.0f*PI;
 		curr_velocity = 0.0f;
 		tgt_velocity = 0.0f;
 	}
@@ -229,7 +230,7 @@ void init_test_swing_trajectory(int motor_idx, float Tf, const int step, float s
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-    
+
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -272,8 +273,8 @@ int main(void)
   can_user_init(&hcan1);                   // config can filter, start can
 
 	// PID setup
-  pid_init(&motor_angle_pid[0], 68, 0.00001, 0.0001, 200, 700);       //init pid parameter, kp=38, ki=0.001, kd=0.5, output limit = 200rads
-  pid_init(&motor_angle_pid[1], 68, 0.00001, 0.0001, 200, 700);       //init pid parameter, kp=38, ki=0.001, kd=0.5, output limit = 200rads
+  pid_init(&motor_angle_pid[0], 168, 0.00001, 0.0001, 200, 700);       //init pid parameter, kp=38, ki=0.001, kd=0.5, output limit = 200rads
+  pid_init(&motor_angle_pid[1], 168, 0.00001, 0.0001, 200, 700);       //init pid parameter, kp=38, ki=0.001, kd=0.5, output limit = 200rads
   pid_init(&motor_velocity_pid[0], 6, 0.00001, 0.06, 125, 400); //init pid parameter, kp=7, ki=3, kd=0.06, output limit = 30000
   pid_init(&motor_velocity_pid[1], 6, 0.00001, 0.06, 125, 400); //init pid parameter, kp=7, ki=3, kd=0.06, output limit = 30000
   pid_init(&motor_current_pid[0], 160, 0.001, 0.06, 20000, 30000); //init pid parameter, kp=1000, ki=3, kd=0.06, output limit = 30000
@@ -288,13 +289,19 @@ int main(void)
 	prev_motor_angle_rad[0] = 0.0;
 	prev_motor_angle_rad[1] = 0.0;
 	
-	target_angle_rad[0] = PI;
-	target_angle_rad[1] = PI;
+	target_angle_rad[0] = 0;
+	target_angle_rad[1] = 0;
 	target_velocity_rads[0] = 0;
 	target_velocity_rads[1] = 0;
 	target_current[0] = 0;
 	target_current[1] = 0;
 	
+	
+	motor_angle_rad[0] = motor_info[0].rotor_angle/8192.0f*2*PI;
+	motor_angle_rad[1] = motor_info[1].rotor_angle/8192.0f*2*PI;
+	prev_motor_angle_rad[0] = motor_info[0].rotor_angle/8192.0f*2*PI;
+	prev_motor_angle_rad[1] = motor_info[1].rotor_angle/8192.0f*2*PI;
+		
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -307,6 +314,21 @@ int main(void)
 		// start control loop
 		motor_angle_rad[0] = motor_info[0].rotor_angle/8192.0f*2*PI;
 		motor_angle_rad[1] = motor_info[1].rotor_angle/8192.0f*2*PI;
+		counter++;
+		// only do this once
+		if (motor_rotation_count_inited == 0 && counter > 1000)
+		{
+			if (motor_angle_rad[0] > PI)
+			{
+				rotation_count[0]--;
+			}
+			
+			if (motor_angle_rad[1] > PI)
+			{
+				rotation_count[1]--;
+			}
+			motor_rotation_count_inited = 1;
+		}
 		
 		if ((motor_angle_rad[0] - prev_motor_angle_rad[0])> 1.5*PI) //change from 0 to 2PI
 			rotation_count[0]--;
@@ -409,8 +431,7 @@ int main(void)
 
 					/* send motor control message through can bus*/
 					if (output_enable == 1)
-					{	
-						motor_info[0].set_voltage = 0;			 		
+					{			 		
 						set_motor_voltage(0, 
 							motor_info[0].set_voltage, 
 							motor_info[1].set_voltage);
@@ -542,6 +563,11 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 					// extract data out of buffer
 					//HAL_UART_Transmit(&huart2,head,14,100);
 					Serial_struct data = unpack(head);
+					ctrl_mode = 3;
+					output_enable = 1;
+					debug_print = 4;
+					
+//					debug_print = 2;
 					
 					HAL_UART_Transmit(&huart2, (uint8_t*)&data, sizeof(data),100);
 					head +=14;
@@ -632,7 +658,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 			
 			case 2:
 				sprintf(buf, "ctrl_mode %d \t angle1:%4.3f \t angle2:%4.3f \t vel1:%4.3f \t vel2:%4.3f crt1:%d \t crt2:%d \n", 
-					ctrl_mode, motor_angle_rad[0], motor_angle_rad[1], motor_velocity_rads[0], motor_velocity_rads[1], motor_info[0].torque_current,motor_info[1].torque_current);
+					ctrl_mode, modified_motor_angle_rad[0], modified_motor_angle_rad[1], motor_velocity_rads[0], motor_velocity_rads[1], motor_info[0].torque_current,motor_info[1].torque_current);
 				HAL_UART_Transmit_DMA(&huart2, (uint8_t *)buf, (COUNTOF(buf)-1));
 				//				memset(buf, 0, sizeof(buf));
 				break;
