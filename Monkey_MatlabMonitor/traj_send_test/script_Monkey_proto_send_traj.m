@@ -17,11 +17,9 @@ set(s,'BaudRate',115200);
 s.ByteOrder = 'littleEndian';
 fopen(s);
 
+%% step 1
 SendData = struct;
-
-%% Choose to send left motor or right motor
-send_left_or_right = 1;     % if 1, send left trajectory, if 2, send right trajectory
-%% first config SendData to be a notification message
+% first config SendData to be a notification message
 SendData.flag = uint8(170);
 SendData.type = uint8(2);    % type = 2 means this message notify monkey to prepare to receive trajectory
 SendData.value = int16(0);
@@ -36,7 +34,8 @@ DlgH = figure;
 H = uicontrol('Style', 'PushButton', ...
                     'String', 'Break', ...
                     'Callback', 'delete(gcbf)');
-
+                
+send_left_or_right = 1;     % if 1, send left trajectory, if 2, send right trajectory
 traj_idx = 1;
 FSM_state = 1;  % this sender is a finite state machine. 
                 % state = 1: wait for the ack of the notification package 
@@ -174,14 +173,28 @@ while (ishandle(H))
 end
 fclose(s)
 
+%% step 2
 % following code need to be manually used 
 % fopen(s)
-% SendData.flag = uint8(170);
-% SendData.type = uint8(6);    
-% SendData.value = int16(traj_idx); 
-% SendData.position = int32(0);
-% SendData.velocity = int32(0);
-% SendData.crc = pack_and_cal_crc(SendData);
-% send_struct(s, SendData);
-% fread(s,14,'uchar')
+%{
+SendData.flag = uint8(170);
+SendData.type = uint8(7);    
+SendData.value = int16(traj_idx); 
+SendData.position = int32(0);
+SendData.velocity = int32(0);
+SendData.crc = pack_and_cal_crc(SendData);
+send_struct(s, SendData);
+fread(s,14,'uchar')
+%}
+%% step 3
+%{
+SendData.flag = uint8(170);
+SendData.type = uint8(6);    
+SendData.value = int16(traj_idx); 
+SendData.position = int32(0);
+SendData.velocity = int32(0);
+SendData.crc = pack_and_cal_crc(SendData);
+send_struct(s, SendData);
+fread(s,14,'uchar')
+%}
 % fclose(s)

@@ -60,8 +60,8 @@ Serial_struct execute(Serial_struct data, RobotControl* robot_control, Trajector
 		case 3: // left motor traj
 			if(robot_control -> ctrl_mode == 5) { 
 				if(traj -> leftStepReceived == data.value) {
-					traj -> left_state_angle[traj -> leftStepReceived] = (float)data.position/1000;
-					traj -> left_state_velocity[traj -> leftStepReceived] = (float)data.velocity/1000;
+					traj -> left_state_angle[traj -> leftStepReceived] = ((float)data.position)/1000.0f;
+					traj -> left_state_velocity[traj -> leftStepReceived] = ((float)data.velocity)/1000.0f;
 					traj -> leftStepReceived++;
 					ackPack = ack(data, traj -> leftStepReceived, data.position, data.velocity);
 				} else {
@@ -73,8 +73,8 @@ Serial_struct execute(Serial_struct data, RobotControl* robot_control, Trajector
 		case 4: // right motor traj
 			if(robot_control -> ctrl_mode == 5) {
 				if(traj -> rightStepReceived == data.value) {
-					traj -> right_state_angle[traj -> rightStepReceived] = (float)data.position/1000;
-					traj -> right_state_velocity[traj -> rightStepReceived] = (float)data.velocity/1000;
+					traj -> right_state_angle[traj -> rightStepReceived] = ((float)data.position)/1000.0f;
+					traj -> right_state_velocity[traj -> rightStepReceived] = ((float)data.velocity)/1000.0f;
 					traj -> rightStepReceived++;
 					ackPack = ack(data, traj -> rightStepReceived, data.position, data.velocity);
 				} else {
@@ -98,6 +98,16 @@ Serial_struct execute(Serial_struct data, RobotControl* robot_control, Trajector
 			if(robot_control -> ctrl_mode == 6) { // in ready to start mode
 				robot_control -> output_enable = 1; // enable power
 				robot_control -> ctrl_mode = 4; // start trajectory tracking
+				ackPack = ack(data, traj -> leftStepReceived, data.position, data.velocity);
+				LED_RED_TOGGLE();
+			} else {
+				ackPack = err(data, traj -> leftStepReceived, data.position, data.velocity);
+			}
+			break;
+		case 7:
+			if(robot_control -> ctrl_mode == 6) { // in ready to start mode
+				robot_control -> output_enable = 1; // enable power
+				robot_control -> ctrl_mode = 8; // start aux trajectory to prepare
 				ackPack = ack(data, traj -> leftStepReceived, data.position, data.velocity);
 				LED_RED_TOGGLE();
 			} else {
