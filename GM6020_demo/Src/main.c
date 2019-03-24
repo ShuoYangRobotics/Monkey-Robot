@@ -267,10 +267,10 @@ int main(void)
   can_user_init(&hcan1);                   // config can filter, start can
 
 	// PID setup
-  pid_init(&motor_angle_pid[0], 68, 0.00001, 0.0001, 200, 700);       //init pid parameter, kp=38, ki=0.001, kd=0.5, output limit = 200rads
-  pid_init(&motor_angle_pid[1], 68, 0.00001, 0.0001, 200, 700);       //init pid parameter, kp=38, ki=0.001, kd=0.5, output limit = 200rads
-  pid_init(&motor_velocity_pid[0], 6, 0.00001, 0.06, 125, 400); //init pid parameter, kp=7, ki=3, kd=0.06, output limit = 30000
-  pid_init(&motor_velocity_pid[1], 6, 0.00001, 0.06, 125, 400); //init pid parameter, kp=7, ki=3, kd=0.06, output limit = 30000
+  pid_init(&motor_angle_pid[0], 200, 0.0000, 0.01, 200, 800);       //init pid parameter, kp=38, ki=0.001, kd=0.5, output limit = 200rads
+  pid_init(&motor_angle_pid[1], 200, 0.0000, 0.01, 200, 800);       //init pid parameter, kp=38, ki=0.001, kd=0.5, output limit = 200rads
+  pid_init(&motor_velocity_pid[0], 16, 0.00001, 0.06, 125, 600); //init pid parameter, kp=7, ki=3, kd=0.06, output limit = 30000
+  pid_init(&motor_velocity_pid[1], 16, 0.00001, 0.06, 125, 600); //init pid parameter, kp=7, ki=3, kd=0.06, output limit = 30000
   pid_init(&motor_current_pid[0], 160, 0.001, 0.06, 20000, 30000); //init pid parameter, kp=1000, ki=3, kd=0.06, output limit = 30000
   pid_init(&motor_current_pid[1], 160, 0.001, 0.06, 20000, 30000); //init pid parameter, kp=1000, ki=3, kd=0.06, output limit = 30000
 	
@@ -419,13 +419,13 @@ int main(void)
 					
 					/* motor speed pid calc ID1 ID1 ID1 ID1 ID1 ID1 ID1 ID1*/
 					tgt_velocity[0] = pid_calc(&motor_angle_pid[0], target_angle_rad[0], modified_motor_angle_rad[0]);
-					target_current[0] = pid_calc(&motor_velocity_pid[0], tgt_velocity[0], motor_velocity_rads[0]);
+					target_current[0] = pid_calc(&motor_velocity_pid[0], tgt_velocity[0]+target_velocity_rads[0], motor_velocity_rads[0]);
 					motor_info[0].set_voltage = pid_calc(&motor_current_pid[0], target_current[0], motor_info[0].torque_current/5700.0f);
 					
 					
 					/* motor speed pid calc ID2 ID2 ID2 ID2 ID2 ID2 ID2 ID2*/
 					tgt_velocity[1] = pid_calc(&motor_angle_pid[1], target_angle_rad[1], modified_motor_angle_rad[1]);
-					target_current[1] = pid_calc(&motor_velocity_pid[1], tgt_velocity[1], motor_velocity_rads[1]);
+					target_current[1] = pid_calc(&motor_velocity_pid[1], tgt_velocity[1]+target_velocity_rads[1], motor_velocity_rads[1]);
 					motor_info[1].set_voltage = pid_calc(&motor_current_pid[1], target_current[1], motor_info[1].torque_current/5700.0f);
 
 					/* send motor control message through can bus*/
