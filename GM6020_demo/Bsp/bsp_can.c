@@ -74,7 +74,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
   if (can_cnt == 500)
   {
     can_cnt = 0;
-    LED_GREEN_TOGGLE(); // green led blink indicate can comunication successful 
+    //LED_GREEN_TOGGLE(); // green led blink indicate can comunication successful 
   }
 }
 

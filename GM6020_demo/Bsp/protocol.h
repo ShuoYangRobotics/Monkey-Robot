@@ -1,8 +1,12 @@
-#ifndef _PROTOCOL_H
-#define _PROTOCOL_H
+#ifndef PROTOCOL_H
+#define PROTOCOL_H
 
 #include <stdlib.h>
 #include "main.h"
+#include "trajectory.h"
+#include "bsp_led.h"
+
+#define packSize 14
 
 // serial communication protocol
 __packed  typedef struct{
@@ -17,6 +21,9 @@ __packed  typedef struct{
 
 Serial_struct unpack(uint8_t* head);
 
-void execute(Serial_struct data);
+Serial_struct execute(Serial_struct data, RobotControl* robot_control, Trajectory* traj);
+
+Serial_struct ack(Serial_struct data, uint16_t value, uint32_t position, uint32_t velocity);
+Serial_struct err(Serial_struct data, uint16_t value, uint32_t position, uint32_t velocity);
 
 #endif

@@ -55,12 +55,28 @@ extern "C" {
 /* USER CODE BEGIN Includes */
 #include "arm_math.h"
 #include "checksum.h"
-#include "protocol.h"
 #include "trajectory.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
+
+typedef struct {
+	int debug_print; // if debug print = 1, print imu info to UART, if debug print = 2 print motor info to UART, if debug print = 3 print control loop info to UART
+	
+	// if ctrl_mode = 0, idle
+	// if ctrl_mode = 1, use target position for control    
+	// if ctrl_mode = 2, use target velocity 
+	// if ctrl_mode = 3, direct control voltage
+	// if ctrl_mode = 4, 
+	// if ctrl_mode = 5, receive data point
+	// if ctrl_mode = 6, ready to execute trajectory points
+	// if ctrl_mode = 7, executing trajectory points
+	int ctrl_mode;
+	int output_enable; // if output_enable == 0, do not output control voltage to motors
+} RobotControl;
+
+#include "protocol.h"
 
 /* USER CODE END ET */
 

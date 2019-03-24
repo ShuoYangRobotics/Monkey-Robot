@@ -10,8 +10,8 @@ Serial_struct unpack(uint8_t* head) {
 	
 	// test
 //	
-		data.value = data.value+1;
-		data.position = data.position+1;
+//		data.value = data.value+1;
+//		data.position = data.position+1;
 	
 	// do crc
 	uint16_t crc_ccitt_ffff_val = 0xffff;
@@ -25,7 +25,8 @@ Serial_struct unpack(uint8_t* head) {
 	return data;
 }
 
-void execute(Serial_struct data) {
+Serial_struct execute(Serial_struct data, RobotControl* robot_control, Trajectory* traj) {
+	Serial_struct ackPack;
 	switch(data.type) {
 		case 0:
 			
@@ -33,6 +34,7 @@ void execute(Serial_struct data) {
 		case 1:
 			switch(data.value) {
 				case 0:
+					
 					break;
 				case 1:
 					
@@ -47,11 +49,123 @@ void execute(Serial_struct data) {
 					break;
 			}
 			break;
-		case 2:
-			
+		case 2: // start receive points
+			// set ctrl_mode to 5
+			robot_control -> ctrl_mode = 5;
+			ackPack = ack(data, data.value, data.position, data.velocity);
+			traj -> leftStepReceived = 0;
+			traj -> rightStepReceived = 0;
+			break;
+		
+		case 3: // left motor traj
+			if(robot_control -> ctrl_mode == 5) { 
+				if(traj -> leftStepReceived == data.value) {
+					traj -> left_state_angle[traj -> leftStepReceived] = (float)data.position/1000;
+					traj -> left_state_velocity[traj -> leftStepReceived] = (float)data.velocity/1000;
+					traj -> leftStepReceived++;
+					ackPack = ack(data, traj -> leftStepReceived, data.position, data.velocity);
+				} else {
+					robot_control -> ctrl_mode = 0; // error, back to idle
+					ackPack = err(data, data.value, data.position, data.velocity);
+				}
+			}
+			break;
+		case 4: // right motor traj
+			if(robot_control -> ctrl_mode == 5) {
+				if(traj -> rightStepReceived == data.value) {
+					traj -> right_state_angle[traj -> rightStepReceived] = (float)data.position/1000;
+					traj -> right_state_velocity[traj -> rightStepReceived] = (float)data.velocity/1000;
+					traj -> rightStepReceived++;
+					ackPack = ack(data, traj -> rightStepReceived, data.position, data.velocity);
+				} else {
+					robot_control -> ctrl_mode = 0; // error, back to idle
+					ackPack = err(data, traj -> rightStepReceived, data.position, data.velocity);
+				}
+			}
+			break;
+		case 5:
+			if(robot_control -> ctrl_mode == 5 && 
+				traj -> leftStepReceived == data.value && 
+				traj -> rightStepReceived == data.value) 
+			{
+				robot_control -> ctrl_mode = 6;
+				ackPack = ack(data, traj -> leftStepReceived, data.position, data.velocity);
+			} else {
+				ackPack = err(data, traj -> leftStepReceived, data.position, data.velocity);
+			}
+			break;
+		case 6:
+			if(robot_control -> ctrl_mode == 6) { // in ready to start mode
+				robot_control -> output_enable = 1; // enable power
+				robot_control -> ctrl_mode = 4; // start trajectory tracking
+				ackPack = ack(data, traj -> leftStepReceived, data.position, data.velocity);
+				LED_RED_TOGGLE();
+			} else {
+				ackPack = err(data, traj -> leftStepReceived, data.position, data.velocity);
+			}
 			break;
 		default:
 			break;
 	}
-	
+	return ackPack;
+}
+
+//Serial_struct ack(Serial_struct data) {
+//	Serial_struct ackPack;
+//	ackPack.flag = 0xAA;
+//	ackPack.type = 5; // Ack
+//	ackPack.value = data.type;
+//	ackPack.position = data.position;
+//	ackPack.velocity = data.velocity;
+//		
+//	// do crc
+//	uint16_t crc_ccitt_ffff_val = 0xffff;
+//	uint8_t* ptr = (uint8_t *) &ackPack;
+//	int i;
+//	for(i = 0; i<12; i++) { // do crc with the first 12 uint8
+//		crc_ccitt_ffff_val = update_crc_ccitt(crc_ccitt_ffff_val, *ptr);
+//		ptr++;
+//	}
+//	ackPack.crc = crc_ccitt_ffff_val;
+//	return ackPack;
+//}
+
+Serial_struct ack(Serial_struct data, uint16_t value, uint32_t position, uint32_t velocity) {
+	Serial_struct ackPack;
+	ackPack.flag = 0xAA;
+	ackPack.type = 40; // Ack
+	ackPack.value = value;
+	ackPack.position = position;
+	ackPack.velocity = velocity;
+		
+	// do crc
+	uint16_t crc_ccitt_ffff_val = 0xffff;
+	uint8_t* ptr = (uint8_t *) &ackPack;
+	int i;
+	for(i = 0; i<12; i++) { // do crc with the first 12 uint8
+		crc_ccitt_ffff_val = update_crc_ccitt(crc_ccitt_ffff_val, *ptr);
+		ptr++;
+	}
+	ackPack.crc = crc_ccitt_ffff_val;
+	return ackPack;
+}
+
+Serial_struct err(Serial_struct data, uint16_t value, uint32_t position, uint32_t velocity) {
+	Serial_struct ackPack;
+	ackPack.flag = 0xAA;
+	ackPack.type = 100; // error
+	ackPack.value = value;
+	ackPack.position = position;
+	ackPack.velocity = velocity;
+		
+	// do crc
+	uint16_t crc_ccitt_ffff_val = 0xffff;
+	uint8_t* ptr = (uint8_t *) &ackPack;
+	int i;
+	for(i = 0; i<12; i++) { // do crc with the first 12 uint8
+		crc_ccitt_ffff_val = update_crc_ccitt(crc_ccitt_ffff_val, *ptr);
+		ptr++;
+	}
+	ackPack.crc = crc_ccitt_ffff_val;
+	return ackPack;
 }
