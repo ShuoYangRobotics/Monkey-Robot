@@ -92,7 +92,8 @@ int   rotation_count[2] = {0,0};       // 0 :	0 - 2PI
                                        // -1:  -2PI - 0
 																       //  1:  2PI - 4PI
 float modified_motor_angle_rad[2];  
-
+uint8_t motor_rotation_count_inited = 0;  // this only use once  
+uint16_t counter = 0;
 float motor_velocity_rads[2];
 
 // target control actions, be very careful about the rotation direction of the motors
@@ -125,7 +126,7 @@ float right_state_velocity[stepNum+1];
 extern Trajectory traj;
 
 // init simple trajectory
-	float tgt_state[2] = {PI,0};
+	float tgt_state[2] = {0,0};
 	float tgt_velocity[2];
 	float dt = 0.001f; // the time between each loop run
 	float traj_timer = 0.0f;
@@ -164,12 +165,12 @@ void init_simple_trajectory(int motor_idx, float Tf, float tgt_state[], float st
 	float dt = Tf/stepNum;
 	if (motor_idx == 0) // left
 	{
-		curr_angle = motor_angle_rad[0];
+		curr_angle = modified_motor_angle_rad[0];
 		curr_velocity = motor_velocity_rads[0];
 	}
 	else // right
 	{
-		curr_angle = motor_angle_rad[1];
+		curr_angle = modified_motor_angle_rad[1];
 		curr_velocity = motor_velocity_rads[1];
 	}
 	state_angle[0] = curr_angle;
@@ -190,15 +191,15 @@ void init_test_swing_trajectory(int motor_idx, float Tf, float state_angle[], fl
 	float dt = Tf/stepNum;
 	if (motor_idx == 0) // left
 	{
-		curr_angle = motor_angle_rad[0];
-		tgt_angle = motor_angle_rad[0];
+		curr_angle = modified_motor_angle_rad[0];
+		tgt_angle = modified_motor_angle_rad[0];
 		curr_velocity = 0.0f;
 		tgt_velocity = 0.0f;
 	}
 	else // right
 	{
-		curr_angle = PI-90.0f/180.0f*PI;
-		tgt_angle = PI-(90.0f+90.0f+90.0f)/180.0f*PI;
+		curr_angle = -90.0f/180.0f*PI;
+		tgt_angle = -(90.0f+90.0f+90.0f)/180.0f*PI;
 		curr_velocity = 0.0f;
 		tgt_velocity = 0.0f;
 	}
@@ -222,7 +223,7 @@ void init_test_swing_trajectory(int motor_idx, float Tf, float state_angle[], fl
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-    
+
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -265,8 +266,8 @@ int main(void)
   can_user_init(&hcan1);                   // config can filter, start can
 
 	// PID setup
-  pid_init(&motor_angle_pid[0], 68, 0.00001, 0.0001, 200, 700);       //init pid parameter, kp=38, ki=0.001, kd=0.5, output limit = 200rads
-  pid_init(&motor_angle_pid[1], 68, 0.00001, 0.0001, 200, 700);       //init pid parameter, kp=38, ki=0.001, kd=0.5, output limit = 200rads
+  pid_init(&motor_angle_pid[0], 168, 0.00001, 0.0001, 200, 700);       //init pid parameter, kp=38, ki=0.001, kd=0.5, output limit = 200rads
+  pid_init(&motor_angle_pid[1], 168, 0.00001, 0.0001, 200, 700);       //init pid parameter, kp=38, ki=0.001, kd=0.5, output limit = 200rads
   pid_init(&motor_velocity_pid[0], 6, 0.00001, 0.06, 125, 400); //init pid parameter, kp=7, ki=3, kd=0.06, output limit = 30000
   pid_init(&motor_velocity_pid[1], 6, 0.00001, 0.06, 125, 400); //init pid parameter, kp=7, ki=3, kd=0.06, output limit = 30000
   pid_init(&motor_current_pid[0], 160, 0.001, 0.06, 20000, 30000); //init pid parameter, kp=1000, ki=3, kd=0.06, output limit = 30000
@@ -281,13 +282,19 @@ int main(void)
 	prev_motor_angle_rad[0] = 0.0;
 	prev_motor_angle_rad[1] = 0.0;
 	
-	target_angle_rad[0] = PI;
-	target_angle_rad[1] = PI;
+	target_angle_rad[0] = 0;
+	target_angle_rad[1] = 0;
 	target_velocity_rads[0] = 0;
 	target_velocity_rads[1] = 0;
 	target_current[0] = 0;
 	target_current[1] = 0;
 	
+	
+	motor_angle_rad[0] = motor_info[0].rotor_angle/8192.0f*2*PI;
+	motor_angle_rad[1] = motor_info[1].rotor_angle/8192.0f*2*PI;
+	prev_motor_angle_rad[0] = motor_info[0].rotor_angle/8192.0f*2*PI;
+	prev_motor_angle_rad[1] = motor_info[1].rotor_angle/8192.0f*2*PI;
+		
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -300,6 +307,21 @@ int main(void)
 		// start control loop
 		motor_angle_rad[0] = motor_info[0].rotor_angle/8192.0f*2*PI;
 		motor_angle_rad[1] = motor_info[1].rotor_angle/8192.0f*2*PI;
+		counter++;
+		// only do this once
+		if (motor_rotation_count_inited == 0 && counter > 1000)
+		{
+			if (motor_angle_rad[0] > PI)
+			{
+				rotation_count[0]--;
+			}
+			
+			if (motor_angle_rad[1] > PI)
+			{
+				rotation_count[1]--;
+			}
+			motor_rotation_count_inited = 1;
+		}
 		
 		if ((motor_angle_rad[0] - prev_motor_angle_rad[0])> 1.5*PI) //change from 0 to 2PI
 			rotation_count[0]--;
