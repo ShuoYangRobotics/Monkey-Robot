@@ -20,7 +20,16 @@
 
 moto_info_t motor_info[MOTOR_MAX_NUM];
 uint16_t can_cnt;
+extern float motor_angle_rad[2];
+uint8_t motor_rotation_count_inited[2] = {0, 0};  // this only use once
+int   rotation_count[2] = {0,0};       // 0 :	0 - 2PI
+                                       // -1:  -2PI - 0
+																       //  1:  2PI - 4PI
+extern float prev_motor_angle_rad[2];  // because motor_angle_rad is only in 0- 2PI, so in order to 
+																// use it to control the system properly,  have to detect change
 
+extern float modified_motor_angle_rad[2];  
+extern float motor_velocity_rads[2];
 /**
   * @brief  init can filter, start can, enable can rx interrupt
   * @param  hcan pointer to a CAN_HandleTypeDef structure that contains
@@ -70,6 +79,28 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
     motor_info[index].rotor_speed    = ((rx_data[2] << 8) | rx_data[3]);
     motor_info[index].torque_current = ((rx_data[4] << 8) | rx_data[5]);
     motor_info[index].temp           =   rx_data[6];
+		
+		/// custom use of can data
+		motor_angle_rad[index] = motor_info[index].rotor_angle/8192.0f*2*PI;
+		if (motor_rotation_count_inited[index] == 0) // only do this once
+		{
+			if (motor_angle_rad[index] > PI)
+			{
+				rotation_count[index]--;
+			}
+			
+			motor_rotation_count_inited[index] = 1;
+		}
+		
+		if ((motor_angle_rad[index] - prev_motor_angle_rad[index])> 1.5f*PI) //change from 0 to 2PI
+			rotation_count[index]--;
+		if ((motor_angle_rad[index] - prev_motor_angle_rad[index])< -1.5f*PI) //change from 2PI to 0
+			rotation_count[index]++;
+		
+		modified_motor_angle_rad[index] = motor_angle_rad[index]+rotation_count[index]*2*PI;
+		prev_motor_angle_rad[index] = motor_angle_rad[index];
+		motor_velocity_rads[index] = motor_info[index].rotor_speed*PI/30.0f;
+		/// custom use of can data
   }
   if (can_cnt == 500)
   {
