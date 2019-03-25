@@ -1,0 +1,502 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<SimscapeMultibodyImportXML version="2.0" xmlns="urn:mathworks:SimscapeMultibody:import" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<Created by="" on="03/20/19||21:49:12" using="Simscape Multibody Link Version 6.0" from="SolidWorks 26.3.0"/>
+<ModelUnits mass="kilogram" length="millimeter"/>
+<DataUnits mass="kilogram" length="meter"/>
+<RootAssembly name="Monkey_proto" uid="Monkey_proto" version="236">
+<AssemblyFile name="Monkey_proto.SLDASM" type="SolidWorks Assembly"/>
+<InstanceTree>
+<Instance name="monkey_body-1" uid="monkey_body-1" entityUid="monkey_body" rigid="true">
+<Transform>
+<Rotation>1 0 0 0 1 0 0 0 1</Rotation>
+<Translation>-0.017060890866379533 0.020851281264103266 0.0051211551136430833</Translation>
+</Transform>
+<Instance name="RoboMaster GM6020 Brushless DC Motor-2" uid="RoboMaster GM6020 Brushless DC Motor-2" entityUid="RoboMaster GM6020 Brushless DC Motor*:*Default">
+<Transform>
+<Rotation>-0.50000000000001577 -0.8660254037844296 0 0 0 -1.0000000000000002 0.8660254037844296 -0.50000000000001565 0</Rotation>
+<Translation>0 -0.073547856389409999 0</Translation>
+</Transform>
+</Instance>
+<Instance name="ShoulderMount-2" uid="ShoulderMount-2" entityUid="ShoulderMount*:*Default">
+<Transform>
+<Rotation>-0.99999999999999989 -6.9944050551384862e-15 3.8857805861880479e-16 4.163336342344337e-16 -4.5302029775730154e-16 0.99999999999999978 -6.9944050551384854e-15 0.99999999999999989 4.530202977573044e-16</Rotation>
+<Translation>0 0.043499999999990074 0</Translation>
+</Transform>
+</Instance>
+<Instance name="MountPlate-1" uid="MountPlate-1" entityUid="MountPlate*:*Default">
+<Transform>
+<Rotation>-2.4980018054066022e-16 -5.4972350316874031e-16 -1.0000000000000002 -1.0000000000000002 2.2204460492503155e-16 2.4980018054066022e-16 2.2204460492503126e-16 1 -5.4972350316874021e-16</Rotation>
+<Translation>-0.036769000000000017 -0.018810000000009292 -0.022999999999999122</Translation>
+</Transform>
+</Instance>
+<Instance name="Electronic_Layer-1" uid="Electronic_Layer-1" entityUid="Electronic_Layer" rigid="true">
+<Transform>
+<Rotation>0 -1.527247296442372e-15 1 1 -1.1591522692465255e-15 0 1.1591522692465253e-15 1 1.527247296442372e-15</Rotation>
+<Translation>-0.074309092866939083 -0.12558726678476076 -0.20794759375957303</Translation>
+</Transform>
+<Instance name="93505A178_ALUM MALE-FEM THRDED HEX STANDOFF-5" uid="93505A178_ALUM MALE-FEM THRDED HEX STANDOFF-5" entityUid="93505A178_ALUM MALE-FEM THRDED HEX STANDOFF*:*93505A178">
+<Transform>
+<Rotation>0 0.89029724377830033 0.4553798609081891 -1 0 0 0 -0.4553798609081891 0.89029724377830033</Rotation>
+<Translation>9.7266784751748325e-05 0.16748509375957377 0.10358009286693932</Translation>
+</Transform>
+</Instance>
+<Instance name="93505A178_ALUM MALE-FEM THRDED HEX STANDOFF-1" uid="93505A178_ALUM MALE-FEM THRDED HEX STANDOFF-1" entityUid="93505A178_ALUM MALE-FEM THRDED HEX STANDOFF*:*93505A178">
+<Transform>
+<Rotation>0 0.83951914980746623 -0.54333009957718059 -1 0 0 0 0.54333009957718059 0.83951914980746623</Rotation>
+<Translation>9.7266784751734447e-05 0.14208509375957379 0.10358009286693931</Translation>
+</Transform>
+</Instance>
+<Instance name="93505A178_ALUM MALE-FEM THRDED HEX STANDOFF-3" uid="93505A178_ALUM MALE-FEM THRDED HEX STANDOFF-3" entityUid="93505A178_ALUM MALE-FEM THRDED HEX STANDOFF*:*93505A178">
+<Transform>
+<Rotation>0 0.81657441155794774 -0.57724018431567237 -1 0 0 0 0.57724018431567237 0.81657441155794774</Rotation>
+<Translation>0.09915726678475173 0.14208509375957379 0.10358009286693931</Translation>
+</Transform>
+</Instance>
+<Instance name="MountPlate-2" uid="MountPlate-2" entityUid="MountPlate*:*Default">
+<Transform>
+<Rotation>1 0 0 0 1 0 0 0 1</Rotation>
+<Translation>-0.0075227332152482534 0.12914759375957374 0.11120009286693931</Translation>
+</Transform>
+</Instance>
+<Instance name="93505A178_ALUM MALE-FEM THRDED HEX STANDOFF-2" uid="93505A178_ALUM MALE-FEM THRDED HEX STANDOFF-2" entityUid="93505A178_ALUM MALE-FEM THRDED HEX STANDOFF*:*93505A178">
+<Transform>
+<Rotation>0 0.9541475442048245 0.29933670654950228 -1 0 0 0 -0.29933670654950234 0.9541475442048245</Rotation>
+<Translation>9.7266784751734447e-05 0.14208509375957376 0.045160092866939339</Translation>
+</Transform>
+</Instance>
+<Instance name="RM_Board_A-1" uid="RM_Board_A-1" entityUid="RM_Board_A*:*Default">
+<Transform>
+<Rotation>-0.99971024761827776 -6.6557655972269004e-16 0.024071161313932044 -5.0749754307863925e-16 1 1.9931836045396988e-16 -0.024071161313932197 0 -0.99971024761827798</Rotation>
+<Translation>0.089228259563165713 0.13414759375957377 0.049432154020922027</Translation>
+</Transform>
+</Instance>
+<Instance name="93505A178_ALUM MALE-FEM THRDED HEX STANDOFF-4" uid="93505A178_ALUM MALE-FEM THRDED HEX STANDOFF-4" entityUid="93505A178_ALUM MALE-FEM THRDED HEX STANDOFF*:*93505A178">
+<Transform>
+<Rotation>0 0.99666064926278775 -0.081655068495950958 -1 0 0 0 0.081655068495950958 0.99666064926278775</Rotation>
+<Translation>0.09915726678475173 0.14208509375957373 0.045160092866939339</Translation>
+</Transform>
+</Instance>
+<Instance name="93505A178_ALUM MALE-FEM THRDED HEX STANDOFF-6" uid="93505A178_ALUM MALE-FEM THRDED HEX STANDOFF-6" entityUid="93505A178_ALUM MALE-FEM THRDED HEX STANDOFF*:*93505A178">
+<Transform>
+<Rotation>0 0.99666064926278786 -0.081655068495950944 -1 0 0 0 0.081655068495950944 0.99666064926278786</Rotation>
+<Translation>0.09915726678475173 0.16748509375957374 0.045160092866939332</Translation>
+</Transform>
+</Instance>
+<Instance name="Battery-1" uid="Battery-1" entityUid="Battery*:*Default">
+<Transform>
+<Rotation>0 -1 -1.2143064331837652e-16 -1 0 0 0 1.214306433183765e-16 -1</Rotation>
+<Translation>0.11962726678475175 0.12914759375957377 0.048120092866939301</Translation>
+</Transform>
+</Instance>
+<Instance name="93505A178_ALUM MALE-FEM THRDED HEX STANDOFF-7" uid="93505A178_ALUM MALE-FEM THRDED HEX STANDOFF-7" entityUid="93505A178_ALUM MALE-FEM THRDED HEX STANDOFF*:*93505A178">
+<Transform>
+<Rotation>0 0.81657441155794785 -0.57724018431567248 -1 0 0 0 0.57724018431567248 0.81657441155794785</Rotation>
+<Translation>0.099157266784751688 0.16748509375957377 0.1035800928669393</Translation>
+</Transform>
+</Instance>
+<Instance name="93505A178_ALUM MALE-FEM THRDED HEX STANDOFF-8" uid="93505A178_ALUM MALE-FEM THRDED HEX STANDOFF-8" entityUid="93505A178_ALUM MALE-FEM THRDED HEX STANDOFF*:*93505A178">
+<Transform>
+<Rotation>0 0.9541475442048245 0.29933670654950228 -1 0 0 0 -0.29933670654950234 0.9541475442048245</Rotation>
+<Translation>9.7266784751734447e-05 0.16748509375957377 0.045160092866939332</Translation>
+</Transform>
+</Instance>
+</Instance>
+<Instance name="ShoulderMount-1" uid="ShoulderMount-1" entityUid="ShoulderMount*:*Default">
+<Transform>
+<Rotation>0.99999999999999989 -7.4107386893729231e-15 -6.6613381477508781e-16 -6.6613381477509392e-16 -8.1871227925726816e-16 -0.99999999999999989 7.4107386893729215e-15 1 -8.1871227925727299e-16</Rotation>
+<Translation>0 -0.19542000000000997 0</Translation>
+</Transform>
+</Instance>
+<Instance name="9578T310_HEAVY DUTY ALUMINUM CLAMP-ON FRAMING FITTING-1" uid="9578T310_HEAVY DUTY ALUMINUM CLAMP-ON FRAMING FITTING-1" entityUid="9578T310_HEAVY DUTY ALUMINUM CLAMP-ON FRAMING FITTING*:*9578T31">
+<Transform>
+<Rotation>-2.4980018054066022e-16 -1.0000000000000002 0 1 -1.6653345369377348e-16 0 0 1.7289933401055317e-16 1</Rotation>
+<Translation>0 -0.10771000000000926 -0.018000000000000082</Translation>
+</Transform>
+</Instance>
+<Instance name="RoboMaster GM6020 Brushless DC Motor-1" uid="RoboMaster GM6020 Brushless DC Motor-1" entityUid="RoboMaster GM6020 Brushless DC Motor*:*Default">
+<Transform>
+<Rotation>0.50000000000000422 0.86602540378443615 2.1102246847065989e-16 -6.2558146073611385e-16 1.1751186680284841e-16 1 0.86602540378443627 -0.50000000000000422 6.005253705354751e-16</Rotation>
+<Translation>0 -0.078372143610609943 0</Translation>
+</Transform>
+</Instance>
+<Instance name="BodyBar-1" uid="BodyBar-1" entityUid="BodyBar*:*Default">
+<Transform>
+<Rotation>-8.1531963952461671e-15 0 -1 -3.2357733625743532e-16 1 0 1 3.2357733625743483e-16 -8.1531963952461671e-15</Rotation>
+<Translation>0 -0.21566000000000995 0</Translation>
+</Transform>
+</Instance>
+<Instance name="9578T310_HEAVY DUTY ALUMINUM CLAMP-ON FRAMING FITTING-2" uid="9578T310_HEAVY DUTY ALUMINUM CLAMP-ON FRAMING FITTING-2" entityUid="9578T310_HEAVY DUTY ALUMINUM CLAMP-ON FRAMING FITTING*:*9578T31">
+<Transform>
+<Rotation>-1.6653345369377348e-16 -1.0000000000000002 4.9960036108132044e-16 1 -1.1102230246251564e-16 0 0 5.5753285763544188e-16 1</Rotation>
+<Translation>0 -0.044210000000009242 -0.018000000000000047</Translation>
+</Transform>
+</Instance>
+</Instance>
+<Instance name="right_hand-1" uid="right_hand-1" entityUid="right_hand" rigid="true">
+<Transform>
+<Rotation>1 0 0 0 1 0 0 0 1</Rotation>
+<Translation>-0.017060890866379505 -0.13256871873591666 0.0051211551136433869</Translation>
+</Transform>
+<Instance name="wrist-1" uid="wrist-1" entityUid="wrist*:*Default">
+<Transform>
+<Rotation>1 -9.8479865502760086e-16 0 0 0 1 -9.8479865502760086e-16 -1 0</Rotation>
+<Translation>0.024536956521739386 0.036010869565217429 0.15954500000000005</Translation>
+</Transform>
+</Instance>
+<Instance name="hand-1" uid="hand-1" entityUid="hand*:*Default">
+<Transform>
+<Rotation>1 -1.1873840268993148e-16 0 0 -1.9428902930940239e-16 -1 3.7317846430328117e-16 0.99999999999999989 -2.7755575615628914e-16</Rotation>
+<Translation>-0.0023638317184885467 0.043049999999999977 0.29081000000000012</Translation>
+</Transform>
+</Instance>
+<Instance name="arm-1" uid="arm-1" entityUid="arm*:*Default">
+<Transform>
+<Rotation>1.0000000000000002 1.5184963315929831e-15 0 0 0 -1 -1.5135122234811022e-15 1 0</Rotation>
+<Translation>0 0.0040000000000000036 0</Translation>
+</Transform>
+</Instance>
+</Instance>
+<Instance name="left_hand-1" uid="left_hand-1" grounded="true" entityUid="left_hand" rigid="true">
+<Transform>
+<Rotation>1 0 0 0 1 0 0 0 1</Rotation>
+<Translation>-0.019424722584868548 -0.0031987187358964993 0.29593115511364326</Translation>
+</Transform>
+<Instance name="wrist-1" uid="wrist-1" entityUid="wrist*:*Default">
+<Transform>
+<Rotation>1 0 0 0 0 -0.99999999999999989 0 0.99999999999999989 0</Rotation>
+<Translation>0.026900788240227826 -0.010460869565217641 -0.16936500000000007</Translation>
+</Transform>
+</Instance>
+<Instance name="arm-1" uid="arm-1" entityUid="arm*:*Default">
+<Transform>
+<Rotation>1 4.0398031570591154e-16 0 0 -1.2490009027033011e-16 -0.99999999999999989 -4.0398031570591268e-16 0.99999999999999989 -1.2490009027033011e-16</Rotation>
+<Translation>0.0023638317184885987 0.025549999999999767 -0.29081000000000023</Translation>
+</Transform>
+</Instance>
+<Instance name="hand-1" uid="hand-1" entityUid="hand*:*Default">
+<Transform>
+<Rotation>1 0 -1.7817447209446614e-16 -1.7817447209446616e-16 1.4849232954361469e-15 -0.99999999999999989 0 0.99999999999999989 1.4849232954361469e-15</Rotation>
+<Translation>0 0.017500000000000002 0</Translation>
+</Transform>
+</Instance>
+</Instance>
+</InstanceTree>
+<Constraints>
+<Coincident name="Coincident32">
+<ConstraintGeometry geomType="plane">
+<InstancePath>
+<Uid>monkey_body-1</Uid>
+<Uid>RoboMaster GM6020 Brushless DC Motor-2</Uid>
+</InstancePath>
+<Position>0 0 -0.075047856389410014</Position>
+<Axis>0 0 1.0000000000000002</Axis>
+</ConstraintGeometry>
+<ConstraintGeometry geomType="plane">
+<InstancePath>
+<Uid>left_hand-1</Uid>
+<Uid>arm-1</Uid>
+</InstancePath>
+<Position>-0.017320508075688797 -0.0099999999999999551 0</Position>
+<Axis>0 0 -0.99999999999999989</Axis>
+</ConstraintGeometry>
+</Coincident>
+<Concentric name="Concentric49">
+<ConstraintGeometry geomType="cylinder">
+<InstancePath>
+<Uid>monkey_body-1</Uid>
+<Uid>RoboMaster GM6020 Brushless DC Motor-2</Uid>
+</InstancePath>
+<Position>0 0 -0.075047856389410014</Position>
+<Axis>0 0 1.0000000000000002</Axis>
+</ConstraintGeometry>
+<ConstraintGeometry geomType="cylinder">
+<InstancePath>
+<Uid>left_hand-1</Uid>
+<Uid>arm-1</Uid>
+</InstancePath>
+<Position>0 0 0.0040000000000000001</Position>
+<Axis>0 0 -0.99999999999999989</Axis>
+</ConstraintGeometry>
+</Concentric>
+<Coincident name="Coincident33">
+<ConstraintGeometry geomType="plane">
+<InstancePath>
+<Uid>monkey_body-1</Uid>
+<Uid>RoboMaster GM6020 Brushless DC Motor-2</Uid>
+</InstancePath>
+<Position>0 0 -0.075047856389410014</Position>
+<Axis>0 0 1.0000000000000002</Axis>
+</ConstraintGeometry>
+<ConstraintGeometry geomType="plane">
+<InstancePath>
+<Uid>left_hand-1</Uid>
+<Uid>arm-1</Uid>
+</InstancePath>
+<Position>-0.017320508075688797 -0.0099999999999999551 0</Position>
+<Axis>0 0 -0.99999999999999989</Axis>
+</ConstraintGeometry>
+</Coincident>
+<Coincident name="Coincident34">
+<ConstraintGeometry geomType="plane">
+<InstancePath>
+<Uid>monkey_body-1</Uid>
+<Uid>RoboMaster GM6020 Brushless DC Motor-1</Uid>
+</InstancePath>
+<Position>0 0 -0.075047856389409973</Position>
+<Axis>0 0 1</Axis>
+</ConstraintGeometry>
+<ConstraintGeometry geomType="plane">
+<InstancePath>
+<Uid>right_hand-1</Uid>
+<Uid>arm-1</Uid>
+</InstancePath>
+<Position>-0.017320508075688801 -0.0099999999999999586 0.0040000000000000036</Position>
+<Axis>0 0 1</Axis>
+</ConstraintGeometry>
+</Coincident>
+<Concentric name="Concentric50">
+<ConstraintGeometry geomType="cylinder">
+<InstancePath>
+<Uid>monkey_body-1</Uid>
+<Uid>RoboMaster GM6020 Brushless DC Motor-1</Uid>
+</InstancePath>
+<Position>0 0 -0.075047856389409973</Position>
+<Axis>0 0 1</Axis>
+</ConstraintGeometry>
+<ConstraintGeometry geomType="cylinder">
+<InstancePath>
+<Uid>right_hand-1</Uid>
+<Uid>arm-1</Uid>
+</InstancePath>
+<Position>0 0 0.0040000000000000036</Position>
+<Axis>0 0 -1</Axis>
+</ConstraintGeometry>
+</Concentric>
+<Coincident name="Coincident35">
+<ConstraintGeometry geomType="plane">
+<InstancePath>
+<Uid>monkey_body-1</Uid>
+<Uid>RoboMaster GM6020 Brushless DC Motor-1</Uid>
+</InstancePath>
+<Position>0 0 -0.075047856389409973</Position>
+<Axis>0 0 1</Axis>
+</ConstraintGeometry>
+<ConstraintGeometry geomType="plane">
+<InstancePath>
+<Uid>right_hand-1</Uid>
+<Uid>arm-1</Uid>
+</InstancePath>
+<Position>-0.017320508075688801 -0.0099999999999999586 0.0040000000000000036</Position>
+<Axis>0 0 1</Axis>
+</ConstraintGeometry>
+</Coincident>
+</Constraints>
+</RootAssembly>
+<Assemblies>
+<Assembly name="monkey_body" uid="monkey_body" version="149">
+<ModelUnits mass="kilogram" length="millimeter"/>
+<AssemblyFile name="monkey_body.sldasm" type="SolidWorks Assembly"/>
+</Assembly>
+<Assembly name="Electronic_Layer" uid="Electronic_Layer" version="215">
+<ModelUnits mass="kilogram" length="inch"/>
+<AssemblyFile name="Electronic_Layer.SLDASM" type="SolidWorks Assembly"/>
+</Assembly>
+<Assembly name="right_hand" uid="right_hand" version="114">
+<ModelUnits mass="kilogram" length="millimeter"/>
+<AssemblyFile name="right_hand.sldasm" type="SolidWorks Assembly"/>
+</Assembly>
+<Assembly name="left_hand" uid="left_hand" version="127">
+<ModelUnits mass="kilogram" length="millimeter"/>
+<AssemblyFile name="left_hand.sldasm" type="SolidWorks Assembly"/>
+</Assembly>
+</Assemblies>
+<Parts>
+<Part name="93505A178_ALUM MALE-FEM THRDED HEX STANDOFF" uid="93505A178_ALUM MALE-FEM THRDED HEX STANDOFF*:*93505A178" version="140">
+<ModelUnits mass="kilogram" length="inch"/>
+<PartFile name="93505A178_ALUM MALE-FEM THRDED HEX STANDOFF.SLDPRT" type="SolidWorks Part"/>
+<MassProperties>
+<Mass>0.0052342053526603267</Mass>
+<CenterOfMass>-0.0029338042370733661 -9.0312638528087396e-08 -3.2871015632754999e-07</CenterOfMass>
+<Inertia>6.7356117113754181e-08 3.9171376938118226e-07 3.9171459352905725e-07 1.7552765038700891e-12 -1.7682699830013917e-11 2.7088202140591274e-11</Inertia>
+</MassProperties>
+<GeometryFile name="93505A178_ALUM MALE-FEM THRDED HEX STANDOFF_93505A178_sldprt.STEP" type="STEP"/>
+<VisualProperties>
+<Ambient r="0.89803921568627454" g="0.91764705882352937" b="0.92941176470588238" a="1"/>
+<Diffuse r="0.89803921568627454" g="0.91764705882352937" b="0.92941176470588238" a="1"/>
+<Specular r="0.44901960784313727" g="0.45882352941176469" b="0.46470588235294119" a="1"/>
+<Emissive r="0" g="0" b="0" a="1"/>
+<Shininess>0.3125</Shininess>
+</VisualProperties>
+</Part>
+<Part name="9578T310_HEAVY DUTY ALUMINUM CLAMP-ON FRAMING FITTING" uid="9578T310_HEAVY DUTY ALUMINUM CLAMP-ON FRAMING FITTING*:*9578T31" version="507">
+<ModelUnits mass="kilogram" length="millimeter"/>
+<PartFile name="9578T310_HEAVY DUTY ALUMINUM CLAMP-ON FRAMING FITTING.SLDPRT" type="SolidWorks Part"/>
+<MassProperties>
+<Mass>0.069587584212337419</Mass>
+<CenterOfMass>-5.2687831644526041e-08 -1.0007761050230925e-05 0.015360898956120835</CenterOfMass>
+<Inertia>1.743012507572509e-05 1.5972199737158059e-05 1.2743363796109975e-05 5.9611550613419686e-08 6.4934364219608259e-11 -3.729419940733069e-12</Inertia>
+</MassProperties>
+<GeometryFile name="9578T310_HEAVY DUTY ALUMINUM CLAMP-ON FRAMING FITTING_9578T31_sldprt.STEP" type="STEP"/>
+<VisualProperties>
+<Ambient r="0.89803921568627454" g="0.91764705882352937" b="0.92941176470588238" a="1"/>
+<Diffuse r="0.89803921568627454" g="0.91764705882352937" b="0.92941176470588238" a="1"/>
+<Specular r="0.44901960784313727" g="0.45882352941176469" b="0.46470588235294119" a="1"/>
+<Emissive r="0" g="0" b="0" a="1"/>
+<Shininess>0.3125</Shininess>
+</VisualProperties>
+</Part>
+<Part name="Battery" uid="Battery*:*Default" version="126">
+<ModelUnits mass="kilogram" length="millimeter"/>
+<PartFile name="Battery.SLDPRT" type="SolidWorks Part"/>
+<MassProperties>
+<Mass>0.63200000000000001</Mass>
+<CenterOfMass>0.029999999999999995 0.059999999999999991 -0.039999999999999994</CenterOfMass>
+<Inertia>0.0010954666666666666 0.00052666666666666671 0.00094799999999999973 0 0 0</Inertia>
+</MassProperties>
+<GeometryFile name="Battery_Default_sldprt.STEP" type="STEP"/>
+<VisualProperties>
+<Ambient r="0.792156862745098" g="0.81960784313725488" b="0.93333333333333335" a="1"/>
+<Diffuse r="0.792156862745098" g="0.81960784313725488" b="0.93333333333333335" a="1"/>
+<Specular r="0.396078431372549" g="0.40980392156862744" b="0.46666666666666667" a="1"/>
+<Emissive r="0" g="0" b="0" a="1"/>
+<Shininess>0.40000000596046448</Shininess>
+</VisualProperties>
+</Part>
+<Part name="BodyBar" uid="BodyBar*:*Default" version="206">
+<ModelUnits mass="kilogram" length="inch"/>
+<PartFile name="BodyBar.SLDPRT" type="SolidWorks Part"/>
+<MassProperties>
+<Mass>0.044580640207559939</Mass>
+<CenterOfMass>4.6026470387874633e-08 0.13969995647748162 -0.00011794501502204498</CenterOfMass>
+<Inertia>0.0002930251179825052 1.3636488826298518e-06 0.00029305606062234892 -6.5338933496380916e-12 2.9058327331186181e-11 5.5802256423413594e-11</Inertia>
+</MassProperties>
+<GeometryFile name="BodyBar_Default_sldprt.STEP" type="STEP"/>
+<VisualProperties>
+<Ambient r="0.89803921568627454" g="0.91764705882352937" b="0.92941176470588238" a="1"/>
+<Diffuse r="0.89803921568627454" g="0.91764705882352937" b="0.92941176470588238" a="1"/>
+<Specular r="0.44901960784313727" g="0.45882352941176469" b="0.46470588235294119" a="1"/>
+<Emissive r="0" g="0" b="0" a="1"/>
+<Shininess>0.3125</Shininess>
+</VisualProperties>
+</Part>
+<Part name="MountPlate" uid="MountPlate*:*Default" version="221">
+<ModelUnits mass="kilogram" length="inch"/>
+<PartFile name="MountPlate.SLDPRT" type="SolidWorks Part"/>
+<MassProperties>
+<Mass>0.038370594954281537</Mass>
+<CenterOfMass>0.057149999999999999 0.0024999999999999996 -0.036829999999999988</CenterOfMass>
+<Inertia>1.8242612200143921e-05 6.2367038230769307e-05 4.4284303509601557e-05 0 0 0</Inertia>
+</MassProperties>
+<GeometryFile name="MountPlate_Default_sldprt.STEP" type="STEP"/>
+<VisualProperties>
+<Ambient r="0.792156862745098" g="0.81960784313725488" b="0.93333333333333335" a="1"/>
+<Diffuse r="0.792156862745098" g="0.81960784313725488" b="0.93333333333333335" a="1"/>
+<Specular r="0.396078431372549" g="0.40980392156862744" b="0.46666666666666667" a="1"/>
+<Emissive r="0" g="0" b="0" a="1"/>
+<Shininess>0.40000000596046448</Shininess>
+</VisualProperties>
+</Part>
+<Part name="RM_Board_A" uid="RM_Board_A*:*Default" version="111">
+<ModelUnits mass="kilogram" length="millimeter"/>
+<PartFile name="RM_Board_A.SLDPRT" type="SolidWorks Part"/>
+<MassProperties>
+<Mass>0.33351449999999999</Mass>
+<CenterOfMass>0.042500000000000003 0.0074999999999999989 -0.029000000000000001</CenterOfMass>
+<Inertia>9.9748628375000018e-05 0.00029429875337499999 0.00020705691874999999 0 0 0</Inertia>
+</MassProperties>
+<GeometryFile name="RM_Board_A_Default_sldprt.STEP" type="STEP"/>
+<VisualProperties>
+<Ambient r="0.68627450980392157" g="0.6588235294117647" b="0.63921568627450975" a="1"/>
+<Diffuse r="0.68627450980392157" g="0.6588235294117647" b="0.63921568627450975" a="1"/>
+<Specular r="0.34313725490196079" g="0.32941176470588235" b="0.31960784313725488" a="1"/>
+<Emissive r="0" g="0" b="0" a="1"/>
+<Shininess>0.3125</Shininess>
+</VisualProperties>
+</Part>
+<Part name="RoboMaster GM6020 Brushless DC Motor" uid="RoboMaster GM6020 Brushless DC Motor*:*Default" version="119">
+<ModelUnits mass="kilogram" length="millimeter"/>
+<PartFile name="RoboMaster GM6020 Brushless DC Motor.SLDPRT" type="SolidWorks Part"/>
+<MassProperties>
+<Mass>0.46800000000000003</Mass>
+<CenterOfMass>0.00011244881078019959 -5.9794726652702071e-05 -0.093981783105039921</CenterOfMass>
+<Inertia>0.00017727105968502369 0.00017653696609887072 0.00026193885970109072 -5.9111075203862161e-07 8.3494625978880539e-07 -6.8315050354214545e-07</Inertia>
+</MassProperties>
+<GeometryFile name="RoboMaster GM6020 Brushless DC Motor_Default_sldprt.STEP" type="STEP"/>
+<VisualProperties>
+<Ambient r="0.89803921568627454" g="0.91764705882352937" b="0.92941176470588238" a="1"/>
+<Diffuse r="0.89803921568627454" g="0.91764705882352937" b="0.92941176470588238" a="1"/>
+<Specular r="0.44901960784313727" g="0.45882352941176469" b="0.46470588235294119" a="1"/>
+<Emissive r="0" g="0" b="0" a="1"/>
+<Shininess>0.3125</Shininess>
+</VisualProperties>
+</Part>
+<Part name="ShoulderMount" uid="ShoulderMount*:*Default" version="228">
+<ModelUnits mass="kilogram" length="inch"/>
+<PartFile name="ShoulderMount.SLDPRT" type="SolidWorks Part"/>
+<MassProperties>
+<Mass>0.033316047465238349</Mass>
+<CenterOfMass>1.2246672303743006e-09 -9.961005839220076e-10 0.0059702707048627417</CenterOfMass>
+<Inertia>9.2052292455531291e-06 9.5803439301495118e-06 1.7716602386514847e-05 2.7739099787608752e-13 -7.3016059247393277e-13 1.3651267624481241e-13</Inertia>
+</MassProperties>
+<GeometryFile name="ShoulderMount_Default_sldprt.STEP" type="STEP"/>
+<VisualProperties>
+<Ambient r="0.792156862745098" g="0.81960784313725488" b="0.93333333333333335" a="1"/>
+<Diffuse r="0.792156862745098" g="0.81960784313725488" b="0.93333333333333335" a="1"/>
+<Specular r="0.396078431372549" g="0.40980392156862744" b="0.46666666666666667" a="1"/>
+<Emissive r="0" g="0" b="0" a="1"/>
+<Shininess>0.40000000596046448</Shininess>
+</VisualProperties>
+</Part>
+<Part name="arm" uid="arm*:*Default" version="132">
+<ModelUnits mass="kilogram" length="millimeter"/>
+<PartFile name="arm.SLDPRT" type="SolidWorks Part"/>
+<MassProperties>
+<Mass>0.0847130895320264</Mass>
+<CenterOfMass>0 0.079825101456156122 0.0019999999999999996</CenterOfMass>
+<Inertia>0.00018321075372259354 1.8901040623855965e-05 0.0002018858927743641 0 0 0</Inertia>
+</MassProperties>
+<GeometryFile name="arm_Default_sldprt.STEP" type="STEP"/>
+<VisualProperties>
+<Ambient r="0.89803921568627454" g="0.91764705882352937" b="0.92941176470588238" a="1"/>
+<Diffuse r="0.89803921568627454" g="0.91764705882352937" b="0.92941176470588238" a="1"/>
+<Specular r="0.44901960784313727" g="0.45882352941176469" b="0.46470588235294119" a="1"/>
+<Emissive r="0" g="0" b="0" a="1"/>
+<Shininess>0.3125</Shininess>
+</VisualProperties>
+</Part>
+<Part name="hand" uid="hand*:*Default" version="152">
+<ModelUnits mass="kilogram" length="millimeter"/>
+<PartFile name="hand.SLDPRT" type="SolidWorks Part"/>
+<MassProperties>
+<Mass>0.11683226291326605</Mass>
+<CenterOfMass>-0.013755587805571342 -0.053511806661635665 0.017500000000000002</CenterOfMass>
+<Inertia>0.0004350223163417485 3.7284200610465764e-05 0.00044843249179977432 0 0 -5.7996527728920566e-05</Inertia>
+</MassProperties>
+<GeometryFile name="hand_Default_sldprt.STEP" type="STEP"/>
+<VisualProperties>
+<Ambient r="0.89803921568627454" g="0.91764705882352937" b="0.92941176470588238" a="1"/>
+<Diffuse r="0.89803921568627454" g="0.91764705882352937" b="0.92941176470588238" a="1"/>
+<Specular r="0.44901960784313727" g="0.45882352941176469" b="0.46470588235294119" a="1"/>
+<Emissive r="0" g="0" b="0" a="1"/>
+<Shininess>0.3125</Shininess>
+</VisualProperties>
+</Part>
+<Part name="wrist" uid="wrist*:*Default" version="155">
+<ModelUnits mass="kilogram" length="inch"/>
+<PartFile name="wrist.SLDPRT" type="SolidWorks Part"/>
+<MassProperties>
+<Mass>0.092003053223538328</Mass>
+<CenterOfMass>-0.034771959589151351 0.019049999999999994 -0.020695872632629612</CenterOfMass>
+<Inertia>2.3579308670530761e-05 2.4575502569710417e-05 2.3579308670530775e-05 0 7.1490209729846715e-06 0</Inertia>
+</MassProperties>
+<GeometryFile name="wrist_Default_sldprt.STEP" type="STEP"/>
+<VisualProperties>
+<Ambient r="0.20000000000000001" g="0.20000000000000001" b="0.20000000000000001" a="1"/>
+<Diffuse r="0.20000000000000001" g="0.20000000000000001" b="0.20000000000000001" a="1"/>
+<Specular r="0.10000000000000001" g="0.10000000000000001" b="0.10000000000000001" a="1"/>
+<Emissive r="0" g="0" b="0" a="1"/>
+<Shininess>0.3125</Shininess>
+</VisualProperties>
+</Part>
+</Parts>
+</SimscapeMultibodyImportXML>

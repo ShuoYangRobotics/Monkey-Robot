@@ -1,0 +1,42 @@
+script_Monkey_proto_basic;
+
+
+w1 = [0;-1;0];
+pq1 = [0;0;0];
+w2 = [0;-1;0];
+pq2 = [0;0;(-290.81)*10^-3];
+w3 = [0;1;0];
+pq3 = [0;(-68.82-35)*10^-3;(-290.81)*10^-3];
+Slist = [[w1;-cross(w1,pq1)] [w2;-cross(w2,pq2)] [w3;-cross(w3,pq3)]];
+
+%% IK
+xz_start = [-0.4113;
+                  0];
+              
+xz_end = [0.5;
+            0];
+        
+
+
+%% FK
+% home configuration
+home_config = [[  1,  0,   0, 0]; 
+               [  0,  1,   0, (-68.82-35)*10^-3]; 
+               [  0,  0,   1, 0]; 
+               [ 0,  0,  0, 1]];
+ 
+thetalist = [-45/180*pi;
+                       0;
+             -90/180*pi];
+% T = FKinSpace(home_config, Slist, thetalist);
+% x = zeros(size(thetamat,1),1);
+% z = zeros(size(thetamat,1),1);
+% 
+% for i = 1: size(thetamat,1)
+%     T = FKinSpace(home_config, Slist, thetamat(i,:));
+%     x(i) = T(1,4);
+%     z(i) = T(3,4);
+% end
+
+
+           
