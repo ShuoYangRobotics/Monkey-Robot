@@ -41,7 +41,11 @@
 #include "usart.h"
 
 /* USER CODE BEGIN 0 */
-
+extern uint8_t aRxBuffer[RxBufferSize];
+extern uint8_t *head;
+extern uint8_t *tail;
+extern RobotControl robot_control;
+extern Trajectory traj;
 /* USER CODE END 0 */
 
 UART_HandleTypeDef huart2;
@@ -235,7 +239,69 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* uartHandle)
 } 
 
 /* USER CODE BEGIN 1 */
+// callback after the DMA transfer complete
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+	UNUSED(huart);
+	
+	tail += 14;
+	
+	while (head < tail) { // buf not empty
+		if(*head == 0xAA) { // package head detected
+			if(tail-head>=14) {
+				// crc
+				uint16_t crc_ccitt_ffff_val = 0xffff;
+				uint8_t* ptr = head;
+				int i;
+				for(i = 0; i<12; i++) { // do crc with the first 12 uint8
+					crc_ccitt_ffff_val = update_crc_ccitt(crc_ccitt_ffff_val, *ptr);
+					ptr++;
+				}
+				//HAL_UART_Transmit(&huart2,head,14,100);
+				if(*(head+13) == ((crc_ccitt_ffff_val&0xFF00)>>8) && *(head+12) == (crc_ccitt_ffff_val&0xFF)) { // crc pass
+					// extract data out of buffer
+					//HAL_UART_Transmit(&huart2,head,14,100);
+					Serial_struct ackPack = execute(unpack(head), &robot_control, &traj);
+					//HAL_Delay(1);
+					HAL_UART_Transmit(&huart2, (uint8_t*)&ackPack, sizeof(ackPack),100);
+					LED_GREEN_TOGGLE();	
+					head +=14;
+				} else { // crc fail, might loss of data or meet wrong head position
+					head++;
+					break;
+				}
+			} else { // package not received in whole, move buf and keep receive
+				break;
+			}
+		} else {
+			head++;
+		}
+	} // emptied buf and no head found
+	
+	// move data forward
+	uint8_t *iterator = head;
+	uint8_t i = 0;
+	for(; iterator<tail; iterator++) {
+		aRxBuffer[i++] = *iterator;
+	}
+	tail -= head - aRxBuffer;
+	head = aRxBuffer;
+	
+	if(tail-aRxBuffer >= 70) { // not much room left
+		memset(aRxBuffer, 0, sizeof(aRxBuffer));
+		tail = aRxBuffer;
+	}
+	
+	HAL_UART_Receive_DMA(&huart2,tail,14);
+	
+}
 
+// callback after the data string sent complete
+void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart){
+	
+	//HAL_UART_Transmit_DMA(&huart2,aTxBuffer,sizeof(aTxBuffer));
+	
+}
 /* USER CODE END 1 */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
