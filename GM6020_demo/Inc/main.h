@@ -82,7 +82,7 @@ typedef struct {
 
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
-
+#define RxBufferSize 100
 /* USER CODE END EC */
 
 /* Exported macro ------------------------------------------------------------*/
