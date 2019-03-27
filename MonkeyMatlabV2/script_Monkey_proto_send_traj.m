@@ -10,7 +10,11 @@
 %                   new_x_list(6) ( vel for right shoulder motor)
 % and then send through serial port
 
-load('test_traj.mat');
+
+% different trajectory for different start and end distance
+% 041to041 means that start distance is 0.41cm and end distance is 0.45cm
+load('test_traj_041to041.mat');
+load('test_traj_041to045.mat');
 %% prepare serial port
 s = serial('COM5');
 set(s,'BaudRate',115200);

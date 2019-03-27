@@ -6,7 +6,7 @@ script_Monkey_proto_basic;
 %% %%%%%%%%%%%%%%%%%%%%% set up control goal
 % start and end locations
 xz_start = [-0.4113;
-                  -0.05];
+                  -0.0];
               
 xz_end = [0.45;
             0];
