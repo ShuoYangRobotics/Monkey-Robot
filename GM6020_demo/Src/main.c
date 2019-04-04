@@ -132,6 +132,7 @@ RobotControl robot_control = { .debug_print = 0, .ctrl_mode = 0, .output_enable 
 /// mode selection flags
 /// mode selection flags
 
+uint16_t count = 0;
 uint16_t pwm_pulse_left = 1500;  // default pwm pulse width:1080~1920
 uint16_t pwm_pulse_right = 1500;  // default pwm pulse width:1080~1920
 /* Private variables ---------------------------------------------------------*/
@@ -280,6 +281,27 @@ int main(void)
 		imu_ahrs_update();
 		imu_attitude_update(); 
 		// start control loop
+		
+		// 2019-04-03 test pwm
+    /* set pwm pulse width */
+		__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_1, pwm_pulse_left);   // PA8
+//		__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_2, pwm_pulse_right);
+//		__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_3, pwm_pulse_left);
+		__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_4, pwm_pulse_right); //PE14
+
+		count++;
+		if (count == 500)
+		{
+			LED_RED_TOGGLE();
+			pwm_pulse_left += 380;
+			pwm_pulse_right +=380;
+			count = 0;
+		}
+		if (pwm_pulse_left > 1881)
+		{
+			pwm_pulse_left = 1500;
+			pwm_pulse_right = 1500;
+		}
 		// end control loop
 		
     /* system delay 1ms */
@@ -392,7 +414,10 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 	}
 	
 	if (htim->Instance == htim3.Instance) { // 1ms trig for control
-		HAL_GPIO_TogglePin(GPIOI, GPIO_PIN_0); // for test
+		
+		
+		
+		
 		
 		switch (robot_control.ctrl_mode) {
 			case 0 :
