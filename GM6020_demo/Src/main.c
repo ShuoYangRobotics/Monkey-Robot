@@ -105,7 +105,7 @@ pid_struct_t motor_current_pid[2];
 // for this simpel trajectory, it is initialized in the traj.h
 float Tf = 0.66f; // use 2 seconds to finish this trajectory
 
-float aux_traj_Tf = 4.0f;  // the time to execute init pose auxiluary trajectory
+float aux_traj_Tf = 3.0f;  // the time to execute init pose auxiluary trajectory
 
 float left_start_state[2];   // 
 float left_end_state[2];     // 
@@ -370,7 +370,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 			
 			case 2:
 				sprintf(buf, "ctrl_mode %d \t angle1:%4.3f \t angle2:%4.3f \t vel1:%4.3f \t vel2:%4.3f crt1:%d \t crt2:%d \n", 
-					robot_control.ctrl_mode, motor_angle_rad[0], motor_angle_rad[1], motor_velocity_rads[0], motor_velocity_rads[1], motor_info[0].torque_current,motor_info[1].torque_current);
+					robot_control.ctrl_mode, modified_motor_angle_rad[0], modified_motor_angle_rad[1], motor_velocity_rads[0], motor_velocity_rads[1], motor_info[0].torque_current,motor_info[1].torque_current);
 				HAL_UART_Transmit_DMA(&huart2, (uint8_t *)buf, (COUNTOF(buf)-1));
 				//				memset(buf, 0, sizeof(buf));
 				break;
@@ -469,7 +469,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 				break;
 			case 4 :
 				// first enter, should have traj_start = 0
-				if (traj_start >= 20)  // a 20ms delay
+				if (traj_start >= 40)  // a 40ms delay
 				{
 					// take waypoint from trajectory
 					if (traj_timer > traj_count*Tf/stepNum)
@@ -481,11 +481,14 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 						else
 						{
 							traj_timer = Tf;
-							// after finish case 4, go to ctrl mode 9, standby 
-							robot_control.ctrl_mode = 9;					
+							// after finish case 4, go to ctrl mode 6, standby 
+							robot_control.ctrl_mode = 6;					
 							traj_start = 0;
-							traj_count = 0;
 						}
+					}
+					
+					if (traj_timer > Tf*0.8) {
+						robot_control.pwm_pulse_right = 1500;
 					}
 					
 					target_angle_rad[0] = traj.left_state_angle[traj_count];
@@ -544,13 +547,10 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 						}
 						else
 						{
-							if (traj_timer > aux_traj_Tf+0.1f)
-							{
+								traj_timer = aux_traj_Tf;
 								// after finish case 5, go to ctrl mode 6 
 								robot_control.ctrl_mode = 6;					
 								traj_start = 0;
-								traj_count = 0;
-							}
 						}
 					}
 					
@@ -617,6 +617,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 						motor_info[1].set_voltage);
 				}
 				break;
+				
 			case 9:
 				// hold the motor with previous stage motor command for only 500ms
 				/* motor speed pid calc ID1 ID1 ID1 ID1 ID1 ID1 ID1 ID1*/
