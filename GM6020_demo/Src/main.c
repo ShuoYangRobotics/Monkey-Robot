@@ -105,7 +105,7 @@ pid_struct_t motor_current_pid[2];
 // for this simpel trajectory, it is initialized in the traj.h
 float Tf = 0.66f; // use 2 seconds to finish this trajectory
 
-float aux_traj_Tf = 10.0f;  // the time to execute init pose auxiluary trajectory
+float aux_traj_Tf = 4.0f;  // the time to execute init pose auxiluary trajectory
 
 float left_start_state[2];   // 
 float left_end_state[2];     // 
@@ -481,9 +481,10 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 						else
 						{
 							traj_timer = Tf;
-							// after finish case 4, go to ctrl mode 6, standby 
-							robot_control.ctrl_mode = 6;					
+							// after finish case 4, go to ctrl mode 9, standby 
+							robot_control.ctrl_mode = 9;					
 							traj_start = 0;
+							traj_count = 0;
 						}
 					}
 					
@@ -522,7 +523,9 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 //					init_simple_trajectory(1, Tf, tgt_state, right_state_angle, right_state_velocity);
 //					init_test_swing_trajectory(0, Tf, left_state_angle, left_state_velocity);
 //					init_test_swing_trajectory(1, Tf, right_state_angle, right_state_velocity);
-					robot_control.pwm_pulse_right = 1880;
+					
+					// open right hand as a test step
+					robot_control.pwm_pulse_right = 1500-380;
 				}
 				break;
 			case 8:
@@ -546,6 +549,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 								// after finish case 5, go to ctrl mode 6 
 								robot_control.ctrl_mode = 6;					
 								traj_start = 0;
+								traj_count = 0;
 							}
 						}
 					}
@@ -593,7 +597,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 				break;
 				
 			case 6:
-				// hold the motor with previous stage motor command
+				// hold the motor with previous stage motor command 
 				/* motor speed pid calc ID1 ID1 ID1 ID1 ID1 ID1 ID1 ID1*/
 				tgt_velocity[0] = pid_calc(&motor_angle_pid[0], target_angle_rad[0], modified_motor_angle_rad[0]);
 				target_current[0] = pid_calc(&motor_velocity_pid[0], tgt_velocity[0], motor_velocity_rads[0]);
@@ -611,6 +615,32 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 					set_motor_voltage(0, 
 						motor_info[0].set_voltage, 
 						motor_info[1].set_voltage);
+				}
+				break;
+			case 9:
+				// hold the motor with previous stage motor command for only 500ms
+				/* motor speed pid calc ID1 ID1 ID1 ID1 ID1 ID1 ID1 ID1*/
+				tgt_velocity[0] = pid_calc(&motor_angle_pid[0], target_angle_rad[0], modified_motor_angle_rad[0]);
+				target_current[0] = pid_calc(&motor_velocity_pid[0], tgt_velocity[0], motor_velocity_rads[0]);
+				motor_info[0].set_voltage = pid_calc(&motor_current_pid[0], target_current[0], motor_info[0].torque_current/5700.0f);
+				
+				
+				/* motor speed pid calc ID2 ID2 ID2 ID2 ID2 ID2 ID2 ID2*/
+				tgt_velocity[1] = pid_calc(&motor_angle_pid[1], target_angle_rad[1], modified_motor_angle_rad[1]);
+				target_current[1] = pid_calc(&motor_velocity_pid[1], tgt_velocity[1], motor_velocity_rads[1]);
+				motor_info[1].set_voltage = pid_calc(&motor_current_pid[1], target_current[1], motor_info[1].torque_current/5700.0f);
+
+				/* send motor control message through can bus*/
+				if (robot_control.output_enable == 1)
+				{			 		
+					set_motor_voltage(0, 
+						motor_info[0].set_voltage, 
+						motor_info[1].set_voltage);
+				}
+				traj_count++;
+				
+				if (traj_count > 500) {
+					robot_control.output_enable = 0;
 				}
 				break;
 			default :
