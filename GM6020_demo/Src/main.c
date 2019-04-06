@@ -105,6 +105,8 @@ pid_struct_t motor_current_pid[2];
 // for this simpel trajectory, it is initialized in the traj.h
 float Tf = 0.66f; // use 2 seconds to finish this trajectory
 
+float aux_traj_Tf = 10.0f;  // the time to execute init pose auxiluary trajectory
+
 float left_start_state[2];   // 
 float left_end_state[2];     // 
 float left_state_angle[stepNum+1];
@@ -123,18 +125,18 @@ float tgt_state[2] = {0,0};
 float tgt_velocity[2];
 float dt = 0.001f; // the time between each loop run
 float traj_timer = 0.0f;
-bool traj_start = 0;
+uint16_t traj_start = 0;
 int traj_count = 0;
 	
 /// mode selection flags
 /// mode selection flags
-RobotControl robot_control = { .debug_print = 0, .ctrl_mode = 0, .output_enable = 0 };
+RobotControl robot_control = { .debug_print = 0, .ctrl_mode = 0, .output_enable = 0, .pwm_pulse_left = 1500, .pwm_pulse_right = 1500 };
 /// mode selection flags
 /// mode selection flags
 
 uint16_t count = 0;
-uint16_t pwm_pulse_left = 1500;  // default pwm pulse width:1080~1920
-uint16_t pwm_pulse_right = 1500;  // default pwm pulse width:1080~1920
+//uint16_t pwm_pulse_left = 1500;  // default pwm pulse width:1080~1920
+//uint16_t pwm_pulse_right = 1500;  // default pwm pulse width:1080~1920
 /* Private variables ---------------------------------------------------------*/
 //bluetooth message buffer
 uint8_t aTxStartMessage[] = "\r\n******Init Done. Program start to receive command.******\r\n";
@@ -284,24 +286,24 @@ int main(void)
 		
 		// 2019-04-03 test pwm
     /* set pwm pulse width */
-		__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_1, pwm_pulse_left);   // PA8
+		__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_1, robot_control.pwm_pulse_left);   // PA8
 //		__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_2, pwm_pulse_right);
 //		__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_3, pwm_pulse_left);
-		__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_4, pwm_pulse_right); //PE14
+		__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_4, robot_control.pwm_pulse_right); //PE14
 
 		count++;
 		if (count == 500)
 		{
 			LED_RED_TOGGLE();
-			pwm_pulse_left += 380;
-			pwm_pulse_right +=380;
+//			pwm_pulse_left += 380;
+//			pwm_pulse_right -=380;
 			count = 0;
 		}
-		if (pwm_pulse_left > 1881)
-		{
-			pwm_pulse_left = 1500;
-			pwm_pulse_right = 1500;
-		}
+//		if (pwm_pulse_left > 1881)
+//		{
+//			pwm_pulse_left = 1500;
+//			pwm_pulse_right = 1500;
+//		}
 		// end control loop
 		
     /* system delay 1ms */
@@ -467,7 +469,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 				break;
 			case 4 :
 				// first enter, should have traj_start = 0
-				if (traj_start == 1)
+				if (traj_start >= 20)  // a 20ms delay
 				{
 					// take waypoint from trajectory
 					if (traj_timer > traj_count*Tf/stepNum)
@@ -513,13 +515,14 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 				}
 				else
 				{
-					traj_start = 1;
+					traj_start++;
 					traj_timer = 0.0f;
 					traj_count = 0;
 //					init_simple_trajectory(0, Tf, tgt_state, left_state_angle, left_state_velocity);
 //					init_simple_trajectory(1, Tf, tgt_state, right_state_angle, right_state_velocity);
 //					init_test_swing_trajectory(0, Tf, left_state_angle, left_state_velocity);
 //					init_test_swing_trajectory(1, Tf, right_state_angle, right_state_velocity);
+					robot_control.pwm_pulse_right = 1880;
 				}
 				break;
 			case 8:
@@ -530,7 +533,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 				if (traj_start == 1)
 				{
 					// take waypoint from aux trajectory
-					if (traj_timer > traj_count*3.0f/stepNum)  //TODO: this time extract out
+					if (traj_timer > traj_count*aux_traj_Tf/stepNum)  //TODO: this time extract out
 					{
 						if (traj_count < stepNum)
 						{
@@ -538,7 +541,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 						}
 						else
 						{
-							if (traj_timer > 3.0f+0.1f)
+							if (traj_timer > aux_traj_Tf+0.1f)
 							{
 								// after finish case 5, go to ctrl mode 6 
 								robot_control.ctrl_mode = 6;					
@@ -580,10 +583,10 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 					traj_count = 0;
 					tgt_state[0] = traj.left_state_angle[0];
 					tgt_state[1] = traj.left_state_velocity[0];
-					init_simple_trajectory(0, 3.0f, tgt_state, aux_traj.left_state_angle, aux_traj.left_state_velocity);
+					init_simple_trajectory(0, aux_traj_Tf, tgt_state, aux_traj.left_state_angle, aux_traj.left_state_velocity);
 					tgt_state[0] = traj.right_state_angle[0];
 					tgt_state[1] = traj.right_state_velocity[0];
-					init_simple_trajectory(1, 3.0f, tgt_state, aux_traj.right_state_angle, aux_traj.right_state_velocity);
+					init_simple_trajectory(1, aux_traj_Tf, tgt_state, aux_traj.right_state_angle, aux_traj.right_state_velocity);
 //					init_test_swing_trajectory(0, Tf, left_state_angle, left_state_velocity);
 //					init_test_swing_trajectory(1, Tf, right_state_angle, right_state_velocity);
 				}

@@ -74,6 +74,8 @@ typedef struct {
 	// if ctrl_mode = 7, executing trajectory points
 	int ctrl_mode;
 	int output_enable; // if output_enable == 0, do not output control voltage to motors
+	uint16_t pwm_pulse_left;  // default pwm pulse width:1080~1920
+	uint16_t pwm_pulse_right;  // default pwm pulse width:1080~1920
 } RobotControl;
 
 #include "protocol.h"

@@ -29,7 +29,7 @@ Serial_struct execute(Serial_struct data, RobotControl* robot_control, Trajector
 	Serial_struct ackPack;
 	switch(data.type) {
 		case 0:
-			
+				robot_control -> output_enable = 0;
 			break;
 		case 1:
 			switch(data.value) {
@@ -114,6 +114,25 @@ Serial_struct execute(Serial_struct data, RobotControl* robot_control, Trajector
 				ackPack = err(data, traj -> leftStepReceived, data.position, data.velocity);
 			}
 			break;
+		
+		case 8:
+			if (data.value == 0) {
+				robot_control -> pwm_pulse_left = 1500+380;
+			}
+			else {
+				robot_control -> pwm_pulse_left = 1500;
+			}
+			break;
+		case 9:
+			if (data.value == 0) {
+				robot_control -> pwm_pulse_right = 1500-380;
+			}
+			else {
+				robot_control -> pwm_pulse_right = 1500;
+			}
+			break;
+				
+			
 		default:
 			break;
 	}
