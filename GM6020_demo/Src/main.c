@@ -262,10 +262,10 @@ int main(void)
   can_user_init(&hcan1);                   // config can filter, start can
 
 	// PID setup
-  pid_init(&motor_angle_pid[0], 200, 0.0001, 0.01, 200, 800);       //init pid parameter, kp=38, ki=0.001, kd=0.5, output limit = 200rads
-  pid_init(&motor_angle_pid[1], 200, 0.0001, 0.01, 200, 800);       //init pid parameter, kp=38, ki=0.001, kd=0.5, output limit = 200rads
-  pid_init(&motor_velocity_pid[0], 6, 0.00001, 0.06, 125, 600); //init pid parameter, kp=7, ki=3, kd=0.06, output limit = 30000
-  pid_init(&motor_velocity_pid[1], 6, 0.00001, 0.06, 125, 600); //init pid parameter, kp=7, ki=3, kd=0.06, output limit = 30000
+  pid_init(&motor_angle_pid[0], 300, 0.0001, 0.01, 200, 800);       //init pid parameter, kp=38, ki=0.001, kd=0.5, output limit = 200rads
+  pid_init(&motor_angle_pid[1], 300, 0.0001, 0.01, 200, 800);       //init pid parameter, kp=38, ki=0.001, kd=0.5, output limit = 200rads
+  pid_init(&motor_velocity_pid[0], 6, 0.00001, 0.06, 125, 700); //init pid parameter, kp=7, ki=3, kd=0.06, output limit = 30000
+  pid_init(&motor_velocity_pid[1], 6, 0.00001, 0.06, 125, 700); //init pid parameter, kp=7, ki=3, kd=0.06, output limit = 30000
   pid_init(&motor_current_pid[0], 160, 0.001, 0.06, 20000, 30000); //init pid parameter, kp=1000, ki=3, kd=0.06, output limit = 30000
   pid_init(&motor_current_pid[1], 160, 0.001, 0.06, 20000, 30000); //init pid parameter, kp=1000, ki=3, kd=0.06, output limit = 30000
 	
@@ -469,7 +469,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 				break;
 			case 4 :
 				// first enter, should have traj_start = 0
-				if (traj_start >= 40)  // a 40ms delay
+				if (traj_start >= 70)  // a 60ms delay
 				{
 					// take waypoint from trajectory
 					if (traj_timer > traj_count*Tf/stepNum)
@@ -487,9 +487,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 						}
 					}
 					
-					if (traj_timer > Tf*0.8) {
-						robot_control.pwm_pulse_right = 1500;
-					}
+
 					
 					target_angle_rad[0] = traj.left_state_angle[traj_count];
 					target_velocity_rads[0] = traj.left_state_velocity[traj_count];
@@ -516,6 +514,10 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 					}
 					
 					traj_timer += dt;
+					
+					if (traj_timer > Tf*0.9f) {
+						robot_control.pwm_pulse_right = 1500;
+					}
 				}
 				else
 				{
@@ -528,7 +530,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 //					init_test_swing_trajectory(1, Tf, right_state_angle, right_state_velocity);
 					
 					// open right hand as a test step
-					robot_control.pwm_pulse_right = 1500-380;
+					robot_control.pwm_pulse_right = 1500+360;
 				}
 				break;
 			case 8:

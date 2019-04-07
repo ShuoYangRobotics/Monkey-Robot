@@ -117,7 +117,7 @@ Serial_struct execute(Serial_struct data, RobotControl* robot_control, Trajector
 		
 		case 8:
 			if (data.value == 0) {
-				robot_control -> pwm_pulse_left = 1500+380;
+				robot_control -> pwm_pulse_left = 1500-320;
 			}
 			else {
 				robot_control -> pwm_pulse_left = 1500;
@@ -125,7 +125,7 @@ Serial_struct execute(Serial_struct data, RobotControl* robot_control, Trajector
 			break;
 		case 9:
 			if (data.value == 0) {
-				robot_control -> pwm_pulse_right = 1500-380;
+				robot_control -> pwm_pulse_right = 1500+320;
 			}
 			else {
 				robot_control -> pwm_pulse_right = 1500;
