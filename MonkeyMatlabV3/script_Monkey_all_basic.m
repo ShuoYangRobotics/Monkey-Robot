@@ -26,21 +26,21 @@ M23 = inv(M2)*M3;
 M34 = inv(M3)*M4;
 
 I1 = [arm_Ixx              0              0;
-            0        arm_Iyy  -122672*10^-9;
-            0  -122672*10^-9        arm_Izz ];
+            0        arm_Iyy              0;
+            0              0        arm_Izz ];
         
 G1 = [I1 zeros(3,3);
       zeros(3,3) diag([arm_mass, arm_mass, arm_mass])];
   
-I2 = [   body_Ixx    61443*10^-9   -605916*10^-9;
-      61443*10^-9       body_Iyy   -413299*10^-9;
-    -605916*10^-9  -413299*10^-9        body_Izz ];
+I2 = [   body_Ixx              0               0;
+                0       body_Iyy               0;
+                0              0        body_Izz ];
 G2 = [I2 zeros(3,3);
       zeros(3,3) diag([body_mass, body_mass, body_mass])];
   
 I3 = [arm_Ixx                 0                  0;
-            0           arm_Iyy       122672*10^-9;
-            0      122672*10^-9            arm_Izz ];
+            0           arm_Iyy                  0;
+            0                 0            arm_Izz ];
 G3 = [I3 zeros(3,3);
       zeros(3,3) diag([arm_mass, arm_mass, arm_mass])];
 
