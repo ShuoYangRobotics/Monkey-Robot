@@ -62,8 +62,13 @@ extern "C" {
 /* USER CODE BEGIN ET */
 
 typedef struct {
-	int debug_print; // if debug print = 1, print imu info to UART, if debug print = 2 print motor info to UART, if debug print = 3 print control loop info to UART
-	
+	// if debug print = 0, print nothing, 
+	// if debug print = 1, print imu info to UART, 
+	// if debug print = 2 print motor info to UART, 
+	// if debug print = 3 print control loop info to UART
+	// if debug print = 4, print recorded motor info to UART, currently in main
+	int debug_print; 	
+
 	// if ctrl_mode = 0, idle
 	// if ctrl_mode = 1, use target position for control    
 	// if ctrl_mode = 2, use target velocity 
@@ -88,7 +93,6 @@ typedef struct {
 	
 	// How to determine sides and direction of robot:
 	// the side with on/off button is front side. its left end is left side. 
-	
 	
 	int output_enable; // if output_enable == 0, do not output control voltage to motors
 	uint16_t pwm_pulse_left;  // default pwm pulse width:1080~1920

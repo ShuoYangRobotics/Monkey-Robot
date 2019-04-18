@@ -19,7 +19,11 @@ __packed  typedef struct{
 } Serial_struct;
 // sizeof(serial_struct)  // 14 bytes
 
+// given head of pack in buffer, get the package out of buffer
 Serial_struct unpack(uint8_t* head);
+
+// given all the data a pack need, construct a data pack
+Serial_struct pack(uint8_t type, uint16_t value, uint32_t position, uint32_t velocity);
 
 Serial_struct execute(Serial_struct data, RobotControl* robot_control, Trajectory* traj);
 

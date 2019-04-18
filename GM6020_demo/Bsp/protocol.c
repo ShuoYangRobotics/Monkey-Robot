@@ -25,12 +25,33 @@ Serial_struct unpack(uint8_t* head) {
 	return data;
 }
 
+Serial_struct pack(uint8_t type, uint16_t value, uint32_t position, uint32_t velocity) {
+	Serial_struct dataPack;
+	dataPack.flag = 0xAA;
+	dataPack.type = type;
+	dataPack.value = value;
+	dataPack.position = position;
+	dataPack.velocity = velocity;
+		
+	// do crc
+	uint16_t crc_ccitt_ffff_val = 0xffff;
+	uint8_t* ptr = (uint8_t *) &dataPack;
+	int i;
+	for(i = 0; i<12; i++) { // do crc with the first 12 uint8
+		crc_ccitt_ffff_val = update_crc_ccitt(crc_ccitt_ffff_val, *ptr);
+		ptr++;
+	}
+	dataPack.crc = crc_ccitt_ffff_val;
+	return dataPack;
+}
+
 Serial_struct execute(Serial_struct data, RobotControl* robot_control, Trajectory* traj) {
 	Serial_struct ackPack;
 	switch(data.type) {
 		case 0:
 				robot_control -> output_enable = 0;
 			break;
+		
 		case 1:
 			switch(data.value) {
 				case 0:
@@ -70,6 +91,7 @@ Serial_struct execute(Serial_struct data, RobotControl* robot_control, Trajector
 				}
 			}
 			break;
+			
 		case 4: // right motor traj
 			if(robot_control -> ctrl_mode == 5) {
 				if(traj -> rightStepReceived == data.value) {
@@ -83,6 +105,7 @@ Serial_struct execute(Serial_struct data, RobotControl* robot_control, Trajector
 				}
 			}
 			break;
+			
 		case 5:
 			if(robot_control -> ctrl_mode == 5 && 
 				traj -> leftStepReceived == data.value && 
@@ -94,6 +117,7 @@ Serial_struct execute(Serial_struct data, RobotControl* robot_control, Trajector
 				ackPack = err(data, traj -> leftStepReceived, data.position, data.velocity);
 			}
 			break;
+			
 		case 6:  
 			if(robot_control -> ctrl_mode == 6) { // in ready to start mode
 				robot_control -> output_enable = 1; // enable power
@@ -107,6 +131,7 @@ Serial_struct execute(Serial_struct data, RobotControl* robot_control, Trajector
 				ackPack = err(data, traj -> leftStepReceived, data.position, data.velocity);
 			}
 			break;
+			
 		case 7:
 			if(robot_control -> ctrl_mode == 6) { // in ready to start mode
 				robot_control -> output_enable = 1; // enable power
@@ -135,6 +160,7 @@ Serial_struct execute(Serial_struct data, RobotControl* robot_control, Trajector
 			break;
 		
 		case 8:
+			
 			if (data.value == 0) {
 				robot_control -> pwm_pulse_left = 1500-320;
 			}
