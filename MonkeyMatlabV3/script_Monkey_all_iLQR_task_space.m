@@ -5,11 +5,21 @@ script_Monkey_all_basic;
 
 %% %%%%%%%%%%%%%%%%%%%%% set up control goal
 % start and end locations
-xz_start = [-0.32;
-                  -0.00];
+
+dist1 = -0.33;
+release_height = -0.00;
+
+dist2 = 0.36;
+reach_height = 0.0;
+
+xz_start = [dist1;
+            release_height];
               
-xz_end = [0.32;
-            0.0];
+xz_end = [dist2;
+          reach_height];
+      
+save_file_name = strcat('test',num2str(abs(dist1)),'_',num2str(abs(dist2)),'.mat');
+save_file_name(save_file_name=='.')=[];
 
 % kinematics
 L = (309.8)*10^-3;
@@ -29,16 +39,15 @@ end_angle_left_shoulder = 0/180*pi + offset_body_angle;
 end_angle_right_shoulder = 2*asin(r2/2/L)-2*pi - offset_body_angle;        
 %%%%%%%%%%%%%%%%%%%%%%%
 
-%% generate trajectory for PFL
-% total time should be 1.2, then 1.2/200=0.006
+%% trajectory parameters
 step = 300;
-T= 0.64;
+T= 0.66;
 dt = T/step;
 
 
 Q = 0*eye(6);
-R = 2.4*eye(2);
-Qf = 13400*eye(6);
+R = 0.3*eye(2);
+Qf = 6400*eye(6);
 Qf(4,4) = 0;
 Qf(5,5) = 0;
 Qf(6,6) = 0;
@@ -48,46 +57,26 @@ thetaend = [end_angle_left_hand; end_angle_left_shoulder; end_angle_right_should
 x0 = [thetastart;[0;0;0]];
 xT = [thetaend;[0;0.0;0.0]];
 
-% % pfl joint trajectory
-% pfl_n = 3;
-% Tf = T;
-% pfl_N= 2000;
-% method = 3 ;
-% traj = JointTrajectory(thetastart, thetaend, Tf, pfl_N, method);
-% thetamat = traj;
-% dthetamat = zeros(pfl_N, pfl_n);
-% ddthetamat = zeros(pfl_N, pfl_n);
-% pfl_dt = Tf / (pfl_N - 1);
-% for i = 1: pfl_N - 1
-%   dthetamat(i + 1, :) = (thetamat(i + 1, :) - thetamat(i, :)) / pfl_dt;
-%   ddthetamat(i + 1, :) = (dthetamat(i + 1, :) - dthetamat(i, :)) / pfl_dt;
-% end
-% 
-% sim('Monkey_all_pfl','StopTime', num2str(T));
+%% load init control from file
+load('test035_033mat.mat');
+% this file contains tgt_t tgt_u tgt_state
 
-%% load init control from pfl
-load('test032_to_032.mat');
 t = 0:dt:T;
-init_u = new_u_list;
+% inteprete trajectory
+init_u = interp1(tgt_time', tgt_u',t);
+init_u = init_u';
 
-% figure(1)
-% plot(t, init_u(1,:),t, init_u(2,:))
-% title('PFL Torque');
-
-
-% [pfl_x_list, J] = Monkey_all_complete_run(x0, xT, init_u, dt, step, Q, R, Qf, g, Ftip, Mlist, Glist, Slist);
-% dd = sprintf('Cost for PFL strategy %6.5f\n',J);
-% disp(dd);
+init_x_list = interp1(tgt_time', tgt_state',t);
+init_x_list = init_x_list';
 
 out_u_time = t;
 out_u_data = [init_u ];
 
-sim('Monkey_all_use_out_u','StopTime', '0.64');
+sim('Monkey_all_use_out_u','StopTime', num2str(T));
 
 %% iLQR step
 new_u_list = init_u;
-% new_x_list = pfl_x_list;
-% TODO add random noise for initial u
+new_x_list = init_x_list;
 x0 = x0 + 1e-5*randn(size(x0));
 
 total_iter = 70;
@@ -120,7 +109,14 @@ title('iLQR Torque');
 
 out_u_time = t;
 out_u_data = new_u_list;
-sim('Monkey_all_use_out_u','StopTime', '0.64');
+sim('Monkey_all_use_out_u','StopTime', num2str(T));
+
+% save control s
+tgt_time = t;
+tgt_u = new_u_list;
+tgt_state = new_x_list;
+
+save(save_file_name,'tgt_time', 'tgt_u',  'tgt_state');
 
 
 
