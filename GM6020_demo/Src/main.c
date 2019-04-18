@@ -469,7 +469,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 				break;
 			case 4 :
 				// first enter, should have traj_start = 0
-				if (traj_start >= 70)  // a 60ms delay
+				if (traj_start >= 60)  // a 60ms delay
 				{
 					// take waypoint from trajectory
 					if (traj_timer > traj_count*Tf/stepNum)
@@ -530,7 +530,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 //					init_test_swing_trajectory(1, Tf, right_state_angle, right_state_velocity);
 					
 					// open right hand as a test step
-					robot_control.pwm_pulse_right = 1500+360;
+					robot_control.pwm_pulse_right = 1500+384;
 				}
 				break;
 			case 8:
