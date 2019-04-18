@@ -73,6 +73,23 @@ typedef struct {
 	// if ctrl_mode = 6, ready to execute trajectory points
 	// if ctrl_mode = 7, executing trajectory points
 	int ctrl_mode;
+	
+	int ctrl_side; 
+	// 2019-04-19 added. This controls we treat download trajectory as right hand swing traj
+	// or left hand swing traj. (Default download one is right hand swing from Matlab)
+	// if ctrl_side = 1, we treat it as right hand swing, 
+	// if ctrl_side = -1, we treat trajectory as a left hand swing.
+	
+	int ctrl_direction;
+	// 2019-04-19 added. This controls we treat download trajectory as forward swing traj
+	// or backward swing traj. (Default download one is forward swing from Matlab)
+	// if ctrl_direction = 0, we treat it as forward, 
+	// if ctrl_direction = 1, we treat trajectory as backward.
+	
+	// How to determine sides and direction of robot:
+	// the side with on/off button is front side. its left end is left side. 
+	
+	
 	int output_enable; // if output_enable == 0, do not output control voltage to motors
 	uint16_t pwm_pulse_left;  // default pwm pulse width:1080~1920
 	uint16_t pwm_pulse_right;  // default pwm pulse width:1080~1920
