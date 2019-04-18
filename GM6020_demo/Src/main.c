@@ -310,10 +310,11 @@ int main(void)
 		if(robot_control.debug_print == 4) {
 			int i;
 			for(i=0; i<300; i++) {
-				Serial_struct dataPack = pack(50, 0, left_real_pos[i], left_real_vel[i]);
+				Serial_struct dataPack = pack(50, 0, (int32_t)(left_real_pos[i]*1000), (int32_t)(left_real_vel[i]*1000));
 				HAL_UART_Transmit(&huart2, (uint8_t*)&dataPack, sizeof(dataPack),100);
-				dataPack = pack(50, 1, right_real_pos[i], right_real_vel[i]);
+				dataPack = pack(50, 1, (int32_t)(right_real_pos[i]*1000), (int32_t)(right_real_vel[i]*1000));
 				HAL_UART_Transmit(&huart2, (uint8_t*)&dataPack, sizeof(dataPack),100);
+				LED_GREEN_TOGGLE();	
 			}
 			Serial_struct finishPack = pack(51, 0, 0, 0);
 			HAL_UART_Transmit(&huart2, (uint8_t*)&finishPack, sizeof(finishPack),100);
