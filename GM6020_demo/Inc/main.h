@@ -62,8 +62,13 @@ extern "C" {
 /* USER CODE BEGIN ET */
 
 typedef struct {
-	int debug_print; // if debug print = 1, print imu info to UART, if debug print = 2 print motor info to UART, if debug print = 3 print control loop info to UART
-	
+	// if debug print = 0, print nothing, 
+	// if debug print = 1, print imu info to UART, 
+	// if debug print = 2 print motor info to UART, 
+	// if debug print = 3 print control loop info to UART
+	// if debug print = 4, print recorded motor info to UART, currently in main
+	int debug_print; 	
+
 	// if ctrl_mode = 0, idle
 	// if ctrl_mode = 1, use target position for control    
 	// if ctrl_mode = 2, use target velocity 
@@ -73,7 +78,28 @@ typedef struct {
 	// if ctrl_mode = 6, ready to execute trajectory points
 	// if ctrl_mode = 7, executing trajectory points
 	int ctrl_mode;
+	
+	int ctrl_side; 
+	// 2019-04-19 added. This controls we treat download trajectory as right hand swing traj
+	// or left hand swing traj. (Default download one is right hand swing from Matlab)
+	// if ctrl_side = 1, we treat it as right hand swing, 
+	// if ctrl_side = -1, we treat trajectory as a left hand swing.
+	
+	int ctrl_direction;
+	// 2019-04-19 added. This controls we treat download trajectory as forward swing traj
+	// or backward swing traj. (Default download one is forward swing from Matlab)
+	// if ctrl_direction = 0, we treat it as forward, 
+	// if ctrl_direction = 1, we treat trajectory as backward.
+	
+	// How to determine sides and direction of robot:
+	// the side with on/off button is front side. its left end is left side. 
+	
 	int output_enable; // if output_enable == 0, do not output control voltage to motors
+	uint16_t pwm_pulse_left;  // default pwm pulse width:1080~1920
+	uint16_t pwm_pulse_right;  // default pwm pulse width:1080~1920
+	uint16_t acked;			// used in report real trajectory, to check if received the package sent
+	uint16_t traj_start_delay;	// used to set the time of delay bwtween open the claw and start the trajectory
+	float Tf;
 } RobotControl;
 
 #include "protocol.h"

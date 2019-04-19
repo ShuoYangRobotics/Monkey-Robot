@@ -84,6 +84,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 		motor_angle_rad[index] = motor_info[index].rotor_angle/8192.0f*2*PI;
 		if (motor_rotation_count_inited[index] == 0) // only do this once
 		{
+			prev_motor_angle_rad[index] = motor_angle_rad[index];
 			if (motor_angle_rad[index] > PI)
 			{
 				rotation_count[index]--;

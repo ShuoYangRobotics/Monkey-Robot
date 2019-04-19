@@ -1,0 +1,1142 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<SimscapeMultibodyImportXML version="2.0" xmlns="urn:mathworks:SimscapeMultibody:import" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<Created by="" on="04/05/19||18:48:36" using="Simscape Multibody Link Version 6.0" from="SolidWorks 26.3.0"/>
+<ModelUnits mass="kilogram" length="millimeter"/>
+<DataUnits mass="kilogram" length="meter"/>
+<RootAssembly name="Monkey_proto_with_hand" uid="Monkey_proto_with_hand" version="250">
+<AssemblyFile name="Monkey_proto_with_hand.SLDASM" type="SolidWorks Assembly"/>
+<InstanceTree>
+<Instance name="monkey_body-1" uid="monkey_body-1" entityUid="monkey_body" rigid="true">
+<Transform>
+<Rotation>1 0 0 0 1 0 0 0 1</Rotation>
+<Translation>-0.019397722690043782 0.016518114575125122 -0.01391133036446702</Translation>
+</Transform>
+<Instance name="ShoulderMount-2" uid="ShoulderMount-2" entityUid="ShoulderMount*:*Default">
+<Transform>
+<Rotation>-0.99999999999999989 -6.9944050551384862e-15 3.8857805861880479e-16 4.163336342344337e-16 -4.5302029775730154e-16 0.99999999999999978 -6.9944050551384854e-15 0.99999999999999989 4.530202977573044e-16</Rotation>
+<Translation>0 0.043499999999990074 0</Translation>
+</Transform>
+</Instance>
+<Instance name="ShoulderMount-1" uid="ShoulderMount-1" entityUid="ShoulderMount*:*Default">
+<Transform>
+<Rotation>0.99999999999999989 -7.4107386893729231e-15 -6.6613381477508781e-16 -6.6613381477509392e-16 -8.1871227925726816e-16 -0.99999999999999989 7.4107386893729215e-15 1 -8.1871227925727299e-16</Rotation>
+<Translation>0 -0.19542000000000997 0</Translation>
+</Transform>
+</Instance>
+<Instance name="MountPlate-1" uid="MountPlate-1" entityUid="MountPlate*:*Default">
+<Transform>
+<Rotation>-2.4980018054066022e-16 -5.4972350316874031e-16 -1.0000000000000002 -1.0000000000000002 2.2204460492503155e-16 2.4980018054066022e-16 2.2204460492503126e-16 1 -5.4972350316874021e-16</Rotation>
+<Translation>-0.036769000000000024 -0.018810000000009292 -0.022999999999999125</Translation>
+</Transform>
+</Instance>
+<Instance name="Electronic_Layer-1" uid="Electronic_Layer-1" entityUid="Electronic_Layer" rigid="true">
+<Transform>
+<Rotation>0 -1.527247296442372e-15 1 1 -1.1591522692465255e-15 0 1.1591522692465253e-15 1 1.527247296442372e-15</Rotation>
+<Translation>-0.074309092866939083 -0.12558726678476076 -0.20794759375957303</Translation>
+</Transform>
+<Instance name="Battery-1" uid="Battery-1" entityUid="Battery*:*Default">
+<Transform>
+<Rotation>0 -1 -1.2143064331837652e-16 -1 0 0 0 1.214306433183765e-16 -1</Rotation>
+<Translation>0.11962726678475175 0.12914759375957374 0.048120092866939301</Translation>
+</Transform>
+</Instance>
+<Instance name="MountPlate-2" uid="MountPlate-2" entityUid="MountPlate*:*Default">
+<Transform>
+<Rotation>1 0 0 0 1 0 0 0 1</Rotation>
+<Translation>-0.0075227332152482534 0.12914759375957374 0.11120009286693931</Translation>
+</Transform>
+</Instance>
+<Instance name="93505A178_ALUM MALE-FEM THRDED HEX STANDOFF-2" uid="93505A178_ALUM MALE-FEM THRDED HEX STANDOFF-2" entityUid="93505A178_ALUM MALE-FEM THRDED HEX STANDOFF*:*93505A178">
+<Transform>
+<Rotation>0 0.9541475442048245 0.29933670654950228 -1 0 0 0 -0.29933670654950234 0.9541475442048245</Rotation>
+<Translation>9.7266784751734447e-05 0.14208509375957373 0.045160092866939332</Translation>
+</Transform>
+</Instance>
+<Instance name="93505A178_ALUM MALE-FEM THRDED HEX STANDOFF-4" uid="93505A178_ALUM MALE-FEM THRDED HEX STANDOFF-4" entityUid="93505A178_ALUM MALE-FEM THRDED HEX STANDOFF*:*93505A178">
+<Transform>
+<Rotation>0 0.99666064926278775 -0.081655068495950958 -1 0 0 0 0.081655068495950958 0.99666064926278775</Rotation>
+<Translation>0.09915726678475173 0.14208509375957371 0.045160092866939332</Translation>
+</Transform>
+</Instance>
+<Instance name="93505A178_ALUM MALE-FEM THRDED HEX STANDOFF-1" uid="93505A178_ALUM MALE-FEM THRDED HEX STANDOFF-1" entityUid="93505A178_ALUM MALE-FEM THRDED HEX STANDOFF*:*93505A178">
+<Transform>
+<Rotation>0 0.83951914980746623 -0.54333009957718059 -1 0 0 0 0.54333009957718059 0.83951914980746623</Rotation>
+<Translation>9.7266784751734447e-05 0.14208509375957376 0.10358009286693931</Translation>
+</Transform>
+</Instance>
+<Instance name="93505A178_ALUM MALE-FEM THRDED HEX STANDOFF-3" uid="93505A178_ALUM MALE-FEM THRDED HEX STANDOFF-3" entityUid="93505A178_ALUM MALE-FEM THRDED HEX STANDOFF*:*93505A178">
+<Transform>
+<Rotation>0 0.81657441155794774 -0.57724018431567237 -1 0 0 0 0.57724018431567237 0.81657441155794774</Rotation>
+<Translation>0.09915726678475173 0.14208509375957376 0.10358009286693931</Translation>
+</Transform>
+</Instance>
+<Instance name="RM_Board_A-1" uid="RM_Board_A-1" entityUid="RM_Board_A*:*Default">
+<Transform>
+<Rotation>-0.99971024761827776 -6.6557655972269004e-16 0.024071161313932044 -5.0749754307863925e-16 1 1.9931836045396988e-16 -0.024071161313932197 0 -0.99971024761827798</Rotation>
+<Translation>0.089228259563165727 0.13414759375957375 0.049432154020922027</Translation>
+</Transform>
+</Instance>
+<Instance name="93505A178_ALUM MALE-FEM THRDED HEX STANDOFF-6" uid="93505A178_ALUM MALE-FEM THRDED HEX STANDOFF-6" entityUid="93505A178_ALUM MALE-FEM THRDED HEX STANDOFF*:*93505A178">
+<Transform>
+<Rotation>0 0.99666064926278786 -0.081655068495950944 -1 0 0 0 0.081655068495950944 0.99666064926278786</Rotation>
+<Translation>0.09915726678475173 0.16748509375957371 0.045160092866939332</Translation>
+</Transform>
+</Instance>
+<Instance name="93505A178_ALUM MALE-FEM THRDED HEX STANDOFF-5" uid="93505A178_ALUM MALE-FEM THRDED HEX STANDOFF-5" entityUid="93505A178_ALUM MALE-FEM THRDED HEX STANDOFF*:*93505A178">
+<Transform>
+<Rotation>0 0.89029724377830033 0.4553798609081891 -1 0 0 0 -0.4553798609081891 0.89029724377830033</Rotation>
+<Translation>9.7266784751748325e-05 0.16748509375957374 0.10358009286693932</Translation>
+</Transform>
+</Instance>
+<Instance name="93505A178_ALUM MALE-FEM THRDED HEX STANDOFF-7" uid="93505A178_ALUM MALE-FEM THRDED HEX STANDOFF-7" entityUid="93505A178_ALUM MALE-FEM THRDED HEX STANDOFF*:*93505A178">
+<Transform>
+<Rotation>0 0.81657441155794785 -0.57724018431567248 -1 0 0 0 0.57724018431567248 0.81657441155794785</Rotation>
+<Translation>0.099157266784751702 0.16748509375957374 0.1035800928669393</Translation>
+</Transform>
+</Instance>
+<Instance name="93505A178_ALUM MALE-FEM THRDED HEX STANDOFF-8" uid="93505A178_ALUM MALE-FEM THRDED HEX STANDOFF-8" entityUid="93505A178_ALUM MALE-FEM THRDED HEX STANDOFF*:*93505A178">
+<Transform>
+<Rotation>0 0.9541475442048245 0.29933670654950228 -1 0 0 0 -0.29933670654950234 0.9541475442048245</Rotation>
+<Translation>9.7266784751734447e-05 0.16748509375957374 0.045160092866939332</Translation>
+</Transform>
+</Instance>
+</Instance>
+<Instance name="RoboMaster GM6020 Brushless DC Motor-1" uid="RoboMaster GM6020 Brushless DC Motor-1" entityUid="RoboMaster GM6020 Brushless DC Motor*:*Default">
+<Transform>
+<Rotation>0.50000000000000422 0.86602540378443615 2.1102246847065989e-16 -6.2558146073611385e-16 1.1751186680284841e-16 1 0.86602540378443627 -0.50000000000000422 6.005253705354751e-16</Rotation>
+<Translation>0 -0.078372143610609943 0</Translation>
+</Transform>
+</Instance>
+<Instance name="BodyBar-1" uid="BodyBar-1" entityUid="BodyBar*:*Default">
+<Transform>
+<Rotation>-8.1531963952461671e-15 0 -1 -3.2357733625743532e-16 1 0 1 3.2357733625743483e-16 -8.1531963952461671e-15</Rotation>
+<Translation>0 -0.21566000000000995 0</Translation>
+</Transform>
+</Instance>
+<Instance name="RoboMaster GM6020 Brushless DC Motor-2" uid="RoboMaster GM6020 Brushless DC Motor-2" entityUid="RoboMaster GM6020 Brushless DC Motor*:*Default">
+<Transform>
+<Rotation>-0.50000000000001577 -0.8660254037844296 0 0 0 -1.0000000000000002 0.8660254037844296 -0.50000000000001565 0</Rotation>
+<Translation>0 -0.073547856389409999 0</Translation>
+</Transform>
+</Instance>
+<Instance name="9578T310_HEAVY DUTY ALUMINUM CLAMP-ON FRAMING FITTING-1" uid="9578T310_HEAVY DUTY ALUMINUM CLAMP-ON FRAMING FITTING-1" entityUid="9578T310_HEAVY DUTY ALUMINUM CLAMP-ON FRAMING FITTING*:*9578T31">
+<Transform>
+<Rotation>-2.4980018054066022e-16 -1.0000000000000002 0 1 -1.6653345369377348e-16 0 0 1.7289933401055317e-16 1</Rotation>
+<Translation>0 -0.10771000000000924 -0.018000000000000085</Translation>
+</Transform>
+</Instance>
+<Instance name="9578T310_HEAVY DUTY ALUMINUM CLAMP-ON FRAMING FITTING-2" uid="9578T310_HEAVY DUTY ALUMINUM CLAMP-ON FRAMING FITTING-2" entityUid="9578T310_HEAVY DUTY ALUMINUM CLAMP-ON FRAMING FITTING*:*9578T31">
+<Transform>
+<Rotation>-1.6653345369377348e-16 -1.0000000000000002 4.9960036108132044e-16 1 -1.1102230246251564e-16 0 0 5.5753285763544188e-16 1</Rotation>
+<Translation>0 -0.044210000000009242 -0.018000000000000051</Translation>
+</Transform>
+</Instance>
+</Instance>
+<Instance name="right_hand-1" uid="right_hand-1" entityUid="right_hand" rigid="true">
+<Transform>
+<Rotation>1 0 0 0 1 0 0 0 1</Rotation>
+<Translation>-0.019397722690043764 -0.13690188542489481 -0.013911330364466722</Translation>
+</Transform>
+<Instance name="arm-1" uid="arm-1" entityUid="arm*:*Default">
+<Transform>
+<Rotation>1.0000000000000002 1.5184963315929831e-15 0 0 0 -1 -1.5135122234811022e-15 1 0</Rotation>
+<Translation>0 0.0040000000000000036 0</Translation>
+</Transform>
+</Instance>
+<Instance name="Assem1-1" uid="Assem1-1" entityUid="Assem1" rigid="true">
+<Transform>
+<Rotation>-1 0 -2.0219306044511868e-14 0 1 0 2.0219306044511871e-14 0 -1</Rotation>
+<Translation>0.036471973496800286 -0.042502428848338686 0.27320397629072457</Translation>
+</Transform>
+<Instance name="link_main-1" uid="link_main-1" entityUid="link_main*:*Default">
+<Transform>
+<Rotation>0.9716835532657927 0 -0.23628599686135321 0 1 0 0.23628599686135321 0 0.9716835532657927</Rotation>
+<Translation>0.0032638257553557065 0.071502428848338684 0.039555816322148302</Translation>
+</Transform>
+<VisualProperties>
+<Ambient r="1" g="1" b="1" a="0.25"/>
+<Diffuse r="1" g="1" b="1" a="0.25"/>
+<Specular r="1" g="1" b="1" a="0.25"/>
+<Emissive r="0.050000000000000003" g="0.050000000000000003" b="0.050000000000000003" a="0.25"/>
+<Shininess>0.3125</Shininess>
+</VisualProperties>
+</Instance>
+<Instance name="link_main-2" uid="link_main-2" entityUid="link_main*:*Default">
+<Transform>
+<Rotation>0.97168355326579148 0 -0.23628599686135848 0 1 0 0.23628599686135848 0 0.97168355326579148</Rotation>
+<Translation>0.0032638257553554931 0.066502428848338679 0.039555816322148329</Translation>
+</Transform>
+<VisualProperties>
+<Ambient r="1" g="1" b="1" a="0.25"/>
+<Diffuse r="1" g="1" b="1" a="0.25"/>
+<Specular r="1" g="1" b="1" a="0.25"/>
+<Emissive r="0.050000000000000003" g="0.050000000000000003" b="0.050000000000000003" a="0.25"/>
+<Shininess>0.3125</Shininess>
+</VisualProperties>
+</Instance>
+<Instance name="94868A044_18-8 SS FEM THRDED HEX STANDOFF-2" uid="94868A044_18-8 SS FEM THRDED HEX STANDOFF-2" entityUid="94868A044_18-8 SS FEM THRDED HEX STANDOFF*:*94868A044">
+<Transform>
+<Rotation>0.99964328519488488 0.026707721070470338 1.3389896830196157e-16 0 0 1 0.026707721070470369 -0.99964328519488488 0</Rotation>
+<Translation>0.06846888433933794 0.056502428848338698 0.034600230200494103</Translation>
+</Transform>
+</Instance>
+<Instance name="95947A062_ALUM FEM THRDED HEX STANDOFF-1" uid="95947A062_ALUM FEM THRDED HEX STANDOFF-1" entityUid="95947A062_ALUM FEM THRDED HEX STANDOFF*:*95947A062">
+<Transform>
+<Rotation>-0.81450659491666322 -0.58015429571559907 0 0 0 -1 0.58015429571559907 -0.81450659491666322 0</Rotation>
+<Translation>0.026468884339337962 0.061502428848338689 0.026600230200494124</Translation>
+</Transform>
+</Instance>
+<Instance name="90278A543_18-8 STAINLESS STEEL PRECISION SHOULDER SCREW-1" uid="90278A543_18-8 STAINLESS STEEL PRECISION SHOULDER SCREW-1" entityUid="90278A543_18-8 STAINLESS STEEL PRECISION SHOULDER SCREW*:*90278A543">
+<Transform>
+<Rotation>0.99874403533934808 -0.050103411800745484 0 0 0 1 -0.050103411800745484 -0.99874403533934808 0</Rotation>
+<Translation>-0.0003749785963265799 0.076502428848338674 0.05451974304244156</Translation>
+</Transform>
+</Instance>
+<Instance name="servo_top_plate-1" uid="servo_top_plate-1" entityUid="servo_top_plate*:*Default">
+<Transform>
+<Rotation>1 0 0 0 1 0 0 0 1</Rotation>
+<Translation>0.041581243889899755 0.076502428848338661 0.068195735818471659</Translation>
+</Transform>
+<VisualProperties>
+<Ambient r="1" g="1" b="1" a="1"/>
+<Diffuse r="1" g="1" b="1" a="1"/>
+<Specular r="1" g="1" b="1" a="1"/>
+<Emissive r="0.050000000000000003" g="0.050000000000000003" b="0.050000000000000003" a="1"/>
+<Shininess>0.3125</Shininess>
+</VisualProperties>
+</Instance>
+<Instance name="servo_mounting_plate-1" uid="servo_mounting_plate-1" grounded="true" entityUid="servo_mounting_plate*:*Default">
+<Transform>
+<Rotation>1 0 0 0 1 0 0 0 1</Rotation>
+<Translation>0.041581243889899755 0.043502428848338659 0.068195735818471659</Translation>
+</Transform>
+</Instance>
+<Instance name="Hitec HS-7955TG-1" uid="Hitec HS-7955TG-1" entityUid="Hitec HS-7955TG*:*Default">
+<Transform>
+<Rotation>1 0 0 0 1 0 0 0 1</Rotation>
+<Translation>0.036468884339337981 0.023502428848338669 0.064600230200494158</Translation>
+</Transform>
+</Instance>
+<Instance name="link2-2" uid="link2-2" entityUid="link2*:*Default">
+<Transform>
+<Rotation>0.99497886959893123 0 0.10008520895533453 0 1 0 -0.10008520895533453 0 0.99497886959893123</Rotation>
+<Translation>-0.00037497859634718841 0.068502428848338667 0.054519743042441254</Translation>
+</Transform>
+</Instance>
+<Instance name="link_main-4" uid="link_main-4" entityUid="link_main*:*Default">
+<Transform>
+<Rotation>-0.97187948027634019 0 0.23547882244013119 -1.1897671783760921e-16 -1 0 0.23547882244013119 0 0.97187948027634019</Rotation>
+<Translation>0.069669826333787044 0.068502428848338695 0.039556815549894708</Translation>
+</Transform>
+<VisualProperties>
+<Ambient r="1" g="1" b="1" a="0.25"/>
+<Diffuse r="1" g="1" b="1" a="0.25"/>
+<Specular r="1" g="1" b="1" a="0.25"/>
+<Emissive r="0.050000000000000003" g="0.050000000000000003" b="0.050000000000000003" a="0.25"/>
+<Shininess>0.3125</Shininess>
+</VisualProperties>
+</Instance>
+<Instance name="90265A122_SHOULDER SCREW_M3-1" uid="90265A122_SHOULDER SCREW_M3-1" entityUid="90265A122_SHOULDER SCREW_M3*:*90265A122">
+<Transform>
+<Rotation>-0.19419792010395637 -0.98096236820139926 0 0 0 1 -0.98096236820139926 0.19419792010395637 0</Rotation>
+<Translation>0.056895595926620322 0.083502428848338667 0.056332123306316567</Translation>
+</Transform>
+</Instance>
+<Instance name="94868A044_18-8 SS FEM THRDED HEX STANDOFF-1" uid="94868A044_18-8 SS FEM THRDED HEX STANDOFF-1" entityUid="94868A044_18-8 SS FEM THRDED HEX STANDOFF*:*94868A044">
+<Transform>
+<Rotation>-0.25026267969018146 0.96817797493760904 0 0 0 -0.99999999999999989 -0.96817797493760904 -0.25026267969018146 0</Rotation>
+<Translation>0.004468884339337972 0.056502428848338684 0.034600230200494159</Translation>
+</Transform>
+</Instance>
+<Instance name="Hitec Servo Arm Alluminium Dual-1" uid="Hitec Servo Arm Alluminium Dual-1" entityUid="Hitec Servo Arm Alluminium Dual*:*Default">
+<Transform>
+<Rotation>0.99642495547717902 0 -0.084482590527881984 0 1 0 0.084482590527881984 0 0.99642495547717902</Rotation>
+<Translation>0.036468884339339563 0.065802428848338659 0.054600230200493066</Translation>
+</Transform>
+</Instance>
+<Instance name="link2-1" uid="link2-1" entityUid="link2*:*Default">
+<Transform>
+<Rotation>0.99397601652958634 0 0.1095978036457648 0 1 0 -0.1095978036457648 0 0.99397601652958634</Rotation>
+<Translation>0.056895595926614993 0.068502428848338667 0.056332123306321452</Translation>
+</Transform>
+<VisualProperties>
+<Ambient r="1" g="1" b="1" a="0.25"/>
+<Diffuse r="1" g="1" b="1" a="0.25"/>
+<Specular r="1" g="1" b="1" a="0.25"/>
+<Emissive r="0.050000000000000003" g="0.050000000000000003" b="0.050000000000000003" a="0.25"/>
+<Shininess>0.3125</Shininess>
+</VisualProperties>
+</Instance>
+<Instance name="93657A008_NYLON UNTHREADED SPACER_5mm-1" uid="93657A008_NYLON UNTHREADED SPACER_5mm-1" entityUid="93657A008_NYLON UNTHREADED SPACER_5mm*:*93657A008">
+<Transform>
+<Rotation>1 0 0 0 0 -1 0 1 0</Rotation>
+<Translation>0.056895595926620308 0.074002428848338658 0.056332123306316539</Translation>
+</Transform>
+</Instance>
+<Instance name="93657A034_NYLON UNTHREADED SPACER_d5_h3-2" uid="93657A034_NYLON UNTHREADED SPACER_d5_h3-2" entityUid="93657A034_NYLON UNTHREADED SPACER_d5_h3*:*93657A034">
+<Transform>
+<Rotation>1 0 0 0 0 -1 0 1 0</Rotation>
+<Translation>0.0044688843393379737 0.075002428848338673 0.034600230200494159</Translation>
+</Transform>
+</Instance>
+<Instance name="link_main-5" uid="link_main-5" entityUid="link_main*:*Default">
+<Transform>
+<Rotation>-0.97187948027634008 4.1210182189816446e-16 0.2354788224401313 -4.3043605369356422e-16 -1 4.450173273285591e-16 0.2354788224401313 3.3114463373850989e-16 0.97187948027634008</Rotation>
+<Translation>0.069669826333787072 0.073502428848338672 0.039556815549894708</Translation>
+</Transform>
+<VisualProperties>
+<Ambient r="1" g="1" b="1" a="0.25"/>
+<Diffuse r="1" g="1" b="1" a="0.25"/>
+<Specular r="1" g="1" b="1" a="0.25"/>
+<Emissive r="0.050000000000000003" g="0.050000000000000003" b="0.050000000000000003" a="0.25"/>
+<Shininess>0.3125</Shininess>
+</VisualProperties>
+</Instance>
+<Instance name="95947A062_ALUM FEM THRDED HEX STANDOFF-3" uid="95947A062_ALUM FEM THRDED HEX STANDOFF-3" entityUid="95947A062_ALUM FEM THRDED HEX STANDOFF*:*95947A062">
+<Transform>
+<Rotation>0.86602540378443849 0.50000000000000033 0 0 0 1 0.50000000000000033 -0.86602540378443849 0</Rotation>
+<Translation>0.06646888433933798 0.061502428848338675 0.079600230200494143</Translation>
+</Transform>
+</Instance>
+<Instance name="93657A034_NYLON UNTHREADED SPACER_d5_h3-1" uid="93657A034_NYLON UNTHREADED SPACER_d5_h3-1" entityUid="93657A034_NYLON UNTHREADED SPACER_d5_h3*:*93657A034">
+<Transform>
+<Rotation>1 0 0 0 0 -1 0 1 0</Rotation>
+<Translation>0.004468884339337972 0.070002428848338683 0.034600230200494159</Translation>
+</Transform>
+</Instance>
+<Instance name="90278A372_18-8 STAINLESS STEEL PRECISION SHOULDER SCREW-2" uid="90278A372_18-8 STAINLESS STEEL PRECISION SHOULDER SCREW-2" entityUid="90278A372_18-8 STAINLESS STEEL PRECISION SHOULDER SCREW*:*90278A372">
+<Transform>
+<Rotation>-0.83212225723507061 -0.55459223670550173 -3.9118738336324332e-16 -6.8687143102653266e-16 1.2504920768868601e-16 1 -0.55459223670550173 0.83212225723507061 -4.849897922294817e-16</Rotation>
+<Translation>0.068468884339337913 0.084502428848338682 0.034600230200494103</Translation>
+</Transform>
+</Instance>
+<Instance name="95947A062_ALUM FEM THRDED HEX STANDOFF-5" uid="95947A062_ALUM FEM THRDED HEX STANDOFF-5" entityUid="95947A062_ALUM FEM THRDED HEX STANDOFF*:*95947A062">
+<Transform>
+<Rotation>0.86602540378443826 0.50000000000000044 0 0 0 1 0.50000000000000033 -0.8660254037844386 0</Rotation>
+<Translation>0.036468884339337981 0.061502428848338675 0.10160023020049416</Translation>
+</Transform>
+</Instance>
+<Instance name="95947A062_ALUM FEM THRDED HEX STANDOFF-4" uid="95947A062_ALUM FEM THRDED HEX STANDOFF-4" entityUid="95947A062_ALUM FEM THRDED HEX STANDOFF*:*95947A062">
+<Transform>
+<Rotation>0.86602540378443904 -0.49999999999999939 0 0 0 1 -0.49999999999999939 -0.86602540378443904 0</Rotation>
+<Translation>0.0064688843393379721 0.061502428848338675 0.079600230200494115</Translation>
+</Transform>
+</Instance>
+<Instance name="90278A372_18-8 STAINLESS STEEL PRECISION SHOULDER SCREW-1" uid="90278A372_18-8 STAINLESS STEEL PRECISION SHOULDER SCREW-1" entityUid="90278A372_18-8 STAINLESS STEEL PRECISION SHOULDER SCREW*:*90278A372">
+<Transform>
+<Rotation>1 0 0 0 0 1 0 -1 0</Rotation>
+<Translation>0.0044688843393379737 0.084502428848338682 0.034600230200494159</Translation>
+</Transform>
+</Instance>
+<Instance name="93657A008_NYLON UNTHREADED SPACER_5mm-2" uid="93657A008_NYLON UNTHREADED SPACER_5mm-2" entityUid="93657A008_NYLON UNTHREADED SPACER_5mm*:*93657A008">
+<Transform>
+<Rotation>0.79405891467936995 -0.60784080154117781 0 0 0 -1 0.60784080154117748 0.79405891467936984 0</Rotation>
+<Translation>0.01604217275205547 0.074002428848338672 0.052868337094671924</Translation>
+</Transform>
+</Instance>
+<Instance name="95947A062_ALUM FEM THRDED HEX STANDOFF-2" uid="95947A062_ALUM FEM THRDED HEX STANDOFF-2" entityUid="95947A062_ALUM FEM THRDED HEX STANDOFF*:*95947A062">
+<Transform>
+<Rotation>1 0 0 0 0 -1 0 1 0</Rotation>
+<Translation>0.046468884339337983 0.061502428848338661 0.026600230200494124</Translation>
+</Transform>
+</Instance>
+<Instance name="90265A122_SHOULDER SCREW_M3-2" uid="90265A122_SHOULDER SCREW_M3-2" entityUid="90265A122_SHOULDER SCREW_M3*:*90265A122">
+<Transform>
+<Rotation>-0.62458462706768192 0.7809571330301841 0 0 0 1 0.7809571330301841 0.62458462706768192 0</Rotation>
+<Translation>0.01604217275205547 0.083502428848338667 0.052868337094671924</Translation>
+</Transform>
+</Instance>
+<Instance name="90278A543_18-8 STAINLESS STEEL PRECISION SHOULDER SCREW-2" uid="90278A543_18-8 STAINLESS STEEL PRECISION SHOULDER SCREW-2" entityUid="90278A543_18-8 STAINLESS STEEL PRECISION SHOULDER SCREW*:*90278A543">
+<Transform>
+<Rotation>-0.97718483629399777 0.21239066767886253 4.6756764948450667e-16 2.6486301941795479e-16 -4.6012012589708084e-16 0.99999999999999989 0.21239066767886253 0.97718483629399777 3.9336797636267245e-16</Rotation>
+<Translation>0.073296200199358466 0.076502428848338661 0.054523759546159983</Translation>
+</Transform>
+</Instance>
+<Instance name="93657A034_NYLON UNTHREADED SPACER_d5_h3-4" uid="93657A034_NYLON UNTHREADED SPACER_d5_h3-4" entityUid="93657A034_NYLON UNTHREADED SPACER_d5_h3*:*93657A034">
+<Transform>
+<Rotation>1 4.6761297312944511e-16 4.121018218981895e-16 5.2312412436070846e-16 4.5360931365320895e-16 -1 -4.6761297312945142e-16 1 4.5360931365321023e-16</Rotation>
+<Translation>0.068468884339337954 0.075002428848338673 0.034600230200494131</Translation>
+</Transform>
+</Instance>
+<Instance name="93657A034_NYLON UNTHREADED SPACER_d5_h3-3" uid="93657A034_NYLON UNTHREADED SPACER_d5_h3-3" entityUid="93657A034_NYLON UNTHREADED SPACER_d5_h3*:*93657A034">
+<Transform>
+<Rotation>0.9999939235479689 0.0034860962607142611 5.2031230639588538e-16 5.1868198200621934e-16 4.6856885573047223e-16 -1 -0.0034860962607142611 0.9999939235479689 4.6675783317632537e-16</Rotation>
+<Translation>0.068468884339337927 0.070002428848338696 0.034600230200494131</Translation>
+</Transform>
+</Instance>
+</Instance>
+<Instance name="hand_arm_link-1" uid="hand_arm_link-1" entityUid="hand_arm_link*:*Default">
+<Transform>
+<Rotation>-1 0 -1.4569855966209418e-15 0 1 -1.6653345369377351e-16 1.4569855966209418e-15 -1.6653345369377346e-16 -1</Rotation>
+<Translation>-0.25813296229100191 0.0040000000000000036 0.14584821793498848</Translation>
+</Transform>
+</Instance>
+</Instance>
+<Instance name="left_hand-1" uid="left_hand-1" grounded="true" entityUid="left_hand" rigid="true">
+<Transform>
+<Rotation>1 0 0 0 1 0 0 0 1</Rotation>
+<Translation>-0.019424722584868548 -0.0031987187358964993 0.29593115511364326</Translation>
+</Transform>
+<Instance name="arm-1" uid="arm-1" entityUid="arm*:*Default">
+<Transform>
+<Rotation>1 4.0398031570591154e-16 0 0 -1.2490009027033011e-16 -0.99999999999999989 -4.0398031570591268e-16 0.99999999999999989 -1.2490009027033011e-16</Rotation>
+<Translation>2.6999894824766141e-05 0.021216833311021626 -0.30984248547811033</Translation>
+</Transform>
+</Instance>
+<Instance name="Assem1-1" uid="Assem1-1" entityUid="Assem1" rigid="true">
+<Transform>
+<Rotation>1.0000000000000002 0 -6.5659283565722149e-16 0 -1 -1.5908639379158357e-15 -6.5659283565722149e-16 1.5908639379158329e-15 -1.0000000000000002</Rotation>
+<Translation>-0.03644188444451308 0.063719262159360246 -0.036638509187385371</Translation>
+</Transform>
+<Instance name="link_main-1" uid="link_main-1" entityUid="link_main*:*Default">
+<Transform>
+<Rotation>0.97168355326579281 0 -0.23628599686135324 0 1 0 0.23628599686135324 0 0.97168355326579281</Rotation>
+<Translation>0.0032638257553557065 0.071502428848338684 0.039555816322148329</Translation>
+</Transform>
+<VisualProperties>
+<Ambient r="1" g="1" b="1" a="0.25"/>
+<Diffuse r="1" g="1" b="1" a="0.25"/>
+<Specular r="1" g="1" b="1" a="0.25"/>
+<Emissive r="0.050000000000000003" g="0.050000000000000003" b="0.050000000000000003" a="0.25"/>
+<Shininess>0.3125</Shininess>
+</VisualProperties>
+</Instance>
+<Instance name="link_main-2" uid="link_main-2" entityUid="link_main*:*Default">
+<Transform>
+<Rotation>0.97168355326579159 0 -0.23628599686135851 0 1 0 0.23628599686135851 0 0.97168355326579159</Rotation>
+<Translation>0.0032638257553554914 0.066502428848338679 0.039555816322148357</Translation>
+</Transform>
+<VisualProperties>
+<Ambient r="1" g="1" b="1" a="0.25"/>
+<Diffuse r="1" g="1" b="1" a="0.25"/>
+<Specular r="1" g="1" b="1" a="0.25"/>
+<Emissive r="0.050000000000000003" g="0.050000000000000003" b="0.050000000000000003" a="0.25"/>
+<Shininess>0.3125</Shininess>
+</VisualProperties>
+</Instance>
+<Instance name="94868A044_18-8 SS FEM THRDED HEX STANDOFF-2" uid="94868A044_18-8 SS FEM THRDED HEX STANDOFF-2" entityUid="94868A044_18-8 SS FEM THRDED HEX STANDOFF*:*94868A044">
+<Transform>
+<Rotation>0.99964328519488488 0.026707721070470373 1.155085245631894e-16 -1.1703284825623224e-16 0 1 0.026707721070470373 -0.99964328519488488 0</Rotation>
+<Translation>0.068468884339337968 0.056502428848338684 0.034600230200494131</Translation>
+</Transform>
+</Instance>
+<Instance name="95947A062_ALUM FEM THRDED HEX STANDOFF-1" uid="95947A062_ALUM FEM THRDED HEX STANDOFF-1" entityUid="95947A062_ALUM FEM THRDED HEX STANDOFF*:*95947A062">
+<Transform>
+<Rotation>-0.81450659491666322 -0.58015429571559896 0 0 0 -1 0.58015429571559896 -0.81450659491666322 0</Rotation>
+<Translation>0.026468884339337976 0.061502428848338668 0.026600230200494152</Translation>
+</Transform>
+</Instance>
+<Instance name="90278A543_18-8 STAINLESS STEEL PRECISION SHOULDER SCREW-1" uid="90278A543_18-8 STAINLESS STEEL PRECISION SHOULDER SCREW-1" entityUid="90278A543_18-8 STAINLESS STEEL PRECISION SHOULDER SCREW*:*90278A543">
+<Transform>
+<Rotation>0.9987440353393483 -0.050103411800745505 0 0 0 1 -0.050103411800745505 -0.9987440353393483 0</Rotation>
+<Translation>-0.00037497859632657643 0.076502428848338674 0.054519743042441587</Translation>
+</Transform>
+</Instance>
+<Instance name="servo_top_plate-1" uid="servo_top_plate-1" entityUid="servo_top_plate*:*Default">
+<Transform>
+<Rotation>1 0 0 0 1 0 0 0 1</Rotation>
+<Translation>0.041581243889899769 0.076502428848338661 0.068195735818471687</Translation>
+</Transform>
+<VisualProperties>
+<Ambient r="1" g="1" b="1" a="1"/>
+<Diffuse r="1" g="1" b="1" a="1"/>
+<Specular r="1" g="1" b="1" a="1"/>
+<Emissive r="0.050000000000000003" g="0.050000000000000003" b="0.050000000000000003" a="1"/>
+<Shininess>0.3125</Shininess>
+</VisualProperties>
+</Instance>
+<Instance name="servo_mounting_plate-1" uid="servo_mounting_plate-1" grounded="true" entityUid="servo_mounting_plate*:*Default">
+<Transform>
+<Rotation>1 0 0 0 1 0 0 0 1</Rotation>
+<Translation>0.041581243889899769 0.043502428848338673 0.068195735818471687</Translation>
+</Transform>
+</Instance>
+<Instance name="Hitec HS-7955TG-1" uid="Hitec HS-7955TG-1" entityUid="Hitec HS-7955TG*:*Default">
+<Transform>
+<Rotation>1 0 0 0 1 0 0 0 1</Rotation>
+<Translation>0.036468884339338002 0.023502428848338683 0.064600230200494185</Translation>
+</Transform>
+</Instance>
+<Instance name="link2-2" uid="link2-2" entityUid="link2*:*Default">
+<Transform>
+<Rotation>0.99497886959893123 0 0.10008520895533454 0 1 0 -0.10008520895533454 0 0.99497886959893123</Rotation>
+<Translation>-0.00037497859634718494 0.068502428848338667 0.054519743042441282</Translation>
+</Transform>
+</Instance>
+<Instance name="link_main-4" uid="link_main-4" entityUid="link_main*:*Default">
+<Transform>
+<Rotation>-0.97187948027634019 0 0.23547882244013119 0 -1 0 0.23547882244013119 0 0.97187948027634019</Rotation>
+<Translation>0.069669826333787072 0.068502428848338695 0.039556815549894708</Translation>
+</Transform>
+<VisualProperties>
+<Ambient r="1" g="1" b="1" a="0.25"/>
+<Diffuse r="1" g="1" b="1" a="0.25"/>
+<Specular r="1" g="1" b="1" a="0.25"/>
+<Emissive r="0.050000000000000003" g="0.050000000000000003" b="0.050000000000000003" a="0.25"/>
+<Shininess>0.3125</Shininess>
+</VisualProperties>
+</Instance>
+<Instance name="90265A122_SHOULDER SCREW_M3-1" uid="90265A122_SHOULDER SCREW_M3-1" entityUid="90265A122_SHOULDER SCREW_M3*:*90265A122">
+<Transform>
+<Rotation>-0.19419792010395642 -0.98096236820139937 0 0 0 1 -0.98096236820139937 0.19419792010395642 0</Rotation>
+<Translation>0.056895595926620357 0.083502428848338667 0.056332123306316567</Translation>
+</Transform>
+</Instance>
+<Instance name="94868A044_18-8 SS FEM THRDED HEX STANDOFF-1" uid="94868A044_18-8 SS FEM THRDED HEX STANDOFF-1" entityUid="94868A044_18-8 SS FEM THRDED HEX STANDOFF*:*94868A044">
+<Transform>
+<Rotation>-0.25026267969018151 0.96817797493760938 0 0 0 -1 -0.96817797493760938 -0.25026267969018151 0</Rotation>
+<Translation>0.0044688843393379737 0.056502428848338671 0.034600230200494159</Translation>
+</Transform>
+</Instance>
+<Instance name="Hitec Servo Arm Alluminium Dual-1" uid="Hitec Servo Arm Alluminium Dual-1" entityUid="Hitec Servo Arm Alluminium Dual*:*Default">
+<Transform>
+<Rotation>0.99642495547717924 0 -0.084482590527881984 0 1 0 0.084482590527881984 0 0.99642495547717924</Rotation>
+<Translation>0.036468884339339577 0.065802428848338659 0.054600230200493094</Translation>
+</Transform>
+</Instance>
+<Instance name="link2-1" uid="link2-1" entityUid="link2*:*Default">
+<Transform>
+<Rotation>0.99397601652958645 0 0.10959780364576481 0 1 0 -0.10959780364576481 0 0.99397601652958645</Rotation>
+<Translation>0.056895595926615028 0.068502428848338667 0.05633212330632148</Translation>
+</Transform>
+<VisualProperties>
+<Ambient r="1" g="1" b="1" a="0.25"/>
+<Diffuse r="1" g="1" b="1" a="0.25"/>
+<Specular r="1" g="1" b="1" a="0.25"/>
+<Emissive r="0.050000000000000003" g="0.050000000000000003" b="0.050000000000000003" a="0.25"/>
+<Shininess>0.3125</Shininess>
+</VisualProperties>
+</Instance>
+<Instance name="93657A008_NYLON UNTHREADED SPACER_5mm-1" uid="93657A008_NYLON UNTHREADED SPACER_5mm-1" entityUid="93657A008_NYLON UNTHREADED SPACER_5mm*:*93657A008">
+<Transform>
+<Rotation>1 0 0 0 0 -1 0 1 0</Rotation>
+<Translation>0.056895595926620343 0.074002428848338658 0.056332123306316567</Translation>
+</Transform>
+</Instance>
+<Instance name="93657A034_NYLON UNTHREADED SPACER_d5_h3-2" uid="93657A034_NYLON UNTHREADED SPACER_d5_h3-2" entityUid="93657A034_NYLON UNTHREADED SPACER_d5_h3*:*93657A034">
+<Transform>
+<Rotation>1 0 0 0 0 -1 0 1 0</Rotation>
+<Translation>0.0044688843393379737 0.075002428848338659 0.034600230200494159</Translation>
+</Transform>
+</Instance>
+<Instance name="link_main-5" uid="link_main-5" entityUid="link_main*:*Default">
+<Transform>
+<Rotation>-0.97187948027634019 4.6761297312942273e-16 0.23547882244013132 -3.7648590488538524e-16 -1 4.3194562680432462e-16 0.23547882244013132 3.3114463373850718e-16 0.97187948027634019</Rotation>
+<Translation>0.069669826333787085 0.073502428848338672 0.039556815549894708</Translation>
+</Transform>
+<VisualProperties>
+<Ambient r="1" g="1" b="1" a="0.25"/>
+<Diffuse r="1" g="1" b="1" a="0.25"/>
+<Specular r="1" g="1" b="1" a="0.25"/>
+<Emissive r="0.050000000000000003" g="0.050000000000000003" b="0.050000000000000003" a="0.25"/>
+<Shininess>0.3125</Shininess>
+</VisualProperties>
+</Instance>
+<Instance name="95947A062_ALUM FEM THRDED HEX STANDOFF-3" uid="95947A062_ALUM FEM THRDED HEX STANDOFF-3" entityUid="95947A062_ALUM FEM THRDED HEX STANDOFF*:*95947A062">
+<Transform>
+<Rotation>0.86602540378443849 0.50000000000000022 0 0 0 0.99999999999999989 0.50000000000000022 -0.86602540378443849 0</Rotation>
+<Translation>0.066468884339338008 0.061502428848338661 0.079600230200494199</Translation>
+</Transform>
+</Instance>
+<Instance name="93657A034_NYLON UNTHREADED SPACER_d5_h3-1" uid="93657A034_NYLON UNTHREADED SPACER_d5_h3-1" entityUid="93657A034_NYLON UNTHREADED SPACER_d5_h3*:*93657A034">
+<Transform>
+<Rotation>1 0 0 0 0 -1 0 1 0</Rotation>
+<Translation>0.0044688843393379737 0.070002428848338669 0.034600230200494159</Translation>
+</Transform>
+</Instance>
+<Instance name="90278A372_18-8 STAINLESS STEEL PRECISION SHOULDER SCREW-2" uid="90278A372_18-8 STAINLESS STEEL PRECISION SHOULDER SCREW-2" entityUid="90278A372_18-8 STAINLESS STEEL PRECISION SHOULDER SCREW*:*90278A372">
+<Transform>
+<Rotation>-0.83212225723507072 -0.55459223670550173 -4.4669853459450263e-16 -6.4067936656226113e-16 1.5583526121213019e-16 1 -0.55459223670550173 0.83212225723507072 -4.8498979222948072e-16</Rotation>
+<Translation>0.06846888433933794 0.084502428848338668 0.034600230200494131</Translation>
+</Transform>
+</Instance>
+<Instance name="95947A062_ALUM FEM THRDED HEX STANDOFF-5" uid="95947A062_ALUM FEM THRDED HEX STANDOFF-5" entityUid="95947A062_ALUM FEM THRDED HEX STANDOFF*:*95947A062">
+<Transform>
+<Rotation>0.86602540378443837 0.50000000000000044 0 0 0 1 0.50000000000000033 -0.86602540378443837 0</Rotation>
+<Translation>0.036468884339337995 0.061502428848338668 0.10160023020049425</Translation>
+</Transform>
+</Instance>
+<Instance name="95947A062_ALUM FEM THRDED HEX STANDOFF-4" uid="95947A062_ALUM FEM THRDED HEX STANDOFF-4" entityUid="95947A062_ALUM FEM THRDED HEX STANDOFF*:*95947A062">
+<Transform>
+<Rotation>0.86602540378443915 -0.49999999999999933 0 0 0 1.0000000000000002 -0.49999999999999933 -0.86602540378443915 0</Rotation>
+<Translation>0.0064688843393379755 0.061502428848338668 0.079600230200494171</Translation>
+</Transform>
+</Instance>
+<Instance name="90278A372_18-8 STAINLESS STEEL PRECISION SHOULDER SCREW-1" uid="90278A372_18-8 STAINLESS STEEL PRECISION SHOULDER SCREW-1" entityUid="90278A372_18-8 STAINLESS STEEL PRECISION SHOULDER SCREW*:*90278A372">
+<Transform>
+<Rotation>1 0 0 0 0 1 0 -1 0</Rotation>
+<Translation>0.0044688843393379737 0.084502428848338668 0.034600230200494159</Translation>
+</Transform>
+</Instance>
+<Instance name="93657A008_NYLON UNTHREADED SPACER_5mm-2" uid="93657A008_NYLON UNTHREADED SPACER_5mm-2" entityUid="93657A008_NYLON UNTHREADED SPACER_5mm*:*93657A008">
+<Transform>
+<Rotation>0.79405891467936995 -0.60784080154117737 0 0 0 -1 0.60784080154117748 0.79405891467937006 0</Rotation>
+<Translation>0.016042172752055474 0.074002428848338672 0.05286833709467198</Translation>
+</Transform>
+</Instance>
+<Instance name="95947A062_ALUM FEM THRDED HEX STANDOFF-2" uid="95947A062_ALUM FEM THRDED HEX STANDOFF-2" entityUid="95947A062_ALUM FEM THRDED HEX STANDOFF*:*95947A062">
+<Transform>
+<Rotation>1 0 0 0 0 -1 0 1 0</Rotation>
+<Translation>0.046468884339337997 0.061502428848338654 0.026600230200494152</Translation>
+</Transform>
+</Instance>
+<Instance name="90265A122_SHOULDER SCREW_M3-2" uid="90265A122_SHOULDER SCREW_M3-2" entityUid="90265A122_SHOULDER SCREW_M3*:*90265A122">
+<Transform>
+<Rotation>-0.62458462706768192 0.78095713303018421 0 0 0 1.0000000000000002 0.78095713303018421 0.62458462706768192 0</Rotation>
+<Translation>0.016042172752055474 0.083502428848338667 0.052868337094671952</Translation>
+</Transform>
+</Instance>
+<Instance name="90278A543_18-8 STAINLESS STEEL PRECISION SHOULDER SCREW-2" uid="90278A543_18-8 STAINLESS STEEL PRECISION SHOULDER SCREW-2" entityUid="90278A543_18-8 STAINLESS STEEL PRECISION SHOULDER SCREW*:*90278A543">
+<Transform>
+<Rotation>-0.97718483629399788 0.21239066767886255 4.1205649825329094e-16 3.1910767464636539e-16 -4.7191017637070714e-16 1 0.21239066767886255 0.97718483629399788 3.9336797636269301e-16</Rotation>
+<Translation>0.073296200199358494 0.076502428848338661 0.054523759546160039</Translation>
+</Transform>
+</Instance>
+<Instance name="93657A034_NYLON UNTHREADED SPACER_d5_h3-4" uid="93657A034_NYLON UNTHREADED SPACER_d5_h3-4" entityUid="93657A034_NYLON UNTHREADED SPACER_d5_h3*:*93657A034">
+<Transform>
+<Rotation>1 4.6761297312944886e-16 4.6761297312944856e-16 4.6761297312944836e-16 4.5360931365321171e-16 -1 -4.6761297312944905e-16 1 4.5360931365321151e-16</Rotation>
+<Translation>0.068468884339337982 0.075002428848338659 0.034600230200494186</Translation>
+</Transform>
+</Instance>
+<Instance name="93657A034_NYLON UNTHREADED SPACER_d5_h3-3" uid="93657A034_NYLON UNTHREADED SPACER_d5_h3-3" entityUid="93657A034_NYLON UNTHREADED SPACER_d5_h3*:*93657A034">
+<Transform>
+<Rotation>0.99999392354796912 0.003486096260714262 4.6480115516462587e-16 4.631711680858071e-16 4.6837533851374008e-16 -1 -0.003486096260714262 0.99999392354796912 4.6675783317632587e-16</Rotation>
+<Translation>0.068468884339337954 0.070002428848338683 0.034600230200494131</Translation>
+</Transform>
+</Instance>
+</Instance>
+<Instance name="hand_arm_link-1" uid="hand_arm_link-1" entityUid="hand_arm_link*:*Default">
+<Transform>
+<Rotation>1 0 -3.8857805861880479e-16 0 -1 2.2946258697283144e-16 -3.8857805861880479e-16 -2.2946258697283139e-16 -1</Rotation>
+<Translation>0.25815996218582693 0.017216833311021584 -0.16399426754312266</Translation>
+</Transform>
+</Instance>
+</Instance>
+</InstanceTree>
+<Constraints>
+<Coincident name="Coincident32">
+<ConstraintGeometry geomType="plane">
+<InstancePath>
+<Uid>monkey_body-1</Uid>
+<Uid>RoboMaster GM6020 Brushless DC Motor-2</Uid>
+</InstancePath>
+<Position>0 0 -0.075047856389410014</Position>
+<Axis>0 0 1.0000000000000002</Axis>
+</ConstraintGeometry>
+<ConstraintGeometry geomType="plane">
+<InstancePath>
+<Uid>left_hand-1</Uid>
+<Uid>arm-1</Uid>
+</InstancePath>
+<Position>-0.017320508075688797 -0.0099999999999999551 0</Position>
+<Axis>0 0 -0.99999999999999989</Axis>
+</ConstraintGeometry>
+</Coincident>
+<Concentric name="Concentric49">
+<ConstraintGeometry geomType="cylinder">
+<InstancePath>
+<Uid>monkey_body-1</Uid>
+<Uid>RoboMaster GM6020 Brushless DC Motor-2</Uid>
+</InstancePath>
+<Position>0 0 -0.075047856389410014</Position>
+<Axis>0 0 1.0000000000000002</Axis>
+</ConstraintGeometry>
+<ConstraintGeometry geomType="cylinder">
+<InstancePath>
+<Uid>left_hand-1</Uid>
+<Uid>arm-1</Uid>
+</InstancePath>
+<Position>0 0 0.0039999999999999966</Position>
+<Axis>0 0 -0.99999999999999989</Axis>
+</ConstraintGeometry>
+</Concentric>
+<Coincident name="Coincident33">
+<ConstraintGeometry geomType="plane">
+<InstancePath>
+<Uid>monkey_body-1</Uid>
+<Uid>RoboMaster GM6020 Brushless DC Motor-2</Uid>
+</InstancePath>
+<Position>0 0 -0.075047856389410014</Position>
+<Axis>0 0 1.0000000000000002</Axis>
+</ConstraintGeometry>
+<ConstraintGeometry geomType="plane">
+<InstancePath>
+<Uid>left_hand-1</Uid>
+<Uid>arm-1</Uid>
+</InstancePath>
+<Position>-0.017320508075688797 -0.0099999999999999551 0</Position>
+<Axis>0 0 -0.99999999999999989</Axis>
+</ConstraintGeometry>
+</Coincident>
+<Coincident name="Coincident34">
+<ConstraintGeometry geomType="plane">
+<InstancePath>
+<Uid>monkey_body-1</Uid>
+<Uid>RoboMaster GM6020 Brushless DC Motor-1</Uid>
+</InstancePath>
+<Position>0 0 -0.075047856389409973</Position>
+<Axis>0 0 1</Axis>
+</ConstraintGeometry>
+<ConstraintGeometry geomType="plane">
+<InstancePath>
+<Uid>right_hand-1</Uid>
+<Uid>arm-1</Uid>
+</InstancePath>
+<Position>-0.017320508075688801 -0.0099999999999999568 0.0040000000000000036</Position>
+<Axis>0 0 1</Axis>
+</ConstraintGeometry>
+</Coincident>
+<Concentric name="Concentric50">
+<ConstraintGeometry geomType="cylinder">
+<InstancePath>
+<Uid>monkey_body-1</Uid>
+<Uid>RoboMaster GM6020 Brushless DC Motor-1</Uid>
+</InstancePath>
+<Position>0 0 -0.075047856389409973</Position>
+<Axis>0 0 1</Axis>
+</ConstraintGeometry>
+<ConstraintGeometry geomType="cylinder">
+<InstancePath>
+<Uid>right_hand-1</Uid>
+<Uid>arm-1</Uid>
+</InstancePath>
+<Position>0 0 0.0040000000000000036</Position>
+<Axis>0 0 -1</Axis>
+</ConstraintGeometry>
+</Concentric>
+<Coincident name="Coincident35">
+<ConstraintGeometry geomType="plane">
+<InstancePath>
+<Uid>monkey_body-1</Uid>
+<Uid>RoboMaster GM6020 Brushless DC Motor-1</Uid>
+</InstancePath>
+<Position>0 0 -0.075047856389409973</Position>
+<Axis>0 0 1</Axis>
+</ConstraintGeometry>
+<ConstraintGeometry geomType="plane">
+<InstancePath>
+<Uid>right_hand-1</Uid>
+<Uid>arm-1</Uid>
+</InstancePath>
+<Position>-0.017320508075688801 -0.0099999999999999568 0.0040000000000000036</Position>
+<Axis>0 0 1</Axis>
+</ConstraintGeometry>
+</Coincident>
+</Constraints>
+</RootAssembly>
+<Assemblies>
+<Assembly name="monkey_body" uid="monkey_body" version="149">
+<ModelUnits mass="kilogram" length="millimeter"/>
+<AssemblyFile name="monkey_body.sldasm" type="SolidWorks Assembly"/>
+</Assembly>
+<Assembly name="Electronic_Layer" uid="Electronic_Layer" version="215">
+<ModelUnits mass="kilogram" length="inch"/>
+<AssemblyFile name="Electronic_Layer.SLDASM" type="SolidWorks Assembly"/>
+</Assembly>
+<Assembly name="right_hand" uid="right_hand" version="141">
+<ModelUnits mass="kilogram" length="millimeter"/>
+<AssemblyFile name="right_hand.sldasm" type="SolidWorks Assembly"/>
+</Assembly>
+<Assembly name="Assem1" uid="Assem1" version="336">
+<ModelUnits mass="kilogram" length="millimeter"/>
+<AssemblyFile name="Assem1.SLDASM" type="SolidWorks Assembly"/>
+</Assembly>
+<Assembly name="left_hand" uid="left_hand" version="176">
+<ModelUnits mass="kilogram" length="millimeter"/>
+<AssemblyFile name="left_hand.sldasm" type="SolidWorks Assembly"/>
+</Assembly>
+</Assemblies>
+<Parts>
+<Part name="90265A122_SHOULDER SCREW_M3" uid="90265A122_SHOULDER SCREW_M3*:*90265A122" version="131">
+<ModelUnits mass="kilogram" length="millimeter"/>
+<PartFile name="90265A122_SHOULDER SCREW_M3.SLDPRT" type="SolidWorks Part"/>
+<MassProperties>
+<Mass>0.00025286349659389831</Mass>
+<CenterOfMass>2.1289540582878859e-07 -1.8168041271323084e-07 -0.0076644351715222381</CenterOfMass>
+<Inertia>7.9475998013849742e-09 7.947613326092698e-09 6.699288952691465e-10 -4.9077411075279824e-13 5.4442460173574092e-13 1.6940870623209026e-14</Inertia>
+</MassProperties>
+<GeometryFile name="90265A122_SHOULDER SCREW_M3_90265A122_sldprt.STEP" type="STEP"/>
+<VisualProperties>
+<Ambient r="0.75294117647058822" g="0.75294117647058822" b="0.75294117647058822" a="1"/>
+<Diffuse r="0.75294117647058822" g="0.75294117647058822" b="0.75294117647058822" a="1"/>
+<Specular r="0.75294117647058822" g="0.75294117647058822" b="0.75294117647058822" a="1"/>
+<Emissive r="0" g="0" b="0" a="1"/>
+<Shininess>0.31</Shininess>
+</VisualProperties>
+</Part>
+<Part name="90278A372_18-8 STAINLESS STEEL PRECISION SHOULDER SCREW" uid="90278A372_18-8 STAINLESS STEEL PRECISION SHOULDER SCREW*:*90278A372" version="126">
+<ModelUnits mass="kilogram" length="millimeter"/>
+<PartFile name="90278A372_18-8 STAINLESS STEEL PRECISION SHOULDER SCREW.SLDPRT" type="SolidWorks Part"/>
+<MassProperties>
+<Mass>0.00050841572806201824</Mass>
+<CenterOfMass>3.6744900665151044e-07 -3.9793905965418621e-07 -0.0085145397301993053</CenterOfMass>
+<Inertia>2.2181191240953676e-08 2.2181206165422968e-08 2.509204696904819e-09 -2.6245203048715158e-12 2.2804654375482451e-12 3.480668978114155e-14</Inertia>
+</MassProperties>
+<GeometryFile name="90278A372_18-8 STAINLESS STEEL PRECISION SHOULDER SCREW_90278A372_sldprt.STEP" type="STEP"/>
+<VisualProperties>
+<Ambient r="0.75294117647058822" g="0.75294117647058822" b="0.75294117647058822" a="1"/>
+<Diffuse r="0.75294117647058822" g="0.75294117647058822" b="0.75294117647058822" a="1"/>
+<Specular r="0.75294117647058822" g="0.75294117647058822" b="0.75294117647058822" a="1"/>
+<Emissive r="0" g="0" b="0" a="1"/>
+<Shininess>0.31</Shininess>
+</VisualProperties>
+</Part>
+<Part name="90278A543_18-8 STAINLESS STEEL PRECISION SHOULDER SCREW" uid="90278A543_18-8 STAINLESS STEEL PRECISION SHOULDER SCREW*:*90278A543" version="126">
+<ModelUnits mass="kilogram" length="millimeter"/>
+<PartFile name="90278A543_18-8 STAINLESS STEEL PRECISION SHOULDER SCREW.SLDPRT" type="SolidWorks Part"/>
+<MassProperties>
+<Mass>0.00018769096347109226</Mass>
+<CenterOfMass>1.6769960161450063e-07 -3.1771287974960512e-07 -0.0050265756002311869</CenterOfMass>
+<Inertia>2.9024994148493922e-09 2.9025012209873413e-09 5.686521704778565e-10 -4.3810701768275549e-13 2.5503490756031809e-13 8.7436763532636106e-15</Inertia>
+</MassProperties>
+<GeometryFile name="90278A543_18-8 STAINLESS STEEL PRECISION SHOULDER SCREW_90278A543_sldprt.STEP" type="STEP"/>
+<VisualProperties>
+<Ambient r="0.75294117647058822" g="0.75294117647058822" b="0.75294117647058822" a="1"/>
+<Diffuse r="0.75294117647058822" g="0.75294117647058822" b="0.75294117647058822" a="1"/>
+<Specular r="0.75294117647058822" g="0.75294117647058822" b="0.75294117647058822" a="1"/>
+<Emissive r="0" g="0" b="0" a="1"/>
+<Shininess>0.31</Shininess>
+</VisualProperties>
+</Part>
+<Part name="93505A178_ALUM MALE-FEM THRDED HEX STANDOFF" uid="93505A178_ALUM MALE-FEM THRDED HEX STANDOFF*:*93505A178" version="140">
+<ModelUnits mass="kilogram" length="inch"/>
+<PartFile name="93505A178_ALUM MALE-FEM THRDED HEX STANDOFF.SLDPRT" type="SolidWorks Part"/>
+<MassProperties>
+<Mass>0.0052342053526603267</Mass>
+<CenterOfMass>-0.0029338042370733661 -9.0312638528067398e-08 -3.287101563274512e-07</CenterOfMass>
+<Inertia>6.7356117113754181e-08 3.9171376938118237e-07 3.917145935290574e-07 1.7552765038696674e-12 -1.7682699830018383e-11 2.7088202140590705e-11</Inertia>
+</MassProperties>
+<GeometryFile name="93505A178_ALUM MALE-FEM THRDED HEX STANDOFF_93505A178_sldprt.STEP" type="STEP"/>
+<VisualProperties>
+<Ambient r="0.89803921568627454" g="0.91764705882352937" b="0.92941176470588238" a="1"/>
+<Diffuse r="0.89803921568627454" g="0.91764705882352937" b="0.92941176470588238" a="1"/>
+<Specular r="0.44901960784313727" g="0.45882352941176469" b="0.46470588235294119" a="1"/>
+<Emissive r="0" g="0" b="0" a="1"/>
+<Shininess>0.3125</Shininess>
+</VisualProperties>
+</Part>
+<Part name="93657A008_NYLON UNTHREADED SPACER_5mm" uid="93657A008_NYLON UNTHREADED SPACER_5mm*:*93657A008" version="110">
+<ModelUnits mass="kilogram" length="millimeter"/>
+<PartFile name="93657A008_NYLON UNTHREADED SPACER_5mm.SLDPRT" type="SolidWorks Part"/>
+<MassProperties>
+<Mass>7.2099551399885795e-05</Mass>
+<CenterOfMass>0 0 0</CenterOfMass>
+<Inertia>3.9192114481787945e-10 3.9192114481787955e-10 4.8342749213623451e-10 0 0 0</Inertia>
+</MassProperties>
+<GeometryFile name="93657A008_NYLON UNTHREADED SPACER_5mm_93657A008_sldprt.STEP" type="STEP"/>
+<VisualProperties>
+<Ambient r="0.75294117647058822" g="0.75294117647058822" b="0.75294117647058822" a="1"/>
+<Diffuse r="0.75294117647058822" g="0.75294117647058822" b="0.75294117647058822" a="1"/>
+<Specular r="0.75294117647058822" g="0.75294117647058822" b="0.75294117647058822" a="1"/>
+<Emissive r="0" g="0" b="0" a="1"/>
+<Shininess>0.31</Shininess>
+</VisualProperties>
+</Part>
+<Part name="93657A034_NYLON UNTHREADED SPACER_d5_h3" uid="93657A034_NYLON UNTHREADED SPACER_d5_h3*:*93657A034" version="110">
+<ModelUnits mass="kilogram" length="millimeter"/>
+<PartFile name="93657A034_NYLON UNTHREADED SPACER_d5_h3.SLDPRT" type="SolidWorks Part"/>
+<MassProperties>
+<Mass>8.4610944142807112e-05</Mass>
+<CenterOfMass>0 0 0</CenterOfMass>
+<Inertia>5.5044707348904945e-10 5.5044707348904945e-10 9.7397773076388827e-10 0 0 0</Inertia>
+</MassProperties>
+<GeometryFile name="93657A034_NYLON UNTHREADED SPACER_d5_h3_93657A034_sldprt.STEP" type="STEP"/>
+<VisualProperties>
+<Ambient r="0.75294117647058822" g="0.75294117647058822" b="0.75294117647058822" a="1"/>
+<Diffuse r="0.75294117647058822" g="0.75294117647058822" b="0.75294117647058822" a="1"/>
+<Specular r="0.75294117647058822" g="0.75294117647058822" b="0.75294117647058822" a="1"/>
+<Emissive r="0" g="0" b="0" a="1"/>
+<Shininess>0.31</Shininess>
+</VisualProperties>
+</Part>
+<Part name="94868A044_18-8 SS FEM THRDED HEX STANDOFF" uid="94868A044_18-8 SS FEM THRDED HEX STANDOFF*:*94868A044" version="122">
+<ModelUnits mass="kilogram" length="millimeter"/>
+<PartFile name="94868A044_18-8 SS FEM THRDED HEX STANDOFF.SLDPRT" type="SolidWorks Part"/>
+<MassProperties>
+<Mass>0.00042286519510299379</Mass>
+<CenterOfMass>-3.7014154416136633e-07 6.1468138728850215e-08 4.3880673515388642e-07</CenterOfMass>
+<Inertia>1.5376809674464504e-08 1.5376831252791049e-08 2.7835573769371766e-09 1.8822996013606914e-12 3.4366349758000468e-13 -2.1303558857532015e-14</Inertia>
+</MassProperties>
+<GeometryFile name="94868A044_18-8 SS FEM THRDED HEX STANDOFF_94868A044_sldprt.STEP" type="STEP"/>
+<VisualProperties>
+<Ambient r="0.75294117647058822" g="0.75294117647058822" b="0.75294117647058822" a="1"/>
+<Diffuse r="0.75294117647058822" g="0.75294117647058822" b="0.75294117647058822" a="1"/>
+<Specular r="0.75294117647058822" g="0.75294117647058822" b="0.75294117647058822" a="1"/>
+<Emissive r="0" g="0" b="0" a="1"/>
+<Shininess>0.31</Shininess>
+</VisualProperties>
+</Part>
+<Part name="9578T310_HEAVY DUTY ALUMINUM CLAMP-ON FRAMING FITTING" uid="9578T310_HEAVY DUTY ALUMINUM CLAMP-ON FRAMING FITTING*:*9578T31" version="507">
+<ModelUnits mass="kilogram" length="millimeter"/>
+<PartFile name="9578T310_HEAVY DUTY ALUMINUM CLAMP-ON FRAMING FITTING.SLDPRT" type="SolidWorks Part"/>
+<MassProperties>
+<Mass>0.069587584212337419</Mass>
+<CenterOfMass>-5.2687831644440776e-08 -1.0007761050231411e-05 0.015360898956120835</CenterOfMass>
+<Inertia>1.7430125075725087e-05 1.5972199737158056e-05 1.2743363796109975e-05 5.9611550613419884e-08 6.4934364219451263e-11 -3.7294199406730596e-12</Inertia>
+</MassProperties>
+<GeometryFile name="9578T310_HEAVY DUTY ALUMINUM CLAMP-ON FRAMING FITTING_9578T31_sldprt.STEP" type="STEP"/>
+<VisualProperties>
+<Ambient r="0.89803921568627454" g="0.91764705882352937" b="0.92941176470588238" a="1"/>
+<Diffuse r="0.89803921568627454" g="0.91764705882352937" b="0.92941176470588238" a="1"/>
+<Specular r="0.44901960784313727" g="0.45882352941176469" b="0.46470588235294119" a="1"/>
+<Emissive r="0" g="0" b="0" a="1"/>
+<Shininess>0.3125</Shininess>
+</VisualProperties>
+</Part>
+<Part name="95947A062_ALUM FEM THRDED HEX STANDOFF" uid="95947A062_ALUM FEM THRDED HEX STANDOFF*:*95947A062" version="121">
+<ModelUnits mass="kilogram" length="millimeter"/>
+<PartFile name="95947A062_ALUM FEM THRDED HEX STANDOFF.SLDPRT" type="SolidWorks Part"/>
+<MassProperties>
+<Mass>0.00071267237963600484</Mass>
+<CenterOfMass>2.9417332982315387e-07 2.399934432721382e-07 2.640625035083766e-07</CenterOfMass>
+<Inertia>4.9926280382045214e-08 4.9926258751475616e-08 4.3064436651417882e-09 4.0552158789792196e-12 -3.3776252939106083e-12 -8.296273556057881e-15</Inertia>
+</MassProperties>
+<GeometryFile name="95947A062_ALUM FEM THRDED HEX STANDOFF_95947A062_sldprt.STEP" type="STEP"/>
+<VisualProperties>
+<Ambient r="0.75294117647058822" g="0.75294117647058822" b="0.75294117647058822" a="1"/>
+<Diffuse r="0.75294117647058822" g="0.75294117647058822" b="0.75294117647058822" a="1"/>
+<Specular r="0.75294117647058822" g="0.75294117647058822" b="0.75294117647058822" a="1"/>
+<Emissive r="0" g="0" b="0" a="1"/>
+<Shininess>0.31</Shininess>
+</VisualProperties>
+</Part>
+<Part name="Battery" uid="Battery*:*Default" version="126">
+<ModelUnits mass="kilogram" length="millimeter"/>
+<PartFile name="Battery.SLDPRT" type="SolidWorks Part"/>
+<MassProperties>
+<Mass>0.63200000000000001</Mass>
+<CenterOfMass>0.029999999999999995 0.059999999999999991 -0.039999999999999994</CenterOfMass>
+<Inertia>0.0010954666666666666 0.00052666666666666671 0.00094799999999999973 0 0 0</Inertia>
+</MassProperties>
+<GeometryFile name="Battery_Default_sldprt.STEP" type="STEP"/>
+<VisualProperties>
+<Ambient r="0.792156862745098" g="0.81960784313725488" b="0.93333333333333335" a="1"/>
+<Diffuse r="0.792156862745098" g="0.81960784313725488" b="0.93333333333333335" a="1"/>
+<Specular r="0.396078431372549" g="0.40980392156862744" b="0.46666666666666667" a="1"/>
+<Emissive r="0" g="0" b="0" a="1"/>
+<Shininess>0.40000000596046448</Shininess>
+</VisualProperties>
+</Part>
+<Part name="BodyBar" uid="BodyBar*:*Default" version="206">
+<ModelUnits mass="kilogram" length="inch"/>
+<PartFile name="BodyBar.SLDPRT" type="SolidWorks Part"/>
+<MassProperties>
+<Mass>0.044580640207559939</Mass>
+<CenterOfMass>4.6026470387874626e-08 0.13969995647748162 -0.00011794501502204498</CenterOfMass>
+<Inertia>0.0002930251179825052 1.3636488826298518e-06 0.00029305606062234892 -6.5338933496378274e-12 2.9058327331186181e-11 5.5802256423413594e-11</Inertia>
+</MassProperties>
+<GeometryFile name="BodyBar_Default_sldprt.STEP" type="STEP"/>
+<VisualProperties>
+<Ambient r="0.89803921568627454" g="0.91764705882352937" b="0.92941176470588238" a="1"/>
+<Diffuse r="0.89803921568627454" g="0.91764705882352937" b="0.92941176470588238" a="1"/>
+<Specular r="0.44901960784313727" g="0.45882352941176469" b="0.46470588235294119" a="1"/>
+<Emissive r="0" g="0" b="0" a="1"/>
+<Shininess>0.3125</Shininess>
+</VisualProperties>
+</Part>
+<Part name="Hitec HS-7955TG" uid="Hitec HS-7955TG*:*Default" version="2015">
+<ModelUnits mass="kilogram" length="millimeter"/>
+<PartFile name="Hitec HS-7955TG.SLDPRT" type="SolidWorks Part"/>
+<MassProperties>
+<Mass>0.078</Mass>
+<CenterOfMass>-1.5417460056915011e-13 0.015286833760668335 -0.00055120493685848859</CenterOfMass>
+<Inertia>1.9858239862798682e-05 1.3225323544740463e-05 1.1499319229870294e-05 4.2832783580921775e-07 0 0</Inertia>
+</MassProperties>
+<GeometryFile name="Hitec HS-7955TG_Default_sldprt.STEP" type="STEP"/>
+<VisualProperties>
+<Ambient r="0.792156862745098" g="0.81960784313725488" b="0.93333333333333335" a="1"/>
+<Diffuse r="0.792156862745098" g="0.81960784313725488" b="0.93333333333333335" a="1"/>
+<Specular r="0.396078431372549" g="0.40980392156862744" b="0.46666666666666667" a="1"/>
+<Emissive r="0" g="0" b="0" a="1"/>
+<Shininess>0.40000000596046448</Shininess>
+</VisualProperties>
+</Part>
+<Part name="Hitec Servo Arm Alluminium Dual" uid="Hitec Servo Arm Alluminium Dual*:*Default" version="590">
+<ModelUnits mass="kilogram" length="millimeter"/>
+<PartFile name="Hitec Servo Arm Alluminium Dual.SLDPRT" type="SolidWorks Part"/>
+<MassProperties>
+<Mass>0.0027121951437955793</Mass>
+<CenterOfMass>0 0.0013997599326892565 0</CenterOfMass>
+<Inertia>1.6189605045935816e-08 5.1456465174391845e-07 5.0182140185069555e-07 0 0 0</Inertia>
+</MassProperties>
+<GeometryFile name="Hitec Servo Arm Alluminium Dual_Default_sldprt.STEP" type="STEP"/>
+<VisualProperties>
+<Ambient r="0.20000000000000001" g="0.40000000000000002" b="0.69803921568627447" a="1"/>
+<Diffuse r="0.20000000000000001" g="0.40000000000000002" b="0.69803921568627447" a="1"/>
+<Specular r="0.059999999999999998" g="0.12" b="0.20941176470588233" a="1"/>
+<Emissive r="0" g="0" b="0" a="1"/>
+<Shininess>0.3125</Shininess>
+</VisualProperties>
+</Part>
+<Part name="MountPlate" uid="MountPlate*:*Default" version="221">
+<ModelUnits mass="kilogram" length="inch"/>
+<PartFile name="MountPlate.SLDPRT" type="SolidWorks Part"/>
+<MassProperties>
+<Mass>0.038370594954281516</Mass>
+<CenterOfMass>0.057149999999999992 0.0024999999999999996 -0.036829999999999995</CenterOfMass>
+<Inertia>1.8242612200143918e-05 6.2367038230769307e-05 4.4284303509601557e-05 0 0 0</Inertia>
+</MassProperties>
+<GeometryFile name="MountPlate_Default_sldprt.STEP" type="STEP"/>
+<VisualProperties>
+<Ambient r="0.792156862745098" g="0.81960784313725488" b="0.93333333333333335" a="1"/>
+<Diffuse r="0.792156862745098" g="0.81960784313725488" b="0.93333333333333335" a="1"/>
+<Specular r="0.396078431372549" g="0.40980392156862744" b="0.46666666666666667" a="1"/>
+<Emissive r="0" g="0" b="0" a="1"/>
+<Shininess>0.40000000596046448</Shininess>
+</VisualProperties>
+</Part>
+<Part name="RM_Board_A" uid="RM_Board_A*:*Default" version="111">
+<ModelUnits mass="kilogram" length="millimeter"/>
+<PartFile name="RM_Board_A.SLDPRT" type="SolidWorks Part"/>
+<MassProperties>
+<Mass>0.17351</Mass>
+<CenterOfMass>0.042500000000000003 0.0074999999999999989 -0.029000000000000001</CenterOfMass>
+<Inertia>5.189394916666667e-05 0.00015310811583333335 0.00010772079166666668 0 0 0</Inertia>
+</MassProperties>
+<GeometryFile name="RM_Board_A_Default_sldprt.STEP" type="STEP"/>
+<VisualProperties>
+<Ambient r="0.68627450980392157" g="0.6588235294117647" b="0.63921568627450975" a="1"/>
+<Diffuse r="0.68627450980392157" g="0.6588235294117647" b="0.63921568627450975" a="1"/>
+<Specular r="0.34313725490196079" g="0.32941176470588235" b="0.31960784313725488" a="1"/>
+<Emissive r="0" g="0" b="0" a="1"/>
+<Shininess>0.3125</Shininess>
+</VisualProperties>
+</Part>
+<Part name="RoboMaster GM6020 Brushless DC Motor" uid="RoboMaster GM6020 Brushless DC Motor*:*Default" version="119">
+<ModelUnits mass="kilogram" length="millimeter"/>
+<PartFile name="RoboMaster GM6020 Brushless DC Motor.SLDPRT" type="SolidWorks Part"/>
+<MassProperties>
+<Mass>0.46800000000000003</Mass>
+<CenterOfMass>0.00011244881078019959 -5.9794726652702071e-05 -0.093981783105039921</CenterOfMass>
+<Inertia>0.00017727105968502369 0.00017653696609887072 0.00026193885970109072 -5.9111075203862161e-07 8.3494625978880539e-07 -6.8315050354214545e-07</Inertia>
+</MassProperties>
+<GeometryFile name="RoboMaster GM6020 Brushless DC Motor_Default_sldprt.STEP" type="STEP"/>
+<VisualProperties>
+<Ambient r="0.89803921568627454" g="0.91764705882352937" b="0.92941176470588238" a="1"/>
+<Diffuse r="0.89803921568627454" g="0.91764705882352937" b="0.92941176470588238" a="1"/>
+<Specular r="0.44901960784313727" g="0.45882352941176469" b="0.46470588235294119" a="1"/>
+<Emissive r="0" g="0" b="0" a="1"/>
+<Shininess>0.3125</Shininess>
+</VisualProperties>
+</Part>
+<Part name="ShoulderMount" uid="ShoulderMount*:*Default" version="228">
+<ModelUnits mass="kilogram" length="inch"/>
+<PartFile name="ShoulderMount.SLDPRT" type="SolidWorks Part"/>
+<MassProperties>
+<Mass>0.033316047465238349</Mass>
+<CenterOfMass>1.2246672303867147e-09 -9.9610058389717936e-10 0.0059702707048627408</CenterOfMass>
+<Inertia>9.2052292455531274e-06 9.5803439301495118e-06 1.7716602386514843e-05 2.7739099787585306e-13 -7.3016059247324221e-13 1.365126762455352e-13</Inertia>
+</MassProperties>
+<GeometryFile name="ShoulderMount_Default_sldprt.STEP" type="STEP"/>
+<VisualProperties>
+<Ambient r="0.792156862745098" g="0.81960784313725488" b="0.93333333333333335" a="1"/>
+<Diffuse r="0.792156862745098" g="0.81960784313725488" b="0.93333333333333335" a="1"/>
+<Specular r="0.396078431372549" g="0.40980392156862744" b="0.46666666666666667" a="1"/>
+<Emissive r="0" g="0" b="0" a="1"/>
+<Shininess>0.40000000596046448</Shininess>
+</VisualProperties>
+</Part>
+<Part name="arm" uid="arm*:*Default" version="132">
+<ModelUnits mass="kilogram" length="millimeter"/>
+<PartFile name="arm.SLDPRT" type="SolidWorks Part"/>
+<MassProperties>
+<Mass>0.084713089532026456</Mass>
+<CenterOfMass>0 0.079825101456156095 0.0019999999999999996</CenterOfMass>
+<Inertia>0.00018321075372259354 1.8901040623855961e-05 0.0002018858927743641 0 0 0</Inertia>
+</MassProperties>
+<GeometryFile name="arm_Default_sldprt.STEP" type="STEP"/>
+<VisualProperties>
+<Ambient r="0.89803921568627454" g="0.91764705882352937" b="0.92941176470588238" a="1"/>
+<Diffuse r="0.89803921568627454" g="0.91764705882352937" b="0.92941176470588238" a="1"/>
+<Specular r="0.44901960784313727" g="0.45882352941176469" b="0.46470588235294119" a="1"/>
+<Emissive r="0" g="0" b="0" a="1"/>
+<Shininess>0.3125</Shininess>
+</VisualProperties>
+</Part>
+<Part name="hand_arm_link" uid="hand_arm_link*:*Default" version="196">
+<ModelUnits mass="kilogram" length="millimeter"/>
+<PartFile name="hand_arm_link.SLDPRT" type="SolidWorks Part"/>
+<MassProperties>
+<Mass>0.09276680000000001</Mass>
+<CenterOfMass>-0.25813296229100213 0.013426273117058327 -0.020960312613192641</CenterOfMass>
+<Inertia>3.4480847102111034e-05 7.4014048950165224e-05 5.3065633730529765e-05 3.5600311112930079e-06 0 0</Inertia>
+</MassProperties>
+<GeometryFile name="hand_arm_link_Default_sldprt.STEP" type="STEP"/>
+<VisualProperties>
+<Ambient r="0.49803921568627452" g="0.49803921568627452" b="0.49803921568627452" a="1"/>
+<Diffuse r="0.49803921568627452" g="0.49803921568627452" b="0.49803921568627452" a="1"/>
+<Specular r="0.24901960784313726" g="0.24901960784313726" b="0.24901960784313726" a="1"/>
+<Emissive r="0.14941176470588236" g="0.14941176470588236" b="0.14941176470588236" a="1"/>
+<Shininess>0.40000000596046448</Shininess>
+</VisualProperties>
+</Part>
+<Part name="link2" uid="link2*:*Default" version="110">
+<ModelUnits mass="kilogram" length="millimeter"/>
+<PartFile name="link2.SLDPRT" type="SolidWorks Part"/>
+<MassProperties>
+<Mass>0.0013104424506661582</Mass>
+<CenterOfMass>0.0082499999999999987 0.0015 0</CenterOfMass>
+<Inertia>1.202727850336773e-08 7.4609632629201623e-08 6.4548017801833137e-08 0 0 0</Inertia>
+</MassProperties>
+<GeometryFile name="link2_Default_sldprt.STEP" type="STEP"/>
+<VisualProperties>
+<Ambient r="1" g="1" b="1" a="1"/>
+<Diffuse r="1" g="1" b="1" a="1"/>
+<Specular r="1" g="1" b="1" a="1"/>
+<Emissive r="0.050000000000000003" g="0.050000000000000003" b="0.050000000000000003" a="1"/>
+<Shininess>0.3125</Shininess>
+</VisualProperties>
+</Part>
+<Part name="link_main" uid="link_main*:*Default" version="295">
+<ModelUnits mass="kilogram" length="millimeter"/>
+<PartFile name="link_main.SLDPRT" type="SolidWorks Part"/>
+<MassProperties>
+<Mass>0.0077893440533890537</Mass>
+<CenterOfMass>-0.00037067891690262971 0.001 -0.040965284748243534</CenterOfMass>
+<Inertia>9.0682075896570479e-06 9.2081795867941328e-06 1.4516489317268932e-07 0 7.9795803489404039e-08 0</Inertia>
+</MassProperties>
+<GeometryFile name="link_main_Default_sldprt.STEP" type="STEP"/>
+<VisualProperties>
+<Ambient r="0.89803921568627454" g="0.91764705882352937" b="0.92941176470588238" a="1"/>
+<Diffuse r="0.89803921568627454" g="0.91764705882352937" b="0.92941176470588238" a="1"/>
+<Specular r="0.44901960784313727" g="0.45882352941176469" b="0.46470588235294119" a="1"/>
+<Emissive r="0" g="0" b="0" a="1"/>
+<Shininess>0.3125</Shininess>
+</VisualProperties>
+</Part>
+<Part name="servo_mounting_plate" uid="servo_mounting_plate*:*Default" version="238">
+<ModelUnits mass="kilogram" length="millimeter"/>
+<PartFile name="servo_mounting_plate.SLDPRT" type="SolidWorks Part"/>
+<MassProperties>
+<Mass>0.035382624235484238</Mass>
+<CenterOfMass>-0.0051123595505617727 0.0015 -0.0050175435789740269</CenterOfMass>
+<Inertia>2.2039311490080145e-05 4.4014424915565471e-05 2.2028187361838555e-05 0 0 0</Inertia>
+</MassProperties>
+<GeometryFile name="servo_mounting_plate_Default_sldprt.STEP" type="STEP"/>
+<VisualProperties>
+<Ambient r="1" g="1" b="1" a="1"/>
+<Diffuse r="1" g="1" b="1" a="1"/>
+<Specular r="1" g="1" b="1" a="1"/>
+<Emissive r="0.050000000000000003" g="0.050000000000000003" b="0.050000000000000003" a="1"/>
+<Shininess>0.3125</Shininess>
+</VisualProperties>
+</Part>
+<Part name="servo_top_plate" uid="servo_top_plate*:*Default" version="309">
+<ModelUnits mass="kilogram" length="millimeter"/>
+<PartFile name="servo_top_plate.SLDPRT" type="SolidWorks Part"/>
+<MassProperties>
+<Mass>0.050518897835290018</Mass>
+<CenterOfMass>-0.0051040034949649486 0.002 -0.0040106615372105777</CenterOfMass>
+<Inertia>3.0436132820712668e-05 5.9602103336372041e-05 2.9300687576553487e-05 0 -1.4566379815458077e-07 0</Inertia>
+</MassProperties>
+<GeometryFile name="servo_top_plate_Default_sldprt.STEP" type="STEP"/>
+<VisualProperties>
+<Ambient r="1" g="1" b="1" a="1"/>
+<Diffuse r="1" g="1" b="1" a="1"/>
+<Specular r="1" g="1" b="1" a="1"/>
+<Emissive r="0.050000000000000003" g="0.050000000000000003" b="0.050000000000000003" a="1"/>
+<Shininess>0.3125</Shininess>
+</VisualProperties>
+</Part>
+</Parts>
+</SimscapeMultibodyImportXML>
