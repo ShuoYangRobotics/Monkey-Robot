@@ -273,10 +273,10 @@ int main(void)
   can_user_init(&hcan1);                   // config can filter, start can
 
 	// PID setup
-  pid_init(&motor_angle_pid[0], 300, 0.0001, 0.01, 200, 800);       //init pid parameter, kp=38, ki=0.001, kd=0.5, output limit = 200rads
-  pid_init(&motor_angle_pid[1], 300, 0.0001, 0.01, 200, 800);       //init pid parameter, kp=38, ki=0.001, kd=0.5, output limit = 200rads
-  pid_init(&motor_velocity_pid[0], 6, 0.00001, 0.06, 125, 700); //init pid parameter, kp=7, ki=3, kd=0.06, output limit = 30000
-  pid_init(&motor_velocity_pid[1], 6, 0.00001, 0.06, 125, 700); //init pid parameter, kp=7, ki=3, kd=0.06, output limit = 30000
+  pid_init(&motor_angle_pid[0], 380, 0.0001, 0.01, 200, 800);       //init pid parameter, kp=38, ki=0.001, kd=0.5, output limit = 200rads
+  pid_init(&motor_angle_pid[1], 380, 0.0001, 0.01, 200, 800);       //init pid parameter, kp=38, ki=0.001, kd=0.5, output limit = 200rads
+  pid_init(&motor_velocity_pid[0], 8, 0.00001, 0.06, 125, 700); //init pid parameter, kp=7, ki=3, kd=0.06, output limit = 30000
+  pid_init(&motor_velocity_pid[1], 8, 0.00001, 0.06, 125, 700); //init pid parameter, kp=7, ki=3, kd=0.06, output limit = 30000
   pid_init(&motor_current_pid[0], 160, 0.001, 0.06, 20000, 30000); //init pid parameter, kp=1000, ki=3, kd=0.06, output limit = 30000
   pid_init(&motor_current_pid[1], 160, 0.001, 0.06, 20000, 30000); //init pid parameter, kp=1000, ki=3, kd=0.06, output limit = 30000
 	
