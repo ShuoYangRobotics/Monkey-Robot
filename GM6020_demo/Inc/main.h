@@ -97,6 +97,7 @@ typedef struct {
 	int output_enable; // if output_enable == 0, do not output control voltage to motors
 	uint16_t pwm_pulse_left;  // default pwm pulse width:1080~1920
 	uint16_t pwm_pulse_right;  // default pwm pulse width:1080~1920
+	uint16_t acked;
 } RobotControl;
 
 #include "protocol.h"

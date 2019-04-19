@@ -2,7 +2,8 @@
 
 //// Variable
 Serial_struct lastSentPack;
-bool acked;
+extern bool acked;
+extern uint16_t packIndex;
 
 //// Functions
 Serial_struct unpack(uint8_t* head) {
@@ -138,19 +139,19 @@ Serial_struct execute(Serial_struct data, RobotControl* robot_control, Trajector
 				robot_control -> ctrl_mode = 8; // start aux trajectory to prepare
 				
 				// added 2019-04-16, use data.value to determine swing arm and swing direction
-				if (data.value == 0) {
-					robot_control -> ctrl_side = 1;
-					robot_control -> ctrl_direction = 0;
-				} else if (data.value == 1) {
-					robot_control -> ctrl_side = -1;
-					robot_control -> ctrl_direction = 0;
-				} else if (data.value == 10) {
-					robot_control -> ctrl_side = 1;
-					robot_control -> ctrl_direction = 1;
-				} else if (data.value == 11) {
-					robot_control -> ctrl_side = -1;
-					robot_control -> ctrl_direction = 1;
-				}
+//				if (data.value == 0) {
+//					robot_control -> ctrl_side = 1;
+//					robot_control -> ctrl_direction = 0;
+//				} else if (data.value == 1) {
+//					robot_control -> ctrl_side = -1;
+//					robot_control -> ctrl_direction = 0;
+//				} else if (data.value == 10) {
+//					robot_control -> ctrl_side = 1;
+//					robot_control -> ctrl_direction = 1;
+//				} else if (data.value == 11) {
+//					robot_control -> ctrl_side = -1;
+//					robot_control -> ctrl_direction = 1;
+//				}
 				
 				ackPack = ack(data, traj -> leftStepReceived, data.position, data.velocity);
 				LED_RED_TOGGLE();
@@ -178,10 +179,12 @@ Serial_struct execute(Serial_struct data, RobotControl* robot_control, Trajector
 			break;
 		case 49: {
 			robot_control -> debug_print = 4;
+			robot_control -> acked = 1;
 			break;
 		}
 		case 51: {
-			acked = true;
+			robot_control -> acked = 1;
+			packIndex ++;
 			break;
 		}
 		default:

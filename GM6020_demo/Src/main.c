@@ -122,7 +122,8 @@ float left_real_pos[301];
 float right_real_pos[301];
 float left_real_vel[301];
 float right_real_vel[301];
-extern bool acked;
+bool acked  = true;
+uint16_t packIndex = 0;
 //// 
 
 extern Trajectory traj;
@@ -139,7 +140,7 @@ int traj_count = 0;
 /// mode selection flags
 /// mode selection flags
 RobotControl robot_control = { 	.debug_print = 0, .ctrl_mode = 0, .output_enable = 0, 
-																.pwm_pulse_left = 1500, .pwm_pulse_right = 1500 };
+																.pwm_pulse_left = 1500, .pwm_pulse_right = 1500, .acked = 1 };
 /// mode selection flags
 /// mode selection flags
 
@@ -301,34 +302,34 @@ int main(void)
 //		__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_3, pwm_pulse_left);
 		__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_4, robot_control.pwm_pulse_right); //PE14
 
-		count++;
-		if (count == 500)
-		{
-			LED_RED_TOGGLE();
-//			pwm_pulse_left += 380;
-//			pwm_pulse_right -=380;
-			count = 0;
-		}
-		if(robot_control.debug_print == 4) {
-			int i;
-			for(i=0; i<300; i++) {
-				Serial_struct dataPack = pack(50, 0, (int32_t)(left_real_pos[i]*1000), (int32_t)(left_real_vel[i]*1000));
-				HAL_UART_Transmit(&huart2, (uint8_t*)&dataPack, sizeof(dataPack),100);
-				setLastSend(dataPack); acked = false;
-				while(!acked);
-				LED_RED_TOGGLE();	
-				
-				dataPack = pack(50, 1, (int32_t)(right_real_pos[i]*1000), (int32_t)(right_real_vel[i]*1000));
-				HAL_UART_Transmit(&huart2, (uint8_t*)&dataPack, sizeof(dataPack),100);
-				setLastSend(dataPack); acked = false;
-				while(!acked);
-				
-				LED_RED_TOGGLE();	
-			}
-			Serial_struct finishPack = pack(52, 0, 0, 0);
-			HAL_UART_Transmit(&huart2, (uint8_t*)&finishPack, sizeof(finishPack),100);
-			robot_control.debug_print = 0;
-		}
+//		count++;
+//		if (count == 500)
+//		{
+//			LED_RED_TOGGLE();
+////			pwm_pulse_left += 380;
+////			pwm_pulse_right -=380;
+//			count = 0;
+//		}
+//		if(robot_control.debug_print == 4) {
+//			int i;
+//			for(i=0; i<300; i++) {
+//				Serial_struct dataPack = pack(50, 0, (int32_t)(left_real_pos[i]*1000), (int32_t)(left_real_vel[i]*1000));
+//				HAL_UART_Transmit(&huart2, (uint8_t*)&dataPack, sizeof(dataPack),100);
+//				setLastSend(dataPack); acked = false;
+//				while(!acked);
+//				//LED_RED_TOGGLE();	
+//				
+//				dataPack = pack(50, 1, (int32_t)(right_real_pos[i]*1000), (int32_t)(right_real_vel[i]*1000));
+//				HAL_UART_Transmit(&huart2, (uint8_t*)&dataPack, sizeof(dataPack),100);
+//				setLastSend(dataPack); acked = false;
+//				while(!acked);
+//				
+//				//LED_RED_TOGGLE();	
+//			}
+//			Serial_struct finishPack = pack(52, 0, 0, 0);
+//			HAL_UART_Transmit(&huart2, (uint8_t*)&finishPack, sizeof(finishPack),100);
+//			robot_control.debug_print = 0;
+//		}
 //		if (pwm_pulse_left > 1881)
 //		{
 //			pwm_pulse_left = 1500;
@@ -415,21 +416,27 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 				//				memset(buf, 0, sizeof(buf));	
 				break;
 			
-			case 4:
-				sprintf(buf, "ctrl_mode %d \t trajcount %d \t angle1:%4.3f \t angle2:%4.3f mvolt1:%d \t mvolt2:%d crt1:%4.3f \t crt2:%4.3f \n", 
-											robot_control.ctrl_mode, traj_count, 
-											left_state_angle[traj_count], 
-											right_state_angle[traj_count], 
-											motor_info[0].set_voltage, 
-											motor_info[1].set_voltage, 
-											motor_info[0].torque_current/5700.0f,
-											motor_info[1].torque_current/5700.0f);
-				
-			
-			
-				HAL_UART_Transmit_DMA(&huart2, (uint8_t *)buf, (COUNTOF(buf)-1));
+			case 4: { // send out data in every 1ms
+				if(robot_control.acked) {
+					if(packIndex<300){
+						Serial_struct dataPack = pack(50, 0, (int32_t)(left_real_pos[packIndex]*1000), (int32_t)(left_real_vel[packIndex]*1000));
+						HAL_UART_Transmit(&huart2, (uint8_t*)&dataPack, sizeof(dataPack), 100);
+						
+					}else if(packIndex<600) {
+						Serial_struct dataPack = pack(50, 1, (int32_t)(right_real_pos[packIndex-300]*1000), (int32_t)(right_real_vel[packIndex-300]*1000));
+						HAL_UART_Transmit(&huart2, (uint8_t*)&dataPack, sizeof(dataPack), 100);
+						
+					}else if(packIndex >= 600) {
+						Serial_struct finishPack = pack(52, 0, 0, 0);
+						HAL_UART_Transmit(&huart2, (uint8_t*)&finishPack, sizeof(finishPack), 100);
+						robot_control.debug_print = 0;
+						packIndex = 0;
+					}
+					robot_control.acked = 0; // set zero to wait for ack
+					LED_RED_TOGGLE();
+				}
 				break;
-			
+			}
 			default:
 				; // to remove warning
 				Serial_struct data = {0xAA, 1, 6377, 1, 1};
