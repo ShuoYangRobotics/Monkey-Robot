@@ -6,11 +6,11 @@ script_Monkey_all_basic;
 %% %%%%%%%%%%%%%%%%%%%%% set up control goal
 % start and end locations
 
-dist1 = -0.33;
-release_height = -0.00;
+dist1 = -0.32;
+release_height = -0.01;
 
-dist2 = 0.36;
-reach_height = 0.0;
+dist2 = 0.33;
+reach_height = 0.06;
 
 xz_start = [dist1;
             release_height];
@@ -18,7 +18,7 @@ xz_start = [dist1;
 xz_end = [dist2;
           reach_height];
       
-save_file_name = strcat('test',num2str(abs(dist1)),'_',num2str(abs(dist2)),'.mat');
+save_file_name = strcat('mod_test',num2str(abs(dist1)),'_',num2str(abs(release_height)),'_',num2str(abs(dist2)),'_',num2str(abs(reach_height)),'.mat');
 save_file_name(save_file_name=='.')=[];
 
 % kinematics
@@ -46,6 +46,10 @@ dt = T/step;
 
 
 Q = 0*eye(6);
+Q(4,4) = 0.002;
+Q(5,5) = 0.002;
+Q(6,6) = 0.002;
+
 R = 0.3*eye(2);
 Qf = 6400*eye(6);
 Qf(4,4) = 0;
