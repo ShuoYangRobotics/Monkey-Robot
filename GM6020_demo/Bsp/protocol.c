@@ -5,6 +5,10 @@ Serial_struct lastSentPack;
 extern bool acked;
 extern uint16_t packIndex;
 
+extern pid_struct_t motor_angle_pid[2];
+extern pid_struct_t motor_velocity_pid[2];
+extern pid_struct_t motor_current_pid[2];
+
 //// Functions
 Serial_struct unpack(uint8_t* head) {
 	Serial_struct data;
@@ -177,6 +181,65 @@ Serial_struct execute(Serial_struct data, RobotControl* robot_control, Trajector
 				robot_control -> pwm_pulse_right = 1500;
 			}
 			break;
+			
+		case 20: {
+			robot_control -> traj_start_delay = data.value;
+			ackPack = ack(data, data.value, data.position, data.velocity);
+			LED_RED_TOGGLE();
+			break;
+		}
+		case 25: {
+			if(data.value == 0) { // tune pos Kp
+				if(data.position>0)
+					motor_angle_pid[0].kp = data.position;
+				if(data.velocity>0)
+					motor_angle_pid[1].kp = data.velocity;
+			}else if(data.value == 1) { // tune pos Ki
+				if(data.position>0)
+					motor_angle_pid[0].ki = data.position;
+				if(data.velocity>0)
+					motor_angle_pid[1].ki = data.velocity;
+			}else if(data.value == 2) { // tune pos Kd
+				if(data.position>0)
+					motor_angle_pid[0].kd = data.position;
+				if(data.velocity>0)
+					motor_angle_pid[1].kd = data.velocity;
+			}else if(data.value == 3) { // tune vel Kp
+				if(data.position>0)
+					motor_velocity_pid[0].kp = data.position;
+				if(data.velocity>0)
+					motor_velocity_pid[1].kp = data.velocity;
+			}else if(data.value == 4) { // tune vel Ki
+				if(data.position>0)
+					motor_velocity_pid[0].ki = data.position;
+				if(data.velocity>0)
+					motor_velocity_pid[1].ki = data.velocity;
+			}else if(data.value == 5) { // tune vel Kd
+				if(data.position>0)
+					motor_velocity_pid[0].kd = data.position;
+				if(data.velocity>0)
+					motor_velocity_pid[1].kd = data.velocity;
+			}else if(data.value == 6) { // tune cur Kp
+				if(data.position>0)
+					motor_current_pid[0].kp = data.position;
+				if(data.velocity>0)
+					motor_current_pid[1].kp = data.velocity;
+			}else if(data.value == 7) { // tune cur Ki
+				if(data.position>0)
+					motor_current_pid[0].ki = data.position;
+				if(data.velocity>0)
+					motor_current_pid[1].ki = data.velocity;
+			}else if(data.value == 8) { // tune cur Kd
+				if(data.position>0)
+					motor_current_pid[0].kd = data.position;
+				if(data.velocity>0)
+					motor_current_pid[1].kd = data.velocity;
+			}
+			
+			ackPack = ack(data, data.value, data.position, data.velocity);
+			LED_RED_TOGGLE();
+			break;
+		}
 		case 49: {
 			robot_control -> debug_print = 4;
 			robot_control -> acked = 1;
