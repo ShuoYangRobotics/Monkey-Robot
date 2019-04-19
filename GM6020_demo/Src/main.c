@@ -103,7 +103,7 @@ pid_struct_t motor_current_pid[2];
 // simple position trajectory, this is used in ctrl_mode 3
 // in these trajectories, state is [q, qdot] (angle and angular velocity)
 // for this simpel trajectory, it is initialized in the traj.h
-float Tf = 0.66f; // use 2 seconds to finish this trajectory
+//float Tf = 0.66f; // use 2 seconds to finish this trajectory
 
 float aux_traj_Tf = 3.0f;  // the time to execute init pose auxiluary trajectory
 
@@ -136,11 +136,12 @@ float dt = 0.001f; // the time between each loop run
 float traj_timer = 0.0f;
 uint16_t traj_start = 0;
 int traj_count = 0;
-	
+
 /// mode selection flags
 /// mode selection flags
 RobotControl robot_control = { 	.debug_print = 0, .ctrl_mode = 0, .output_enable = 0, 
-																.pwm_pulse_left = 1500, .pwm_pulse_right = 1500, .acked = 1 };
+																.pwm_pulse_left = 1500, .pwm_pulse_right = 1500, .acked = 1,
+																.traj_start_delay = 60, .Tf = 0.66};
 /// mode selection flags
 /// mode selection flags
 
@@ -309,31 +310,6 @@ int main(void)
 ////			pwm_pulse_left += 380;
 ////			pwm_pulse_right -=380;
 //			count = 0;
-//		}
-//		if(robot_control.debug_print == 4) {
-//			int i;
-//			for(i=0; i<300; i++) {
-//				Serial_struct dataPack = pack(50, 0, (int32_t)(left_real_pos[i]*1000), (int32_t)(left_real_vel[i]*1000));
-//				HAL_UART_Transmit(&huart2, (uint8_t*)&dataPack, sizeof(dataPack),100);
-//				setLastSend(dataPack); acked = false;
-//				while(!acked);
-//				//LED_RED_TOGGLE();	
-//				
-//				dataPack = pack(50, 1, (int32_t)(right_real_pos[i]*1000), (int32_t)(right_real_vel[i]*1000));
-//				HAL_UART_Transmit(&huart2, (uint8_t*)&dataPack, sizeof(dataPack),100);
-//				setLastSend(dataPack); acked = false;
-//				while(!acked);
-//				
-//				//LED_RED_TOGGLE();	
-//			}
-//			Serial_struct finishPack = pack(52, 0, 0, 0);
-//			HAL_UART_Transmit(&huart2, (uint8_t*)&finishPack, sizeof(finishPack),100);
-//			robot_control.debug_print = 0;
-//		}
-//		if (pwm_pulse_left > 1881)
-//		{
-//			pwm_pulse_left = 1500;
-//			pwm_pulse_right = 1500;
 //		}
 		// end control loop
 		
@@ -514,10 +490,10 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 			}
 			case 4 : {
 				// first enter, should have traj_start = 0
-				if (traj_start >= 60)  // a 60ms delay
+				if (traj_start >= robot_control.traj_start_delay)  // a 60ms delay
 				{
 					// take waypoint from trajectory
-					if (traj_timer > traj_count*Tf/stepNum)
+					if (traj_timer > traj_count*robot_control.Tf/stepNum)
 					{
 						if (traj_count < stepNum)
 						{
@@ -525,7 +501,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 						}
 						else
 						{
-							traj_timer = Tf;
+							traj_timer = robot_control.Tf;
 							// after finish case 4, go to ctrl mode 6, standby 
 							robot_control.ctrl_mode = 6;		
 							//robot_control.debug_print = 4; // this moved to after receiving data pack type 49
@@ -565,7 +541,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 					
 					traj_timer += dt;
 					
-					if (traj_timer > Tf*0.9f) {
+					if (traj_timer > robot_control.Tf*0.9f) {
 						robot_control.pwm_pulse_right = 1500;
 					}
 				}

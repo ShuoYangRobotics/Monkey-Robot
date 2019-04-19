@@ -6,6 +6,7 @@
 #include "main.h"
 #include "trajectory.h"
 #include "bsp_led.h"
+#include "pid.h"
 
 #define packSize 14
 
