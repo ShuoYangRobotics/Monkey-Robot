@@ -240,6 +240,12 @@ Serial_struct execute(Serial_struct data, RobotControl* robot_control, Trajector
 			LED_RED_TOGGLE();
 			break;
 		}
+		case 27: {
+			robot_control -> Tf = ((float)data.value)/1000.0f;
+			ackPack = ack(data, data.value, data.position, data.velocity);
+			LED_RED_TOGGLE();
+			break;
+		}
 		case 49: {
 			robot_control -> debug_print = 4;
 			robot_control -> acked = 1;

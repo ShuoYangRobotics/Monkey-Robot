@@ -99,6 +99,7 @@ typedef struct {
 	uint16_t pwm_pulse_right;  // default pwm pulse width:1080~1920
 	uint16_t acked;			// used in report real trajectory, to check if received the package sent
 	uint16_t traj_start_delay;	// used to set the time of delay bwtween open the claw and start the trajectory
+	float Tf;
 } RobotControl;
 
 #include "protocol.h"

@@ -103,7 +103,7 @@ pid_struct_t motor_current_pid[2];
 // simple position trajectory, this is used in ctrl_mode 3
 // in these trajectories, state is [q, qdot] (angle and angular velocity)
 // for this simpel trajectory, it is initialized in the traj.h
-float Tf = 0.66f; // use 2 seconds to finish this trajectory
+//float Tf = 0.66f; // use 2 seconds to finish this trajectory
 
 float aux_traj_Tf = 3.0f;  // the time to execute init pose auxiluary trajectory
 
@@ -141,7 +141,7 @@ int traj_count = 0;
 /// mode selection flags
 RobotControl robot_control = { 	.debug_print = 0, .ctrl_mode = 0, .output_enable = 0, 
 																.pwm_pulse_left = 1500, .pwm_pulse_right = 1500, .acked = 1,
-																.traj_start_delay = 60};
+																.traj_start_delay = 60, .Tf = 0.66};
 /// mode selection flags
 /// mode selection flags
 
@@ -493,7 +493,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 				if (traj_start >= robot_control.traj_start_delay)  // a 60ms delay
 				{
 					// take waypoint from trajectory
-					if (traj_timer > traj_count*Tf/stepNum)
+					if (traj_timer > traj_count*robot_control.Tf/stepNum)
 					{
 						if (traj_count < stepNum)
 						{
@@ -501,7 +501,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 						}
 						else
 						{
-							traj_timer = Tf;
+							traj_timer = robot_control.Tf;
 							// after finish case 4, go to ctrl mode 6, standby 
 							robot_control.ctrl_mode = 6;		
 							//robot_control.debug_print = 4; // this moved to after receiving data pack type 49
@@ -541,7 +541,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 					
 					traj_timer += dt;
 					
-					if (traj_timer > Tf*0.9f) {
+					if (traj_timer > robot_control.Tf*0.9f) {
 						robot_control.pwm_pulse_right = 1500;
 					}
 				}
