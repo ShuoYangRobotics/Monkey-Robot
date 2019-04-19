@@ -1,5 +1,10 @@
 #include "protocol.h"
 
+//// Variable
+Serial_struct lastSentPack;
+bool acked;
+
+//// Functions
 Serial_struct unpack(uint8_t* head) {
 	Serial_struct data;
 	data.flag = 0xAA;
@@ -7,11 +12,6 @@ Serial_struct unpack(uint8_t* head) {
 	data.value = (*(head+3)<<8) + *(head+2);
 	data.position = (*(head+7)<<24) + (*(head+6)<<16) + (*(head+5)<<8) + *(head+4);
 	data.velocity = (*(head+11)<<24) + (*(head+10)<<16) + (*(head+9)<<8) + *(head+8);
-	
-	// test
-//	
-//		data.value = data.value+1;
-//		data.position = data.position+1;
 	
 	// do crc
 	uint16_t crc_ccitt_ffff_val = 0xffff;
@@ -120,7 +120,7 @@ Serial_struct execute(Serial_struct data, RobotControl* robot_control, Trajector
 			
 		case 6:  
 			if(robot_control -> ctrl_mode == 6) { // in ready to start mode
-				robot_control -> output_enable = 1; // enable power
+				robot_control -> output_enable = 0; // enable power
 				robot_control -> ctrl_mode = 4; // start trajectory tracking
 				
 				// only do data.value check once in aux state, do not need to do it here
@@ -134,7 +134,7 @@ Serial_struct execute(Serial_struct data, RobotControl* robot_control, Trajector
 			
 		case 7:
 			if(robot_control -> ctrl_mode == 6) { // in ready to start mode
-				robot_control -> output_enable = 1; // enable power
+				robot_control -> output_enable = 0; // enable power
 				robot_control -> ctrl_mode = 8; // start aux trajectory to prepare
 				
 				// added 2019-04-16, use data.value to determine swing arm and swing direction
@@ -176,8 +176,14 @@ Serial_struct execute(Serial_struct data, RobotControl* robot_control, Trajector
 				robot_control -> pwm_pulse_right = 1500;
 			}
 			break;
-				
-			
+		case 49: {
+			robot_control -> debug_print = 4;
+			break;
+		}
+		case 51: {
+			acked = true;
+			break;
+		}
 		default:
 			break;
 	}
@@ -243,3 +249,8 @@ Serial_struct err(Serial_struct data, uint16_t value, uint32_t position, uint32_
 	ackPack.crc = crc_ccitt_ffff_val;
 	return ackPack;
 }
+
+void setLastSend(Serial_struct data) {
+	lastSentPack = data;
+}
+

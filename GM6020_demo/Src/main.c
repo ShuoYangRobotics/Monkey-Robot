@@ -122,6 +122,8 @@ float left_real_pos[301];
 float right_real_pos[301];
 float left_real_vel[301];
 float right_real_vel[301];
+extern bool acked;
+//// 
 
 extern Trajectory traj;
 extern Trajectory aux_traj;
@@ -312,11 +314,18 @@ int main(void)
 			for(i=0; i<300; i++) {
 				Serial_struct dataPack = pack(50, 0, (int32_t)(left_real_pos[i]*1000), (int32_t)(left_real_vel[i]*1000));
 				HAL_UART_Transmit(&huart2, (uint8_t*)&dataPack, sizeof(dataPack),100);
+				setLastSend(dataPack); acked = false;
+				while(!acked);
+				LED_RED_TOGGLE();	
+				
 				dataPack = pack(50, 1, (int32_t)(right_real_pos[i]*1000), (int32_t)(right_real_vel[i]*1000));
 				HAL_UART_Transmit(&huart2, (uint8_t*)&dataPack, sizeof(dataPack),100);
-				LED_GREEN_TOGGLE();	
+				setLastSend(dataPack); acked = false;
+				while(!acked);
+				
+				LED_RED_TOGGLE();	
 			}
-			Serial_struct finishPack = pack(51, 0, 0, 0);
+			Serial_struct finishPack = pack(52, 0, 0, 0);
 			HAL_UART_Transmit(&huart2, (uint8_t*)&finishPack, sizeof(finishPack),100);
 			robot_control.debug_print = 0;
 		}
@@ -512,6 +521,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 							traj_timer = Tf;
 							// after finish case 4, go to ctrl mode 6, standby 
 							robot_control.ctrl_mode = 6;		
+							//robot_control.debug_print = 4; // this moved to after receiving data pack type 49
 							// start to send traj data to up
 							traj_start = 0;
 						}
@@ -653,7 +663,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 						motor_info[1].set_voltage);
 				}
 				
-				robot_control.debug_print = 4;
+				//robot_control.debug_print = 4;
 				break;
 			}
 			case 9 : {

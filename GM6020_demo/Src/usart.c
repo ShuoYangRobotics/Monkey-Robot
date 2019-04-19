@@ -46,6 +46,9 @@ extern uint8_t *head;
 extern uint8_t *tail;
 extern RobotControl robot_control;
 extern Trajectory traj;
+
+
+
 /* USER CODE END 0 */
 
 UART_HandleTypeDef huart2;
@@ -260,11 +263,14 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 				//HAL_UART_Transmit(&huart2,head,14,100);
 				if(*(head+13) == ((crc_ccitt_ffff_val&0xFF00)>>8) && *(head+12) == (crc_ccitt_ffff_val&0xFF)) { // crc pass
 					// extract data out of buffer
-					//HAL_UART_Transmit(&huart2,head,14,100);
-					Serial_struct ackPack = execute(unpack(head), &robot_control, &traj);
-					//HAL_Delay(1);
-					HAL_UART_Transmit(&huart2, (uint8_t*)&ackPack, sizeof(ackPack),100);
+					Serial_struct currPack = unpack(head);
+					Serial_struct ackPack = execute(currPack, &robot_control, &traj);
+					
+					if(currPack.type <= 40)
+						HAL_UART_Transmit(&huart2, (uint8_t*)&ackPack, sizeof(ackPack), 100);
+					
 					LED_GREEN_TOGGLE();	
+					
 					head +=14;
 				} else { // crc fail, might loss of data or meet wrong head position
 					head++;

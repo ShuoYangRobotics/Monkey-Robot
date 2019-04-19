@@ -2,6 +2,7 @@
 #define PROTOCOL_H
 
 #include <stdlib.h>
+#include <stdbool.h>
 #include "main.h"
 #include "trajectory.h"
 #include "bsp_led.h"
@@ -29,5 +30,7 @@ Serial_struct execute(Serial_struct data, RobotControl* robot_control, Trajector
 
 Serial_struct ack(Serial_struct data, uint16_t value, uint32_t position, uint32_t velocity);
 Serial_struct err(Serial_struct data, uint16_t value, uint32_t position, uint32_t velocity);
+
+void setLastSend(Serial_struct data);
 
 #endif
