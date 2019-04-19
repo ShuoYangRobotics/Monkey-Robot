@@ -121,7 +121,7 @@ Serial_struct execute(Serial_struct data, RobotControl* robot_control, Trajector
 			
 		case 6:  
 			if(robot_control -> ctrl_mode == 6) { // in ready to start mode
-				robot_control -> output_enable = 0; // enable power
+				robot_control -> output_enable = 1; // enable power
 				robot_control -> ctrl_mode = 4; // start trajectory tracking
 				
 				// only do data.value check once in aux state, do not need to do it here
@@ -135,23 +135,23 @@ Serial_struct execute(Serial_struct data, RobotControl* robot_control, Trajector
 			
 		case 7:
 			if(robot_control -> ctrl_mode == 6) { // in ready to start mode
-				robot_control -> output_enable = 0; // enable power
+				robot_control -> output_enable = 1; // enable power
 				robot_control -> ctrl_mode = 8; // start aux trajectory to prepare
 				
 				// added 2019-04-16, use data.value to determine swing arm and swing direction
-//				if (data.value == 0) {
-//					robot_control -> ctrl_side = 1;
-//					robot_control -> ctrl_direction = 0;
-//				} else if (data.value == 1) {
-//					robot_control -> ctrl_side = -1;
-//					robot_control -> ctrl_direction = 0;
-//				} else if (data.value == 10) {
-//					robot_control -> ctrl_side = 1;
-//					robot_control -> ctrl_direction = 1;
-//				} else if (data.value == 11) {
-//					robot_control -> ctrl_side = -1;
-//					robot_control -> ctrl_direction = 1;
-//				}
+				if (data.value == 0) {
+					robot_control -> ctrl_side = 1;
+					robot_control -> ctrl_direction = 0;
+				} else if (data.value == 1) {
+					robot_control -> ctrl_side = -1;
+					robot_control -> ctrl_direction = 0;
+				} else if (data.value == 10) {
+					robot_control -> ctrl_side = 1;
+					robot_control -> ctrl_direction = 1;
+				} else if (data.value == 11) {
+					robot_control -> ctrl_side = -1;
+					robot_control -> ctrl_direction = 1;
+				}
 				
 				ackPack = ack(data, traj -> leftStepReceived, data.position, data.velocity);
 				LED_RED_TOGGLE();
