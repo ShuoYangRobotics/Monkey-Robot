@@ -141,6 +141,7 @@ int traj_count = 0;
 /// mode selection flags
 RobotControl robot_control = { 	.debug_print = 0, .ctrl_mode = 0, .output_enable = 0, 
 																.pwm_pulse_left = 1500, .pwm_pulse_right = 1500, .acked = 1,
+																.ctrl_side = 1, .ctrl_direction = 0,
 																.traj_start_delay = 60, .Tf = 0.66};
 /// mode selection flags
 /// mode selection flags
@@ -501,7 +502,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 						}
 						else
 						{
-							traj_timer = robot_control.Tf;
+							traj_timer = 0.0f; //robot_control.Tf;
 							// after finish case 4, go to ctrl mode 6, standby 
 							robot_control.ctrl_mode = 6;		
 							//robot_control.debug_print = 4; // this moved to after receiving data pack type 49
@@ -509,11 +510,23 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 							traj_start = 0;
 						}
 					}
+					
+					/////////// get the correct trajectory to execute
+					if(robot_control.ctrl_direction == 0) // swing forward
+					{ 
+						if(robot_control.ctrl_side == 1) { // swing right hand
+							target_angle_rad[0] = traj.left_state_angle[traj_count];
+							target_velocity_rads[0] = traj.left_state_velocity[traj_count];
 							
-					target_angle_rad[0] = traj.left_state_angle[traj_count];
-					target_velocity_rads[0] = traj.left_state_velocity[traj_count];
-					target_angle_rad[1] = traj.right_state_angle[traj_count];
-					target_velocity_rads[1] = traj.right_state_velocity[traj_count];
+							target_angle_rad[1] = traj.right_state_angle[traj_count];
+							target_velocity_rads[1] = traj.right_state_velocity[traj_count];
+						} else {
+							break;
+						}
+					} else if(robot_control.ctrl_direction == 1) { // swing backward
+						break;
+					}
+					///////////////
 					
 					/* motor speed pid calc ID1 ID1 ID1 ID1 ID1 ID1 ID1 ID1*/
 					tgt_velocity[0] = pid_calc(&motor_angle_pid[0], target_angle_rad[0], modified_motor_angle_rad[0]);
@@ -561,7 +574,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 				break;
 			}
 			case 8: {
-				// 03242019
+				// 03/24/2019
 				// this is a intermediate stage, it is also exexutive trajectory, but this movement is just to prepare robot to execuate case 4
 				// here a aux_traj is inited and used to control the robot 
 			  // first enter, should have traj_start = 0
@@ -625,8 +638,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 				}
 				break;
 			}
-			case 6 : {
-				// hold the motor with previous stage motor command 
+			case 6 : { // hold the motor with previous stage motor command
 				/* motor speed pid calc ID1 ID1 ID1 ID1 ID1 ID1 ID1 ID1*/
 				tgt_velocity[0] = pid_calc(&motor_angle_pid[0], target_angle_rad[0], modified_motor_angle_rad[0]);
 				target_current[0] = pid_calc(&motor_velocity_pid[0], tgt_velocity[0], motor_velocity_rads[0]);

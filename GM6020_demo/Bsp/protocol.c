@@ -8,6 +8,7 @@ extern uint16_t packIndex;
 extern pid_struct_t motor_angle_pid[2];
 extern pid_struct_t motor_velocity_pid[2];
 extern pid_struct_t motor_current_pid[2];
+extern float modified_motor_angle_rad[2];
 
 //// Functions
 Serial_struct unpack(uint8_t* head) {
@@ -111,21 +112,21 @@ Serial_struct execute(Serial_struct data, RobotControl* robot_control, Trajector
 			}
 			break;
 			
-		case 5:
+		case 5: // end of receiving trajectory
 			if(robot_control -> ctrl_mode == 5 && 
 				traj -> leftStepReceived == data.value && 
 				traj -> rightStepReceived == data.value) 
 			{
-				robot_control -> ctrl_mode = 6;
+				robot_control -> ctrl_mode = 6; // idle but with data received
 				ackPack = ack(data, traj -> leftStepReceived, data.position, data.velocity);
 			} else {
 				ackPack = err(data, traj -> leftStepReceived, data.position, data.velocity);
 			}
 			break;
 			
-		case 6:  
+		case 6: // ask to follow trajectory
 			if(robot_control -> ctrl_mode == 6) { // in ready to start mode
-				robot_control -> output_enable = 1; // enable power
+				robot_control -> output_enable = 1; // enable power, power will only be enabled before robot want to init position
 				robot_control -> ctrl_mode = 4; // start trajectory tracking
 				
 				// only do data.value check once in aux state, do not need to do it here
@@ -137,24 +138,25 @@ Serial_struct execute(Serial_struct data, RobotControl* robot_control, Trajector
 			}
 			break;
 			
-		case 7:
-			if(robot_control -> ctrl_mode == 6) { // in ready to start mode
+		case 7: // ask to move to init position
+			if(robot_control -> ctrl_mode == 6) { // idle but with data received
 				robot_control -> output_enable = 1; // enable power
 				robot_control -> ctrl_mode = 8; // start aux trajectory to prepare
 				
 				// added 2019-04-16, use data.value to determine swing arm and swing direction
-				if (data.value == 0) {
-					robot_control -> ctrl_side = 1;
-					robot_control -> ctrl_direction = 0;
-				} else if (data.value == 1) {
-					robot_control -> ctrl_side = -1;
-					robot_control -> ctrl_direction = 0;
-				} else if (data.value == 10) {
-					robot_control -> ctrl_side = 1;
-					robot_control -> ctrl_direction = 1;
-				} else if (data.value == 11) {
-					robot_control -> ctrl_side = -1;
-					robot_control -> ctrl_direction = 1;
+				robot_control -> ctrl_direction = data.value;
+				if (data.value == 0) { // forward
+					if(whichBehind(data.value, modified_motor_angle_rad)){ // right hand behind
+						robot_control -> ctrl_side = 1; // swing right hand
+					} else {
+						robot_control -> ctrl_side = -1; // swing left hand
+					}
+				} else if (data.value == 1) { // backward
+					if(whichBehind(data.value, modified_motor_angle_rad)){ // right hand behind
+						robot_control -> ctrl_side = 1;
+					} else {
+						robot_control -> ctrl_side = -1;
+					}
 				}
 				
 				ackPack = ack(data, traj -> leftStepReceived, data.position, data.velocity);
@@ -164,7 +166,7 @@ Serial_struct execute(Serial_struct data, RobotControl* robot_control, Trajector
 			}
 			break;
 		
-		case 8:
+		case 8: // open left
 			
 			if (data.value == 0) {
 				robot_control -> pwm_pulse_left = 1500-320;
@@ -173,7 +175,7 @@ Serial_struct execute(Serial_struct data, RobotControl* robot_control, Trajector
 				robot_control -> pwm_pulse_left = 1500;
 			}
 			break;
-		case 9:
+		case 9: // open right gripper
 			if (data.value == 0) {
 				robot_control -> pwm_pulse_right = 1500+320;
 			}

@@ -73,10 +73,10 @@ typedef struct {
 	// if ctrl_mode = 1, use target position for control    
 	// if ctrl_mode = 2, use target velocity 
 	// if ctrl_mode = 3, direct control voltage
-	// if ctrl_mode = 4, 
+	// if ctrl_mode = 4, executing trajectory points
 	// if ctrl_mode = 5, receive data point
-	// if ctrl_mode = 6, ready to execute trajectory points
-	// if ctrl_mode = 7, executing trajectory points
+	// if ctrl_mode = 6, keep where it is, freeze
+	// if ctrl_mode = 8, execute aux_traj to init position
 	int ctrl_mode;
 	
 	int ctrl_side; 
