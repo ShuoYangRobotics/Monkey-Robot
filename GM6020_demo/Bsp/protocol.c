@@ -141,7 +141,7 @@ Serial_struct execute(Serial_struct data, RobotControl* robot_control, Trajector
 		case 7: // ask to move to init position
 			if(robot_control -> ctrl_mode == 6) { // idle but with data received
 				robot_control -> output_enable = 1; // enable power
-				robot_control -> ctrl_mode = 8; // start aux trajectory to prepare
+				
 				
 				// added 2019-04-16, use data.value to determine swing arm and swing direction
 				robot_control -> ctrl_direction = data.value;
@@ -161,6 +161,8 @@ Serial_struct execute(Serial_struct data, RobotControl* robot_control, Trajector
 				
 				ackPack = ack(data, traj -> leftStepReceived, data.position, data.velocity);
 				LED_RED_TOGGLE();
+				
+				robot_control -> ctrl_mode = 8; // start aux trajectory to prepare				
 			} else {
 				ackPack = err(data, traj -> leftStepReceived, data.position, data.velocity);
 			}

@@ -10,12 +10,12 @@ Trajectory aux_traj;
 uint8_t whichBehind(uint16_t direction, float* angles) {
 	uint8_t arm;
 	if(direction == 0){ // forward
-		if(rapAngle(angles[0])-rapAngle(angles[1]) > 0) // left arm behind, because left arm >0 mean in the behind
+		if(rapAngle(angles[0])+rapAngle(angles[1]) > 0) // left arm behind, because left arm >0 mean in the behind
 			arm = 0;
 		else // right hand behind
 			arm = 1;
 	} else { // backward
-		if(rapAngle(angles[0])-rapAngle(angles[1]) > 0) // left arm forward
+		if(rapAngle(angles[0])+rapAngle(angles[1]) > 0) // left arm forward
 			arm = 1; // right arm behind
 		else
 			arm = 0;
