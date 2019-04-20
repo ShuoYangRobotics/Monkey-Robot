@@ -536,36 +536,40 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 					}
 					
 					/////////// get the correct trajectory to execute
+					// all the setting here assumes the traj is for swing right arm forward
 					if(robot_control.ctrl_direction == 0) // swing forward
 					{ 
 						if(robot_control.ctrl_side == 1) { // swing right hand
+							// set left
 							target_angle_rad[0] = traj.left_state_angle[traj_count] - traj.left_state_angle[0] + recorded_init_pose[0];
 							target_velocity_rads[0] = traj.left_state_velocity[traj_count];
-							
+							// set right 
 							target_angle_rad[1] = traj.right_state_angle[traj_count] - traj.right_state_angle[0] + recorded_init_pose[1];
 							target_velocity_rads[1] = traj.right_state_velocity[traj_count];
 						} else {
+							// set left, left use negative right traj
 							target_angle_rad[0] = -(traj.right_state_angle[traj_count] - traj.right_state_angle[0]) + recorded_init_pose[0];
 							target_velocity_rads[0] = -traj.right_state_velocity[traj_count];
-							
+							// set right, right use negative left traj
 							target_angle_rad[1] = -(traj.left_state_angle[traj_count] - traj.left_state_angle[0]) + recorded_init_pose[1];
 							target_velocity_rads[1] = -traj.left_state_velocity[traj_count];
 						}
-					} else if(robot_control.ctrl_direction == 1) { // swing backward
-						break;
-//						if(robot_control.ctrl_side == 1) { // swing right hand
-//							target_angle_rad[0] = traj.left_state_angle[traj_count];
-//							target_velocity_rads[0] = traj.left_state_velocity[traj_count];
-//							
-//							target_angle_rad[1] = traj.right_state_angle[traj_count];
-//							target_velocity_rads[1] = traj.right_state_velocity[traj_count];
-//						} else {
-//							target_angle_rad[0] = traj.left_state_angle[traj_count];
-//							target_velocity_rads[0] = traj.left_state_velocity[traj_count];
-//							
-//							target_angle_rad[1] = traj.right_state_angle[traj_count];
-//							target_velocity_rads[1] = traj.right_state_velocity[traj_count];
-//						}
+					} else { // swing backward
+						if(robot_control.ctrl_side == 1) { // swing right hand
+							// set left, left use negative left traj
+							target_angle_rad[0] = -(traj.left_state_angle[traj_count] - traj.left_state_angle[0]) + recorded_init_pose[0];//traj.left_state_angle[traj_count];
+							target_velocity_rads[0] = -traj.left_state_velocity[traj_count];
+							// set right, right use negative right traj
+							target_angle_rad[1] = -(traj.right_state_angle[traj_count] - traj.right_state_angle[0]) + recorded_init_pose[1];
+							target_velocity_rads[1] = -traj.right_state_velocity[traj_count];
+						} else { // swing left hand
+							// set left, left use positive right traj
+							target_angle_rad[0] = traj.right_state_angle[traj_count] - traj.right_state_angle[0] + recorded_init_pose[0];
+							target_velocity_rads[0] = traj.right_state_velocity[traj_count];
+							// set right, right use positive left traj
+							target_angle_rad[1] = traj.left_state_angle[traj_count] - traj.left_state_angle[0] + recorded_init_pose[1];
+							target_velocity_rads[1] = traj.left_state_velocity[traj_count];
+						}
 					}
 					///////////////
 					
@@ -687,45 +691,53 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 					traj_timer = 0.0f;
 					traj_count = 0;
 					
-					/////////// get the correct trajectory to execute
+					/////////// get the correct init pose before trajectory
+					// forward make right angle --, left angle ++
+					// so after one right swing forward, right - 2Pi
+					// after another left swing forward, left + 2Pi
+					// if there's yet another right swing forward, right - 2Pi
 					if(robot_control.ctrl_direction == 0) // swing forward
 					{ 
 						if(robot_control.ctrl_side == 1) { // swing right hand
-							tgt_state[0] = traj.left_state_angle[0] + 2*PI*swingRound[0];
+							// set left hand 
+							tgt_state[0] = traj.left_state_angle[0] + 2*PI*swingRound[0]; // traj start angle + reference angle, ref recorded after each swing
 							tgt_state[1] = traj.left_state_velocity[0];
 							init_simple_trajectory(0, aux_traj_Tf, tgt_state, aux_traj.left_state_angle, aux_traj.left_state_velocity);
-							
-							tgt_state[0] = traj.right_state_angle[0] + 2*PI*swingRound[1];
+							// set right hand
+							tgt_state[0] = traj.right_state_angle[0] - 2*PI*swingRound[1];
 							tgt_state[1] = traj.right_state_velocity[0];
 							init_simple_trajectory(1, aux_traj_Tf, tgt_state, aux_traj.right_state_angle, aux_traj.right_state_velocity);
 						} else {
-							tgt_state[0] = -(traj.right_state_angle[0] + 2*PI*swingRound[0]);
+							// set left hand
+							tgt_state[0] = -traj.right_state_angle[0] + 2*PI*swingRound[0];
 							tgt_state[1] = -traj.right_state_velocity[0];
 							init_simple_trajectory(0, aux_traj_Tf, tgt_state, aux_traj.left_state_angle, aux_traj.left_state_velocity);
-							
-							tgt_state[0] = -(traj.left_state_angle[0] + 2*PI*swingRound[1]);
+							// set right hand
+							tgt_state[0] = -traj.left_state_angle[0] - 2*PI*swingRound[1];
 							tgt_state[1] = -traj.left_state_velocity[0];
 							init_simple_trajectory(1, aux_traj_Tf, tgt_state, aux_traj.right_state_angle, aux_traj.right_state_velocity);
 						}
 					} else{ // swing backward
-						break;
-//						if(robot_control.ctrl_side == 1) { // swing right hand
-//							tgt_state[0] = -traj.left_state_angle[0];
-//							tgt_state[1] = -traj.left_state_velocity[0];
-//							init_simple_trajectory(0, aux_traj_Tf, tgt_state, aux_traj.left_state_angle, aux_traj.left_state_velocity);
-//							
-//							tgt_state[0] = -traj.right_state_angle[0];
-//							tgt_state[1] = -traj.right_state_velocity[0];
-//							init_simple_trajectory(1, aux_traj_Tf, tgt_state, aux_traj.right_state_angle, aux_traj.right_state_velocity);
-//						} else {
-//							tgt_state[0] = traj.left_state_angle[0];
-//							tgt_state[1] = traj.left_state_velocity[0];
-//							init_simple_trajectory(0, aux_traj_Tf, tgt_state, aux_traj.left_state_angle, aux_traj.left_state_velocity);
-//							
-//							tgt_state[0] = traj.right_state_angle[0];
-//							tgt_state[1] = traj.right_state_velocity[0];
-//							init_simple_trajectory(1, aux_traj_Tf, tgt_state, aux_traj.right_state_angle, aux_traj.right_state_velocity);
-//						}
+						
+						if(robot_control.ctrl_side == 1) { // swing right hand
+							// set left hand 
+							tgt_state[0] = -traj.left_state_angle[0]  + 2*PI*swingRound[0];
+							tgt_state[1] = -traj.left_state_velocity[0];
+							init_simple_trajectory(0, aux_traj_Tf, tgt_state, aux_traj.left_state_angle, aux_traj.left_state_velocity);
+							// set right hand
+							tgt_state[0] = -traj.right_state_angle[0] - 2*PI*swingRound[1];
+							tgt_state[1] = -traj.right_state_velocity[0];
+							init_simple_trajectory(1, aux_traj_Tf, tgt_state, aux_traj.right_state_angle, aux_traj.right_state_velocity);
+						} else { // swing left hand
+							// set left hand 
+							tgt_state[0] = traj.right_state_angle[0] + 2*PI*swingRound[0];
+							tgt_state[1] = traj.right_state_velocity[0];
+							init_simple_trajectory(0, aux_traj_Tf, tgt_state, aux_traj.left_state_angle, aux_traj.left_state_velocity);
+							// set right hand
+							tgt_state[0] = traj.left_state_angle[0] - 2*PI*swingRound[1];
+							tgt_state[1] = traj.left_state_velocity[0];
+							init_simple_trajectory(1, aux_traj_Tf, tgt_state, aux_traj.right_state_angle, aux_traj.right_state_velocity);
+						}
 					}
 					///////////////
 					
