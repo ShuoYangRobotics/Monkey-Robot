@@ -101,6 +101,7 @@ typedef struct {
 	uint16_t traj_start_delay;	// used to set the time of delay bwtween open the claw and start the trajectory
 	float Tf;
 	float traj_offset;
+	float closeTimePercent;
 } RobotControl;
 
 #include "protocol.h"

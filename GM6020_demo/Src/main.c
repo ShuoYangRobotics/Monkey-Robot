@@ -145,7 +145,7 @@ int traj_count = 0;
 RobotControl robot_control = { 	.debug_print = 0, .ctrl_mode = 0, .output_enable = 0, 
 																.pwm_pulse_left = 1500, .pwm_pulse_right = 1500, .acked = 1,
 																.ctrl_side = 1, .ctrl_direction = 0,
-																.traj_start_delay = 60, .Tf = 0.66, .traj_offset = 0.0};
+																.traj_start_delay = 100, .closeTimePercent = 0.9f, .Tf = 0.66, .traj_offset = 0.0};
 
 /// mode selection flags
 /// mode selection flags
@@ -608,7 +608,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 					
 					traj_timer += dt;
 					
-					if (traj_timer > robot_control.Tf*0.9f) {
+					if (traj_timer > robot_control.Tf * robot_control.closeTimePercent) {
 						if(robot_control.ctrl_side == 1) // swing right
 							robot_control.pwm_pulse_right = 1500;
 						else
