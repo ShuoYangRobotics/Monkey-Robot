@@ -2,6 +2,12 @@
 
 A monkey robot designed for CMU course 24-775
 
+## Get code
+
+```
+git clone --recurse-submodules $REPO_URL
+```
+
 ## File Description
 
 - GM6020_demo 	: The sample code to control GM6020 motor
