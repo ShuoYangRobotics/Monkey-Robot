@@ -1,7 +1,7 @@
-addpath('..\ModernRobotics\packages\Matlab\mr');
-Monkey_all_DataFile;
+addpath('ModernRobotics\packages\Matlab\mr');
+% Monkey_all_DataFile;
 %% calculate dynamic model
-N=3;
+link_N=3;
 g = [0; 0; -9.8];
 Ftip = zeros(6, 1); 
 arm_mass =  0.38466;
