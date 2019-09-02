@@ -102,6 +102,11 @@ pid_struct_t motor_angle_pid[2];
 pid_struct_t motor_velocity_pid[2];
 pid_struct_t motor_current_pid[2];
 
+// PIDs for moving to init swing position
+pid_struct_t init_motor_angle_pid[2];
+pid_struct_t init_motor_velocity_pid[2];
+pid_struct_t init_motor_current_pid[2];
+
 // TODO: put these in a separate file 
 // simple position trajectory, this is used in ctrl_mode 3
 // in these trajectories, state is [q, qdot] (angle and angular velocity)
@@ -145,7 +150,7 @@ int traj_count = 0;
 RobotControl robot_control = { 	.debug_print = 0, .ctrl_mode = 0, .output_enable = 0, 
 																.pwm_pulse_left = 1500, .pwm_pulse_right = 1500, .acked = 1,
 																.ctrl_side = 1, .ctrl_direction = 0,
-																.traj_start_delay = 100, .closeTimePercent = 0.9f, .Tf = 0.66, .traj_offset = 0.0};
+																.traj_start_delay = 100, .closeTimePercent = 0.95f, .Tf = 0.60, .traj_offset = 0.0};
 
 /// mode selection flags
 /// mode selection flags
@@ -285,6 +290,14 @@ int main(void)
   pid_init(&motor_velocity_pid[1], 8, 0.00001, 0.06, 125, 700); //init pid parameter, kp=7, ki=3, kd=0.06, output limit = 30000
   pid_init(&motor_current_pid[0], 160, 0.001, 0.06, 20000, 30000); //init pid parameter, kp=1000, ki=3, kd=0.06, output limit = 30000
   pid_init(&motor_current_pid[1], 160, 0.001, 0.06, 20000, 30000); //init pid parameter, kp=1000, ki=3, kd=0.06, output limit = 30000
+	
+	// PID setup
+  pid_init(&init_motor_angle_pid[0], 200, 0.000001, 0.06, 125, 700);       //init pid parameter, kp=38, ki=0.001, kd=0.5, output limit = 200rads
+  pid_init(&init_motor_angle_pid[1], 200, 0.000001, 0.06, 125, 700);       //init pid parameter, kp=38, ki=0.001, kd=0.5, output limit = 200rads
+  pid_init(&init_motor_velocity_pid[0], 8, 0.0, 0.06, 125, 700); //init pid parameter, kp=7, ki=3, kd=0.06, output limit = 30000
+  pid_init(&init_motor_velocity_pid[1], 8, 0.0, 0.06, 125, 700); //init pid parameter, kp=7, ki=3, kd=0.06, output limit = 30000
+  pid_init(&init_motor_current_pid[0], 160, 0.0, 0.06, 20000, 30000); //init pid parameter, kp=1000, ki=3, kd=0.06, output limit = 30000
+  pid_init(&init_motor_current_pid[1], 160, 0.0, 0.06, 20000, 30000); //init pid parameter, kp=1000, ki=3, kd=0.06, output limit = 30000
 	
 	// end of setup, set uart to send start message and start listening
 	HAL_UART_Receive_DMA(&huart2,aRxBuffer,14);
@@ -665,15 +678,15 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 					target_velocity_rads[1] = aux_traj.right_state_velocity[traj_count];
 					
 					/* motor speed pid calc ID1 ID1 ID1 ID1 ID1 ID1 ID1 ID1*/
-					tgt_velocity[0] = pid_calc(&motor_angle_pid[0], target_angle_rad[0], modified_motor_angle_rad[0]);
-					target_current[0] = pid_calc(&motor_velocity_pid[0], tgt_velocity[0], motor_velocity_rads[0]);
-					motor_info[0].set_voltage = pid_calc(&motor_current_pid[0], target_current[0], motor_info[0].torque_current/5700.0f);
+					tgt_velocity[0] = pid_calc(&init_motor_angle_pid[0], target_angle_rad[0], modified_motor_angle_rad[0]);
+					target_current[0] = pid_calc(&init_motor_velocity_pid[0], tgt_velocity[0], motor_velocity_rads[0]);
+					motor_info[0].set_voltage = pid_calc(&init_motor_current_pid[0], target_current[0], motor_info[0].torque_current/5700.0f);
 					
 					
 					/* motor speed pid calc ID2 ID2 ID2 ID2 ID2 ID2 ID2 ID2*/
-					tgt_velocity[1] = pid_calc(&motor_angle_pid[1], target_angle_rad[1], modified_motor_angle_rad[1]);
-					target_current[1] = pid_calc(&motor_velocity_pid[1], tgt_velocity[1], motor_velocity_rads[1]);
-					motor_info[1].set_voltage = pid_calc(&motor_current_pid[1], target_current[1], motor_info[1].torque_current/5700.0f);
+					tgt_velocity[1] = pid_calc(&init_motor_angle_pid[1], target_angle_rad[1], modified_motor_angle_rad[1]);
+					target_current[1] = pid_calc(&init_motor_velocity_pid[1], tgt_velocity[1], motor_velocity_rads[1]);
+					motor_info[1].set_voltage = pid_calc(&init_motor_current_pid[1], target_current[1], motor_info[1].torque_current/5700.0f);
 
 					/* send motor control message through can bus*/
 					if (robot_control.output_enable == 1)
@@ -702,20 +715,24 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 							// set left hand 
 							tgt_state[0] = traj.left_state_angle[0] + 2*PI*swingRound[0]; // traj start angle + reference angle, ref recorded after each swing
 							tgt_state[1] = traj.left_state_velocity[0];
-							init_simple_trajectory(0, aux_traj_Tf, tgt_state, aux_traj.left_state_angle, aux_traj.left_state_velocity);
+							if (modified_motor_angle_rad[0] - tgt_state[0] < 180 && modified_motor_angle_rad[0] - tgt_state[0] > -180)
+								init_simple_trajectory(0, aux_traj_Tf, tgt_state, aux_traj.left_state_angle, aux_traj.left_state_velocity);
 							// set right hand
 							tgt_state[0] = traj.right_state_angle[0] - 2*PI*swingRound[1];
 							tgt_state[1] = traj.right_state_velocity[0];
-							init_simple_trajectory(1, aux_traj_Tf, tgt_state, aux_traj.right_state_angle, aux_traj.right_state_velocity);
+							if (modified_motor_angle_rad[1] - tgt_state[1] < 180 && modified_motor_angle_rad[1] - tgt_state[1] > -180)
+								init_simple_trajectory(1, aux_traj_Tf, tgt_state, aux_traj.right_state_angle, aux_traj.right_state_velocity);
 						} else {
 							// set left hand
 							tgt_state[0] = -traj.right_state_angle[0] + 2*PI*swingRound[0];
 							tgt_state[1] = -traj.right_state_velocity[0];
-							init_simple_trajectory(0, aux_traj_Tf, tgt_state, aux_traj.left_state_angle, aux_traj.left_state_velocity);
+							if (modified_motor_angle_rad[0] - tgt_state[0] < 180 && modified_motor_angle_rad[0] - tgt_state[0] > -180)
+								init_simple_trajectory(0, aux_traj_Tf, tgt_state, aux_traj.left_state_angle, aux_traj.left_state_velocity);
 							// set right hand
 							tgt_state[0] = -traj.left_state_angle[0] - 2*PI*swingRound[1];
 							tgt_state[1] = -traj.left_state_velocity[0];
-							init_simple_trajectory(1, aux_traj_Tf, tgt_state, aux_traj.right_state_angle, aux_traj.right_state_velocity);
+							if (modified_motor_angle_rad[1] - tgt_state[1] < 180 && modified_motor_angle_rad[1] - tgt_state[1] > -180)
+								init_simple_trajectory(1, aux_traj_Tf, tgt_state, aux_traj.right_state_angle, aux_traj.right_state_velocity);
 						}
 					} else{ // swing backward
 						
@@ -749,15 +766,15 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 			}
 			case 6 : { // hold the motor with previous stage motor command
 				/* motor speed pid calc ID1 ID1 ID1 ID1 ID1 ID1 ID1 ID1*/
-				tgt_velocity[0] = pid_calc(&motor_angle_pid[0], target_angle_rad[0], modified_motor_angle_rad[0]);
-				target_current[0] = pid_calc(&motor_velocity_pid[0], tgt_velocity[0], motor_velocity_rads[0]);
-				motor_info[0].set_voltage = pid_calc(&motor_current_pid[0], target_current[0], motor_info[0].torque_current/5700.0f);
+				tgt_velocity[0] = pid_calc(&init_motor_angle_pid[0], target_angle_rad[0], modified_motor_angle_rad[0]);
+				target_current[0] = pid_calc(&init_motor_velocity_pid[0], tgt_velocity[0], motor_velocity_rads[0]);
+				motor_info[0].set_voltage = pid_calc(&init_motor_current_pid[0], target_current[0], motor_info[0].torque_current/5700.0f);
 				
 				
 				/* motor speed pid calc ID2 ID2 ID2 ID2 ID2 ID2 ID2 ID2*/
-				tgt_velocity[1] = pid_calc(&motor_angle_pid[1], target_angle_rad[1], modified_motor_angle_rad[1]);
-				target_current[1] = pid_calc(&motor_velocity_pid[1], tgt_velocity[1], motor_velocity_rads[1]);
-				motor_info[1].set_voltage = pid_calc(&motor_current_pid[1], target_current[1], motor_info[1].torque_current/5700.0f);
+				tgt_velocity[1] = pid_calc(&init_motor_angle_pid[1], target_angle_rad[1], modified_motor_angle_rad[1]);
+				target_current[1] = pid_calc(&init_motor_velocity_pid[1], tgt_velocity[1], motor_velocity_rads[1]);
+				motor_info[1].set_voltage = pid_calc(&init_motor_current_pid[1], target_current[1], motor_info[1].torque_current/5700.0f);
 
 				/* send motor control message through can bus*/
 				if (robot_control.output_enable == 1)

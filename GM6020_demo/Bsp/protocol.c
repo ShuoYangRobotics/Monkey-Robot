@@ -8,6 +8,11 @@ extern uint16_t packIndex;
 extern pid_struct_t motor_angle_pid[2];
 extern pid_struct_t motor_velocity_pid[2];
 extern pid_struct_t motor_current_pid[2];
+
+extern pid_struct_t init_motor_angle_pid[2];
+extern pid_struct_t init_motor_angle_pid[2];
+extern pid_struct_t init_motor_current_pid[2];
+
 extern float modified_motor_angle_rad[2];
 
 //// Functions
@@ -127,11 +132,12 @@ Serial_struct execute(Serial_struct data, RobotControl* robot_control, Trajector
 		case 6: // ask to follow trajectory
 			if(robot_control -> ctrl_mode == 6) { // in ready to start mode
 				robot_control -> output_enable = 1; // enable power, power will only be enabled before robot want to init position
-				robot_control -> ctrl_mode = 4; // start trajectory tracking
+				
 				
 				// only do data.value check once in aux state, do not need to do it here
 				
 				ackPack = ack(data, traj -> leftStepReceived, data.position, data.velocity);
+				robot_control -> ctrl_mode = 4; // start trajectory tracking
 				LED_RED_TOGGLE();
 			} else {
 				ackPack = err(data, traj -> leftStepReceived, data.position, data.velocity);
@@ -238,6 +244,24 @@ Serial_struct execute(Serial_struct data, RobotControl* robot_control, Trajector
 					motor_current_pid[0].kd = data.position;
 				if(data.velocity>0)
 					motor_current_pid[1].kd = data.velocity;
+			}
+			
+			ackPack = ack(data, data.value, data.position, data.velocity);
+			LED_RED_TOGGLE();
+			break;
+		}
+		
+		case 26: {
+			
+			if(data.value == 0) { // tune pos Kp
+				if(data.position>0)
+					init_motor_angle_pid[0].kp = data.position;
+			}else if(data.value == 1) { // tune pos Ki
+				if(data.position>0)
+					init_motor_angle_pid[0].ki = data.position;
+			}else if(data.value == 2) { // tune pos Kd
+				if(data.position>0)
+					init_motor_angle_pid[0].kd = data.position;
 			}
 			
 			ackPack = ack(data, data.value, data.position, data.velocity);
