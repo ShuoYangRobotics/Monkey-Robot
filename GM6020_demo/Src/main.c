@@ -150,7 +150,8 @@ int traj_count = 0;
 RobotControl robot_control = { 	.debug_print = 0, .ctrl_mode = 0, .output_enable = 0, 
 																.pwm_pulse_left = 1500, .pwm_pulse_right = 1500, .acked = 1,
 																.ctrl_side = 1, .ctrl_direction = 0,
-																.traj_start_delay = 100, .closeTimePercent = 0.95f, .Tf = 0.60, .traj_offset = 0.0};
+																.traj_start_delay = 60, .closeTimePercent = 0.95f, .Tf = 0.66, .traj_offset = 0.0};
+
 
 /// mode selection flags
 /// mode selection flags
@@ -284,8 +285,8 @@ int main(void)
   can_user_init(&hcan1);                   // config can filter, start can
 
 	// PID setup
-  pid_init(&motor_angle_pid[0], 380, 0.0001, 0.01, 200, 800);       //init pid parameter, kp=38, ki=0.001, kd=0.5, output limit = 200rads
-  pid_init(&motor_angle_pid[1], 380, 0.0001, 0.01, 200, 800);       //init pid parameter, kp=38, ki=0.001, kd=0.5, output limit = 200rads
+  pid_init(&motor_angle_pid[0], 410, 0.0001, 0.01, 200, 800);       //init pid parameter, kp=38, ki=0.001, kd=0.5, output limit = 200rads
+  pid_init(&motor_angle_pid[1], 410, 0.0001, 0.01, 200, 800);       //init pid parameter, kp=38, ki=0.001, kd=0.5, output limit = 200rads
   pid_init(&motor_velocity_pid[0], 8, 0.00001, 0.06, 125, 700); //init pid parameter, kp=7, ki=3, kd=0.06, output limit = 30000
   pid_init(&motor_velocity_pid[1], 8, 0.00001, 0.06, 125, 700); //init pid parameter, kp=7, ki=3, kd=0.06, output limit = 30000
   pid_init(&motor_current_pid[0], 160, 0.001, 0.06, 20000, 30000); //init pid parameter, kp=1000, ki=3, kd=0.06, output limit = 30000
