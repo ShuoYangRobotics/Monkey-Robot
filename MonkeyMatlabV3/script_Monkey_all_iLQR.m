@@ -38,8 +38,8 @@ for i = 1: pfl_N - 1
   ddthetamat(i + 1, :) = (dthetamat(i + 1, :) - dthetamat(i, :)) / pfl_dt;
 end
 
-sim('Monkey_all_pfl','StopTime', num2str(T));
-
+a = sim('Monkey_all_pfl','StopTime', num2str(T));
+out_u_pfl = a.get('out_u_pfl');
 %% load init control from pfl
 t = 0:dt:T;
 % size(out_u_pfl.Data) 1201 2 , not very good. unify directions of arrays
