@@ -62,3 +62,5 @@ GM6020_demo/Inc/tmp
 
 *.h_save
 MonkeyMatlab/slprj
+MonkeyMatlabV3/slprj
+*.slxc

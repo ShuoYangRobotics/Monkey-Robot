@@ -10,7 +10,7 @@
 
 
 %============= RigidTransform =============%
-smiData=struct([]);
+smiData=struct('d',0);
 %Initialize the RigidTransform structure array by filling in null values.
 smiData.RigidTransform(89).translation = [0.0 0.0 0.0];
 smiData.RigidTransform(89).angle = 0.0;

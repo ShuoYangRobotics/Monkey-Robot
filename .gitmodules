@@ -1,3 +1,5 @@
 [submodule "MonkeyMatlab/ModernRobotics"]
 	path = ModernRobotics
 	url = https://github.com/NxRLab/ModernRobotics
+[submodule "MonkeyMatlabV3/ModernRobotics"]
+	url = https://github.com/NxRLab/ModernRobotics

@@ -80,7 +80,7 @@ sim_new_trajectory  = 1;
 
 for i = 1:total_iter
 %     try
-        [new_x_list,new_u_list, J, lamb, sim_new_trajectory, converge] = ...
+        [new_x0, new_x_list,new_u_list,J,lamb, sim_new_trajectory, converge] = ...
             Monkey_all_iLQR_iteration(x0, xT, new_u_list, new_x_list, dt, step, Q, R, Qf, lamb, sim_new_trajectory, g, Ftip, Mlist, Glist, Slist); 
         dd = sprintf('Iteration %d, cost %6.5f\n', i, J);
         disp(dd);

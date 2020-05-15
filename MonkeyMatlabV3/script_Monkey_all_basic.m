@@ -1,4 +1,4 @@
-addpath('ModernRobotics\packages\Matlab\mr');
+addpath('ModernRobotics/packages/Matlab/mr');
 % Monkey_all_DataFile;
 %% calculate dynamic model
 link_N=3;

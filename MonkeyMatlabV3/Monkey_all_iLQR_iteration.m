@@ -148,39 +148,7 @@ function [new_x0, new_x_list,new_u_list,J,lamb, sim_new_trajectory, converge] = 
     end
     
     update_u_list = zeros(2,step+1);
-    
-    
-    
-    % 2019-6-25 add new update u
-%     B = [1 0 0
-%          0 1 0
-%          0 0 1
-%          0 0 0
-%          0 0 0
-%          0 0 0];
-%     Q_u = B'*V_x;    
-%     Q_ux = B'*V_xx;
-%     Q_uu = B'*V_xx*B;
-%     % standard regularization
-%     [evecs,evals] = eig(Q_uu);
-%     evals(evals < 0) = 0.0;
-%     Q_uu_inv = evecs * diag(1./(diag(evals)+lamb*ones(3,1))) * evecs';
-%     ff_x0 = - Q_uu_inv*Q_u;
-%     fb_x0 = - Q_uu_inv*Q_ux;
-    % project ff_x0 to [0;1;-1]     
-%     [evecs,evals] = eig(V_xx);
-%     evals(evals < 0) = 0.0;
-%     V_xx_inv = evecs * diag(1./(diag(evals)+lamb*ones(6,1))) * evecs';
-%     x_0_constraint = [0;1;-1;0;0;0];
-%     update_x0 = 0.007*dot(-V_xx_inv*V_x,x_0_constraint)/norm(x_0_constraint)^2*x_0_constraint;
-%      
-%     dd = sprintf('old x0 %6.5f %6.5f %6.5f\n', x0(1),x0(2),x0(3));
-%     disp(dd);
-%     new_x0 = x0 + update_x0;
-%     dd = sprintf('new x0 %6.5f %6.5f %6.5f\n', new_x0(1),new_x0(2),new_x0(3));
-%     disp(dd);
 
-%     new_x0 = x0;
     update_x = new_x0;
     
     for i = 1:step
@@ -206,32 +174,8 @@ function [new_x0, new_x_list,new_u_list,J,lamb, sim_new_trajectory, converge] = 
         sim_new_trajectory = 1;
         converge = 0;
         if (old_J - new_J)/new_J < 0.05  %
-%             
-%             [evecs,evals] = eig(V_xx);
-%             V_xx_inv = evecs * diag(1./(diag(evals)+lamb*ones(6,1))) * evecs';
-%             x_0_constraint = [0;1;-1;0;0;0];
-%             update_x0 = 0.007*dot(-V_xx_inv*V_x,x_0_constraint)/norm(x_0_constraint)^2*x_0_constraint;
-% 
-% 
-% % 
-%         V
-%         Aeq = [1 0  0 0 0 0
-%                0 -1 -1 0 0 0
-%                0 0  0 1 0 0
-%                0 0  0 0 1 0
-%                0 0  0 0 0 1];
-%         beq = [0;0;0;0;0];
-%         update_x0 = quadprog((V_xx+V_xx')/2,V_x,[],[],Aeq,beq,-0.05*ones(6,1),0.05*ones(6,1))
-% %             update_x0 = linprog(-V_x,eye(6),0.1*ones(6,1),Aeq,beq)
-%         0.5*update_x0'*(V_xx+V_xx')/2*update_x0 + V_x'*update_x0
-% %             0.5*-update_x0'*(V_xx+V_xx')/2*-update_x0 + V_x'*-update_x0
-%         new_x0 = x0+update_x0;
-%         if norm(update_x0) < 1e-4
-
             disp('converge')
-
             converge = 1;
-%             end
         end
     else
         J = old_J;
