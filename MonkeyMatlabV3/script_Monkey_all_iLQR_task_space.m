@@ -87,6 +87,8 @@ out_u_data = [init_u ];
 %% iLQR step
 new_u_list = init_u;
 new_x_list = init_x_list;
+ff_k = zeros(2,1,step);
+fb_K = zeros(2,6,step);
 x0 = x0 + 1e-5*randn(size(x0));
 
 total_iter = 70;
@@ -96,11 +98,11 @@ sim_new_trajectory  = 1;
 for i = 1:total_iter
 %     try
         if (is_using_udp == 0)
-        [new_x0, new_x_list,new_u_list, J, lamb, sim_new_trajectory, converge] = ...
+        [new_x0, new_x_list,new_u_list, J, lamb, sim_new_trajectory, converge, ff_k, fb_K] = ...
            Monkey_all_iLQR_iteration(x0, xT, new_u_list, new_x_list, dt, step, Q, R, Qf, lamb, sim_new_trajectory, g, Ftip, Mlist, Glist, Slist); 
 %             Monkey_all_iLQR_iteration_with_udp(x0, xT, new_u_list, new_x_list, dt, step, Q, R, Qf, lamb, sim_new_trajectory, g, Ftip, Mlist, Glist, Slist); 
         else 
-         [new_x0, new_x_list,new_u_list, J, lamb, sim_new_trajectory, converge] = ...
+         [new_x0, new_x_list,new_u_list, J, lamb, sim_new_trajectory, converge, ff_k, fb_K] = ...
            Monkey_all_iLQR_iteration_with_udp(x0, xT, new_u_list, new_x_list, dt, step, Q, R, Qf, lamb, sim_new_trajectory, g, Ftip, Mlist, Glist, Slist); 
         end
         dd = sprintf('Iteration %d, cost %6.5f\n', i, J);
@@ -120,13 +122,21 @@ for i = 1:total_iter
 %     end
 end
 
-figure(3)
-plot(t, new_u_list(1,:) ,t, new_u_list(2,:) )
-title('iLQR Torque');
+%%
+% figure(3)
+% plot(t, new_u_list(1,:) ,t, new_u_list(2,:) )
+% title('iLQR Torque');
 
+%%
 out_u_time = t;
 out_u_data = new_u_list;
-% sim('Monkey_all_use_out_u','StopTime', num2str(T));
+a = sim('Monkey_all_use_out_u','StopTime', num2str(T));
+hand_pos = a.get('hand_pos');
+figure(4);plot(hand_pos.Data(:,1),hand_pos.Data(:,2),'b'); hold on; plot(dist2, reach_height,'r*');
+
+b = sim('Monkey_all_use_out_u_plus_mpc','StopTime', num2str(T));
+hand_pos = b.get('hand_pos');
+figure(4);plot(hand_pos.Data(:,1),hand_pos.Data(:,2),'g'); hold on; 
 
 % save control s
 tgt_time = t;

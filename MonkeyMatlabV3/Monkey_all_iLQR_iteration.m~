@@ -1,4 +1,4 @@
-function [new_x0, new_x_list,new_u_list,J,lamb, sim_new_trajectory, converge, ff_k, fb_K] = Monkey_all_iLQR_iteration(x0, xT, new_u_list, new_x_list,  dt, step, Q, R, Qf, lamb, sim_new_trajectory, g, Ftip, Mlist, Glist, Slist)
+function [new_x0, new_x_list,new_u_list,J,lamb, sim_new_trajectory, converge] = Monkey_all_iLQR_iteration(x0, xT, new_u_list, new_x_list,  dt, step, Q, R, Qf, lamb, sim_new_trajectory, g, Ftip, Mlist, Glist, Slist)
     lamb_factor = 2.5;
     lamb_max = 10000;
     % store fx fu lx lu
